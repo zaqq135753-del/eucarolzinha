@@ -1,0 +1,4 @@
+export const attributionKeys=['utm_source','utm_campaign','utm_medium','utm_content','utm_term','fbclid','ttclid','gclid'];
+export function captureAttribution(search){const params=new URLSearchParams(search);return Object.fromEntries(attributionKeys.filter(k=>params.has(k)).map(k=>[k,params.get(k)]));}
+// Session-only attribution, never append arbitrary query parameters to a Telegram bot link.
+export function sessionAttribution(search,storage){let previous={};try{previous=JSON.parse(storage.getItem('presell_attribution')||'{}')}catch{}const current=captureAttribution(search);const result=Object.keys(current).length?current:Object.fromEntries(attributionKeys.filter(k=>typeof previous?.[k]==='string').map(k=>[k,previous[k]]));try{storage.setItem('presell_attribution',JSON.stringify(result))}catch{}return result;}

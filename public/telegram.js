@@ -1,0 +1,2 @@
+import {telegramConfig} from './config.js';
+export function telegramUrl(intent,config=telegramConfig){const username=config.username.trim().replace(/^@/,'');const start=config.startParams[intent];if(!/^[A-Za-z][A-Za-z0-9_]{4,31}$/.test(username)||!username.toLowerCase().endsWith('bot')||typeof start!=='string'||!/^[A-Za-z0-9_-]{1,64}$/.test(start))return null;return `https://t.me/${username}?start=${encodeURIComponent(start)}`;}
