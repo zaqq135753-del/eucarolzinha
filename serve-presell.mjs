@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const publicDir = path.join(__dirname, 'public');
-const PORT = 4173;
+const PORT = process.env.PORT || 5050;
 
 const mimeTypes = {
   '.html': 'text/html; charset=utf-8',
@@ -65,9 +65,10 @@ const server = http.createServer((req, res) => {
   }
 });
 
-server.listen(PORT, '0.0.0.0', () => {
+server.listen(PORT, () => {
   console.log(`\n======================================================`);
   console.log(`✨ Pressell da Carolzinha rodando com sucesso!`);
   console.log(`👉 Abra no seu navegador: http://localhost:${PORT}`);
+  console.log(`👉 Ou se preferir: http://127.0.0.1:${PORT}`);
   console.log(`======================================================\n`);
 });
