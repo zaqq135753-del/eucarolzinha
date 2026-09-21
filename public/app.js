@@ -38,6 +38,14 @@ primaryDialog.addEventListener('click',e=>{if(e.target!==primaryDialog)return;co
 let phraseStarted=false;
 function startPhrases(){if(phraseStarted||reduced)return;phraseStarted=true;const el=document.querySelector('.motion-phrase');let index=0;const phrases=['No seu tempo.','Do seu jeito.'];const change=()=>{if(document.hidden){setTimeout(change,1500);return}el.animate([{opacity:1,transform:'translateY(0)',filter:'blur(0)'},{opacity:0,transform:'translateY(-12px)',filter:'blur(5px)'}],{duration:350,easing:'ease-in',fill:'forwards'}).finished.then(()=>{el.textContent=phrases[index++];return el.animate([{opacity:0,transform:'translateY(14px)',filter:'blur(5px)'},{opacity:1,transform:'translateY(0)',filter:'blur(0)'}],{duration:600,easing:'cubic-bezier(.2,.8,.2,1)',fill:'forwards'}).finished}).then(()=>{if(index<phrases.length)setTimeout(change,4800)}).catch(()=>{})};setTimeout(change,4800)}
 if(level===3)startPhrases();else window.addEventListener('presell:intro-ready',startPhrases,{once:true});
-const revealNodes=document.querySelectorAll('.short-gallery,.portal-copy,.invitation-card');
+const revealNodes=document.querySelectorAll('.short-gallery,.portal-copy,.invitation-card,.funnel-card');
 if(!reduced&&'IntersectionObserver'in window){const motionObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('motion-entered');motionObserver.unobserve(entry.target)}}),{threshold:.12});revealNodes.forEach(el=>{el.classList.add('motion-pending');motionObserver.observe(el)})}
 const strip=document.querySelector('.media-strip'),figures=[...strip.children],galleryControls=document.createElement('div');galleryControls.className='gallery-controls';galleryControls.setAttribute('aria-label','Navegar pelas prévias');figures.forEach((fig,i)=>{const b=document.createElement('button');b.setAttribute('aria-label','Ver prévia '+(i+1));b.textContent=String(i+1).padStart(2,'0');b.onclick=()=>strip.scrollTo({left:fig.offsetLeft-strip.firstElementChild.offsetLeft,behavior:reduced?'instant':'smooth'});galleryControls.append(b)});strip.after(galleryControls);
+
+const mobileBar=document.getElementById('mobile-bottom');
+if(mobileBar){
+  window.addEventListener('scroll',()=>{
+    if(window.scrollY > 280) mobileBar.style.display='flex';
+    else mobileBar.style.display='none';
+  },{passive:true});
+}
