@@ -1,6 +1,16 @@
-// Preencha com país + DDD + número. Nenhum número fictício é utilizado.
-export const whatsappConfig={number:'553191372791',message:'Oi, Carolzinha 😘 Vi a prévia e quero conhecer seu espaço privado. Me manda as opções pra liberar meu acesso?'};
-export const siteConfig={creatorName:'Carolina Satler',headline:'Vem me conhecer.',headlineEmphasis:'Mais de perto.',description:'Gostou do que viu? Tem mais de mim te esperando. Fica mais um pouquinho. 😉',cta:'Quero ver mais no Telegram',disclosure:'Conteúdo exclusivo pago · Detalhes no próximo passo.',heroImage:'/assets/story-3.webp',heroVideo:'/assets/story-3.mp4'};
+// Configuração geral da Carolzinha Privé
+export const whatsappConfig={number:'553191372791',message:'Oi, Carolzinha 😘 Vi as prévias e quero conhecer seu espaço VIP. Me manda as opções pra liberar meu acesso?'};
+
+export const siteConfig={
+  creatorName:'Carolina Satler',
+  headline:'Vem me conhecer.',
+  headlineEmphasis:'Mais de perto.',
+  description:'Sem censura, sem filtros e do jeitinho que você sempre quis me ver. Fotos, vídeos me tocando e conversas íntimas direto no Telegram.',
+  cta:'Falar com a Carol no Telegram 🔞',
+  disclosure:'Conteúdo adulto exclusivo pago · Sigilo garantido no extrato.',
+  heroImage:'/assets/story-3.webp',
+  heroVideo:'/assets/darkredtartbarnowl.mp4'
+};
 
 export const telegramConfig={
   username: 'eucarolzinha_bot',

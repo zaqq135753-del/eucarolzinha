@@ -12,10 +12,11 @@ export const funnelConfig={
   bot:'https://t.me/+N0qDwwVScTIxNGMx',
   title:'Entrar no meu canal gratuito de prévias'
  },
- stories:[
-  {src:'/assets/story-3.mp4',poster:'/assets/story-3.webp',title:'Um primeiro olhar'},
-  {src:'/assets/story-2.mp4',poster:'/assets/story-2.webp',title:'Um pouco de sol'},
-  {src:'/assets/story-1.mp4',poster:'/assets/story-1.webp',title:'Mais uma prévia'}
- ]
+  stories:[
+   {src:'/assets/darkredtartbarnowl.mp4',poster:'/assets/story-3.webp',title:'Apresentação Privada 🔞'},
+   {src:'/assets/belovedprestigioussandbarshark.mp4',poster:'/assets/short-photo-1.webp',title:'Provocando no espelho 🔥'},
+   {src:'/assets/trickyturbulentbrahmancow.mp4',poster:'/assets/bonus-photo.webp',title:'Deitada na cama me tocando 🤤'},
+   {src:'/assets/video-2.mp4',poster:'/assets/short-photo-2.webp',title:'Sem censura no banho 💦'}
+  ]
 };
 export function httpsLink(value){try{const u=new URL(value);return u.protocol==='https:'&&!u.username&&!u.password?u.href:null}catch{return null}}

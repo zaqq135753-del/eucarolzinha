@@ -12,17 +12,41 @@ document.querySelector('.contact').addEventListener('click',()=>emit('offers_nav
 emit('presell_view');
 setupIntro(video,document.getElementById('intro-play'),{reveal,manual:reduced||!!navigator.connection?.saveData});
 
-const extra=document.getElementById('extra-video'),extraButton=document.getElementById('extra-play');
-extraButton.onclick=()=>{extra.muted=true;extra.play().then(()=>extraButton.hidden=true).catch(()=>{extraButton.hidden=false;extraButton.textContent='▶ Tentar novamente'})};
-extra.addEventListener('ended',()=>{extraButton.hidden=false;extraButton.textContent='↻ Ver novamente'});
-extra.addEventListener('pause',()=>{if(!extra.ended){extraButton.hidden=false;extraButton.textContent='▶ Continuar prévia'}});
-extra.addEventListener('error',()=>{extraButton.hidden=false;extraButton.textContent='▶ Tentar novamente'});
-if('IntersectionObserver'in window)new IntersectionObserver(entries=>{if(entries.some(e=>!e.isIntersecting))extra.pause()},{threshold:.2}).observe(extra);
-document.addEventListener('visibilitychange',()=>{if(document.hidden)extra.pause()});
+const galleryCards=document.querySelectorAll('[data-video-card]');
+const allGalleryVideos=[...galleryCards].map(c=>c.querySelector('.gallery-video')).filter(Boolean);
+function pauseAllVideos(except=null){
+  if(video&&video!==except)video.pause();
+  allGalleryVideos.forEach(v=>{if(v!==except&&!v.paused)v.pause()});
+}
+galleryCards.forEach(card=>{
+  const v=card.querySelector('.gallery-video'),btn=card.querySelector('.gallery-play-btn'),lbl=btn?.querySelector('.play-label');
+  if(!v||!btn)return;
+  const togglePlay=()=>{
+    if(v.paused){
+      pauseAllVideos(v);
+      v.muted=false;
+      v.play().then(()=>{card.classList.add('is-playing');btn.hidden=true;emit('teaser_play',{src:v.currentSrc})}).catch(()=>{
+        v.muted=true;
+        v.play().then(()=>{card.classList.add('is-playing');btn.hidden=true;emit('teaser_play',{src:v.currentSrc,muted:true})}).catch(()=>{
+          btn.hidden=false;if(lbl)lbl.textContent='Tentar novamente';
+        });
+      });
+    }else{v.pause()}
+  };
+  card.addEventListener('click',e=>{if(e.target.closest('figcaption'))return;togglePlay()});
+  v.addEventListener('pause',()=>{
+    card.classList.remove('is-playing');btn.hidden=false;
+    if(v.ended){if(lbl)lbl.textContent='↻ Ver novamente';emit('teaser_completed',{src:v.currentSrc})}
+    else{if(lbl)lbl.textContent='▶ Continuar prévia'}
+  });
+  v.addEventListener('ended',()=>{card.classList.remove('is-playing');btn.hidden=false;if(lbl)lbl.textContent='↻ Ver novamente'});
+  if('IntersectionObserver'in window)new IntersectionObserver(entries=>{if(entries.some(e=>!e.isIntersecting))v.pause()},{threshold:.2}).observe(v);
+});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseAllVideos()});
 const dialog=document.getElementById('short-dialog'),bot=httpsLink(funnelConfig.starter.bot);
 if(bot){document.getElementById('short-bot').href=bot;document.getElementById('short-bot').hidden=false;document.getElementById('short-bot-pending').hidden=true}
 let clicked=false,seen=false,shown=false;const arrived=Date.now();try{shown=sessionStorage.getItem('short_starter_shown')==='1'}catch{}
-function openStarter(explicit=false){if(dialog.open||document.getElementById('primary-dialog').open||(!explicit&&(shown||clicked)))return;shown=true;try{sessionStorage.setItem('short_starter_shown','1')}catch{}extra.pause();video.pause();dialog.showModal();emit('starter_offer_viewed',{reason:explicit?'choice':'desktop_exit_signal'})}
+function openStarter(explicit=false){if(dialog.open||document.getElementById('primary-dialog').open||(!explicit&&(shown||clicked)))return;shown=true;try{sessionStorage.setItem('short_starter_shown','1')}catch{}pauseAllVideos();dialog.showModal();emit('starter_offer_viewed',{reason:explicit?'choice':'desktop_exit_signal'})}
 document.getElementById('short-starter').onclick=()=>openStarter(true);
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.close).close());document.getElementById('short-decline').onclick=()=>dialog.close();
 dialog.addEventListener('click',e=>{if(e.target!==dialog)return;const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close()});

@@ -57,20 +57,61 @@ export function Hero(){
   <h2 id="gallery-title">Você viu só o começo.</h2>
   <p>Separei essas prévias gratuitas pra você sentir o clima. Desliza pro lado e vem ver. 😉</p>
   <div class="media-strip" aria-label="Galeria de prévias">
+    <!-- Vídeo Prévia 1 -->
+    <figure class="short-video-frame" data-video-card>
+      <span class="video-badge">🔥 VÍDEO EXCLUSIVO</span>
+      <video class="gallery-video" muted playsinline webkit-playsinline preload="metadata" poster="/assets/short-photo-1.webp">
+        <source src="/assets/belovedprestigioussandbarshark.mp4" type="video/mp4">
+      </video>
+      <button class="gallery-play-btn" aria-label="Reproduzir vídeo">
+        <span class="play-icon">▶</span>
+        <span class="play-label">Assistir prévia</span>
+      </button>
+      <figcaption>No espelho me provocando 🔥</figcaption>
+    </figure>
+
+    <!-- Vídeo Prévia 2 -->
+    <figure class="short-video-frame" data-video-card>
+      <span class="video-badge">🤤 VÍDEO ÍNTIMO</span>
+      <video class="gallery-video" muted playsinline webkit-playsinline preload="metadata" poster="/assets/bonus-photo.webp">
+        <source src="/assets/trickyturbulentbrahmancow.mp4" type="video/mp4">
+      </video>
+      <button class="gallery-play-btn" aria-label="Reproduzir vídeo">
+        <span class="play-icon">▶</span>
+        <span class="play-label">Assistir prévia</span>
+      </button>
+      <figcaption>Deitada na cama me tocando 🤤</figcaption>
+    </figure>
+
+    <!-- Vídeo Prévia 3 -->
+    <figure class="short-video-frame" data-video-card>
+      <span class="video-badge">💦 SEM CENSURA</span>
+      <video class="gallery-video" muted playsinline webkit-playsinline preload="metadata" poster="/assets/short-photo-2.webp">
+        <source src="/assets/video-2.mp4" type="video/mp4">
+      </video>
+      <button class="gallery-play-btn" aria-label="Reproduzir vídeo">
+        <span class="play-icon">▶</span>
+        <span class="play-label">Assistir prévia</span>
+      </button>
+      <figcaption>Sem censura no banho 💦</figcaption>
+    </figure>
+
+    <!-- Foto 1 -->
     <figure>
       <img loading="lazy" src="/assets/short-photo-1.webp" alt="Carolzinha à beira da piscina">
       <figcaption>À beira da piscina</figcaption>
     </figure>
-    <figure class="short-video-frame">
-      <video id="extra-video" muted playsinline preload="none" poster="/assets/story-1.webp" aria-label="Segunda prévia de apresentação">
-        <source src="/assets/story-1.mp4" type="video/mp4">
-      </video>
-      <button id="extra-play" aria-label="Reproduzir segunda prévia">▶ Ver prévia em vídeo</button>
-      <figcaption>Prévia gravada no quarto 🔥</figcaption>
-    </figure>
+
+    <!-- Foto 2 -->
     <figure>
       <img loading="lazy" src="/assets/short-photo-2.webp" alt="Carolzinha na natureza">
       <figcaption>Um instante sem roupa na natureza</figcaption>
+    </figure>
+
+    <!-- Foto 3 -->
+    <figure>
+      <img loading="lazy" src="/assets/bonus-photo.webp" alt="Carolzinha bastidores exclusivos">
+      <figcaption>Bastidores exclusivos 🔞</figcaption>
     </figure>
   </div>
   <a href="#acessos" class="gallery-next">Escolher como quer me ver ↓</a>
