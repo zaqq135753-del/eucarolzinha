@@ -5,7 +5,7 @@ export function Hero(){
   return `<section class="experience">
   <div class="portrait">
     <video id="intro-video" muted loop playsinline webkit-playsinline autoplay preload="auto" aria-label="Vídeo de apresentação da Carolina Satler, sem áudio">
-      <source src="${esc(c.heroVideo)}#t=0.8" type="video/mp4">
+      <source src="${esc(c.heroVideo)}#t=0.4" type="video/mp4">
     </video>
   </div>
   <button id="intro-play" class="intro-play" type="button" aria-label="Reproduzir vídeo de apresentação" hidden>

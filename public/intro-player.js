@@ -1,6 +1,7 @@
-// Gerenciador do vídeo de abertura (Hero) em loop contínuo iniciando a partir de 0.8s
+// Gerenciador do vídeo de abertura (Hero) iniciando a partir de 0.4s em slow motion suave e loop contínuo
 export function setupIntro(video, button, { reveal, manual=false, doc=document, timeout=8000 } = {}) {
-  const START_TIME = 0.8;
+  const START_TIME = 0.4;
+  const SLOW_RATE = 0.70; // slow motion leve no início
   let pending = false;
   video.muted = true;
   video.defaultMuted = true;
@@ -11,6 +12,7 @@ export function setupIntro(video, button, { reveal, manual=false, doc=document, 
     try {
       if (video.currentTime < START_TIME || (video.duration && video.currentTime >= video.duration - 0.25)) {
         video.currentTime = START_TIME;
+        video.playbackRate = SLOW_RATE;
       }
     } catch (_) {}
   };
@@ -28,6 +30,7 @@ export function setupIntro(video, button, { reveal, manual=false, doc=document, 
     setStartTime();
     pending = true;
     video.muted = true;
+    video.playbackRate = SLOW_RATE;
     let promise;
     try {
       promise = video.play();
@@ -49,8 +52,21 @@ export function setupIntro(video, button, { reveal, manual=false, doc=document, 
     const t = video.currentTime;
     if (video.duration && t >= video.duration - 0.25) {
       video.currentTime = START_TIME;
+      video.playbackRate = SLOW_RATE;
+      return;
     } else if (t < START_TIME && !video.seeking) {
       video.currentTime = START_TIME;
+      video.playbackRate = SLOW_RATE;
+    }
+
+    // Começa em slow motion leve (0.70x) e acelera suavemente para velocidade normal após 2.5s
+    if (t < START_TIME + 2.5) {
+      video.playbackRate = SLOW_RATE;
+    } else if (t < START_TIME + 4.0) {
+      const prog = (t - (START_TIME + 2.5)) / 1.5;
+      video.playbackRate = SLOW_RATE + prog * (1.0 - SLOW_RATE);
+    } else {
+      video.playbackRate = 1.0;
     }
 
     if (t >= START_TIME + 2.0) reveal(3, 'video');
@@ -60,12 +76,14 @@ export function setupIntro(video, button, { reveal, manual=false, doc=document, 
 
   video.addEventListener('ended', () => {
     video.currentTime = START_TIME;
+    video.playbackRate = SLOW_RATE;
     video.play().catch(() => {});
   });
 
   video.addEventListener('seeking', () => {
     if (video.currentTime < START_TIME) {
       video.currentTime = START_TIME;
+      video.playbackRate = SLOW_RATE;
     }
   });
 
