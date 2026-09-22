@@ -4,8 +4,8 @@ const esc=s=>String(s).replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 export function Hero(){
   return `<section class="experience">
   <div class="portrait">
-    <video id="intro-video" muted playsinline webkit-playsinline preload="metadata" poster="${esc(c.heroImage)}" aria-label="Vídeo de apresentação da Carolina Satler, sem áudio">
-      <source src="${esc(c.heroVideo)}" type="video/mp4">
+    <video id="intro-video" muted loop playsinline webkit-playsinline preload="auto" poster="${esc(c.heroImage)}" aria-label="Vídeo de apresentação da Carolina Satler, sem áudio">
+      <source src="${esc(c.heroVideo)}#t=0.8" type="video/mp4">
     </video>
   </div>
   <button id="intro-play" class="intro-play" type="button" aria-label="Reproduzir vídeo de apresentação" hidden>
@@ -57,7 +57,20 @@ export function Hero(){
   <h2 id="gallery-title">Você viu só o começo.</h2>
   <p>Separei essas prévias gratuitas pra você sentir o clima. Desliza pro lado e vem ver. 😉</p>
   <div class="media-strip" aria-label="Galeria de prévias">
-    <!-- Vídeo Prévia 1: No Espelho -->
+    <!-- Vídeo Prévia 1: Na Intimidade -->
+    <figure class="short-video-frame" data-video-card>
+      <span class="video-badge">💦 SEM CENSURA</span>
+      <video class="gallery-video" muted playsinline webkit-playsinline preload="metadata">
+        <source src="/assets/video-2.mp4" type="video/mp4">
+      </video>
+      <button class="gallery-play-btn" aria-label="Reproduzir vídeo">
+        <span class="play-icon">▶</span>
+        <span class="play-label">Assistir prévia</span>
+      </button>
+      <figcaption>Na intimidade sem filtro 💦</figcaption>
+    </figure>
+
+    <!-- Vídeo Prévia 2: No Espelho -->
     <figure class="short-video-frame" data-video-card>
       <span class="video-badge">🔥 VÍDEO NO ESPELHO</span>
       <video class="gallery-video" muted playsinline webkit-playsinline preload="metadata">
@@ -70,7 +83,7 @@ export function Hero(){
       <figcaption>No espelho me provocando 🔥</figcaption>
     </figure>
 
-    <!-- Vídeo Prévia 2: Na Cama -->
+    <!-- Vídeo Prévia 3: Na Cama -->
     <figure class="short-video-frame" data-video-card>
       <span class="video-badge">🤤 VÍDEO NA CAMA</span>
       <video class="gallery-video" muted playsinline webkit-playsinline preload="metadata">

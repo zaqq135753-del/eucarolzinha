@@ -9,7 +9,7 @@ export const siteConfig={
   cta:'Falar com a Carol no Telegram 🔞',
   disclosure:'Conteúdo adulto exclusivo pago · Sigilo garantido no extrato.',
   heroImage:'/assets/carol-hero-cover.jpg',
-  heroVideo:'/assets/video-2.mp4'
+  heroVideo:'/assets/darkredtartbarnowl.mp4'
 };
 
 export const telegramConfig={
