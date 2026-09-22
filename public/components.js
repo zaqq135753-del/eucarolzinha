@@ -4,7 +4,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 export function Hero(){
   return `<section class="experience">
   <div class="portrait">
-    <video id="intro-video" muted loop playsinline webkit-playsinline preload="auto" poster="${esc(c.heroImage)}" aria-label="Vídeo de apresentação da Carolina Satler, sem áudio">
+    <video id="intro-video" muted loop playsinline webkit-playsinline autoplay preload="auto" aria-label="Vídeo de apresentação da Carolina Satler, sem áudio">
       <source src="${esc(c.heroVideo)}#t=0.8" type="video/mp4">
     </video>
   </div>
@@ -24,7 +24,7 @@ export function Hero(){
       <h1>${esc(c.headline)} <em class="motion-phrase" aria-hidden="true">${esc(c.headlineEmphasis)}</em><span class="sr-only">Mais de perto. No seu tempo. Do seu jeito.</span></h1>
     </div>
     <div class="stage stage-2">
-      <p class="description">Sem censura, sem filtros e do jeitinho que você sempre quis me ver. Fotos, vídeos me tocando e conversas íntimas direto no Telegram.</p>
+      <p class="description">Sem censura, sem filtros e do jeitinho que você sempre quis me ver. Vídeos me tocando e conversas íntimas direto no Telegram.</p>
       <div class="trust-tags">
         <span class="tag-item">🔒 100% Discreto</span>
         <span class="tag-item">⚡ Acesso Imediato</span>
@@ -46,7 +46,7 @@ export function Hero(){
           <span class="arrow" aria-hidden="true">→</span>
         </a>
       </div>
-      <a class="preview-skip" href="#previas">Ver fotos e prévias gratuitas abaixo ↓</a>
+      <a class="preview-skip" href="#previas">Ver prévias gratuitas abaixo ↓</a>
       <p class="disclosure">🔞 Conteúdo adulto exclusivo · Sigilo garantido</p>
     </div>
   </div>
@@ -55,7 +55,7 @@ export function Hero(){
 <section class="short-gallery" id="previas" aria-labelledby="gallery-title">
   <span class="eyebrow">PRÉVIAS EXCLUSIVAS</span>
   <h2 id="gallery-title">Você viu só o começo.</h2>
-  <p>Separei essas prévias gratuitas pra você sentir o clima. Desliza pro lado e vem ver. 😉</p>
+  <p>Separei essas prévias em vídeo pra você sentir o clima do que te espera. Dá o play e vem ver. 😉</p>
   <div class="media-strip" aria-label="Galeria de prévias">
     <!-- Vídeo Prévia 1: Na Intimidade -->
     <figure class="short-video-frame" data-video-card>
@@ -94,30 +94,6 @@ export function Hero(){
         <span class="play-label">Assistir prévia</span>
       </button>
       <figcaption>Deitada na cama me tocando 🤤</figcaption>
-    </figure>
-
-    <!-- Foto 1: Piscina Biquíni Branco -->
-    <figure>
-      <img loading="lazy" src="/assets/short-photo-1.webp" alt="Carolzinha à beira da piscina">
-      <figcaption>À beira da piscina</figcaption>
-    </figure>
-
-    <!-- Foto 2: Cachoeira Sem Roupa -->
-    <figure>
-      <img loading="lazy" src="/assets/short-photo-2.webp" alt="Carolzinha na natureza">
-      <figcaption>Um instante sem roupa na natureza</figcaption>
-    </figure>
-
-    <!-- Foto 3: Banheiro Toalha -->
-    <figure>
-      <img loading="lazy" src="/assets/bonus-photo.webp" alt="Carolzinha saindo do banho">
-      <figcaption>Saindo do banho 💦</figcaption>
-    </figure>
-
-    <!-- Foto 4: Relaxando na Rede -->
-    <figure>
-      <img loading="lazy" src="/assets/carol-rede.jpg" alt="Carolzinha descansando na rede">
-      <figcaption>Descansando na rede... 😏</figcaption>
     </figure>
   </div>
   <a href="#acessos" class="gallery-next">Escolher como quer me ver ↓</a>
@@ -174,7 +150,7 @@ export function Hero(){
 <div class="mobile-bottom-bar" id="mobile-bottom">
   <div class="bar-profile">
     <span class="bar-avatar">
-      <img src="/assets/carol-avatar.jpg" alt="Carolzinha">
+      <span class="avatar-badge">🔞</span>
       <span class="dot-online"></span>
     </span>
     <div class="bar-text">

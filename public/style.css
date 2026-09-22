@@ -45,8 +45,8 @@ h1 em{display:block;font-weight:600;color:#f4b5ca} .wordmark small,.eyebrow{font
 .btn-vip:hover{transform:translateY(-2px);box-shadow:0 12px 40px #b6225a50}
 
 .mobile-bottom-bar{position:fixed;bottom:0;left:0;right:0;z-index:99;background:rgba(18,12,18,0.92);backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,0.12);padding:10px 16px env(safe-area-inset-bottom);display:none;align-items:center;justify-content:space-between;box-shadow:0 -10px 30px rgba(0,0,0,0.5)}
-.bar-profile{display:flex;align-items:center;gap:10px}
-.bar-avatar{position:relative;width:38px;height:38px;border-radius:50%;overflow:hidden;border:1px solid #e04a84}
+.bar-avatar{position:relative;width:38px;height:38px;border-radius:50%;overflow:hidden;border:1px solid #e04a84;display:flex;align-items:center;justify-content:center}
+.avatar-badge{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:16px;background:linear-gradient(135deg,#bd2858,#e04a84)}
 .bar-avatar img{width:100%;height:100%;object-fit:cover}
 .dot-online{position:absolute;bottom:0;right:0;width:9px;height:9px;border-radius:50%;background:#1ed760;border:1.5px solid #120c12}
 .bar-text strong{display:block;font-size:13px;color:#fff}

@@ -13,8 +13,9 @@ export const funnelConfig={
     title:'Entrar no meu canal gratuito de prévias'
   },
   stories:[
-    {src:'/assets/belovedprestigioussandbarshark.mp4',poster:'/assets/short-photo-1.webp',title:'Provocando no espelho 🔥'},
-    {src:'/assets/trickyturbulentbrahmancow.mp4',poster:'/assets/carol-hero-cover.jpg',title:'Deitada na cama me tocando 🤤'}
+    {src:'/assets/video-2.mp4',title:'Na intimidade sem filtro 💦'},
+    {src:'/assets/belovedprestigioussandbarshark.mp4',title:'Provocando no espelho 🔥'},
+    {src:'/assets/trickyturbulentbrahmancow.mp4',title:'Deitada na cama me tocando 🤤'}
   ]
 };
 export function httpsLink(value){try{const u=new URL(value);return u.protocol==='https:'&&!u.username&&!u.password?u.href:null}catch{return null}}

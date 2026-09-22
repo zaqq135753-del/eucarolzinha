@@ -5,10 +5,10 @@ export const siteConfig={
   creatorName:'Carolina Satler',
   headline:'Vem me conhecer.',
   headlineEmphasis:'Mais de perto.',
-  description:'Sem censura, sem filtros e do jeitinho que você sempre quis me ver. Fotos, vídeos me tocando e conversas íntimas direto no Telegram.',
+  description:'Sem censura, sem filtros e do jeitinho que você sempre quis me ver. Vídeos me tocando e conversas íntimas direto no Telegram.',
   cta:'Falar com a Carol no Telegram 🔞',
   disclosure:'Conteúdo adulto exclusivo pago · Sigilo garantido no extrato.',
-  heroImage:'/assets/carol-hero-cover.jpg',
+  heroImage:'',
   heroVideo:'/assets/darkredtartbarnowl.mp4'
 };
 
