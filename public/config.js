@@ -8,8 +8,8 @@ export const siteConfig={
   description:'Sem censura, sem filtros e do jeitinho que você sempre quis me ver. Fotos, vídeos me tocando e conversas íntimas direto no Telegram.',
   cta:'Falar com a Carol no Telegram 🔞',
   disclosure:'Conteúdo adulto exclusivo pago · Sigilo garantido no extrato.',
-  heroImage:'/assets/story-3.webp',
-  heroVideo:'/assets/darkredtartbarnowl.mp4'
+  heroImage:'/assets/carol-hero-cover.jpg',
+  heroVideo:'/assets/video-2.mp4'
 };
 
 export const telegramConfig={

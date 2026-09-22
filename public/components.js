@@ -57,10 +57,10 @@ export function Hero(){
   <h2 id="gallery-title">Você viu só o começo.</h2>
   <p>Separei essas prévias gratuitas pra você sentir o clima. Desliza pro lado e vem ver. 😉</p>
   <div class="media-strip" aria-label="Galeria de prévias">
-    <!-- Vídeo Prévia 1 -->
+    <!-- Vídeo Prévia 1: No Espelho -->
     <figure class="short-video-frame" data-video-card>
-      <span class="video-badge">🔥 VÍDEO EXCLUSIVO</span>
-      <video class="gallery-video" muted playsinline webkit-playsinline preload="metadata" poster="/assets/short-photo-1.webp">
+      <span class="video-badge">🔥 VÍDEO NO ESPELHO</span>
+      <video class="gallery-video" muted playsinline webkit-playsinline preload="metadata">
         <source src="/assets/belovedprestigioussandbarshark.mp4" type="video/mp4">
       </video>
       <button class="gallery-play-btn" aria-label="Reproduzir vídeo">
@@ -70,10 +70,10 @@ export function Hero(){
       <figcaption>No espelho me provocando 🔥</figcaption>
     </figure>
 
-    <!-- Vídeo Prévia 2 -->
+    <!-- Vídeo Prévia 2: Na Cama -->
     <figure class="short-video-frame" data-video-card>
-      <span class="video-badge">🤤 VÍDEO ÍNTIMO</span>
-      <video class="gallery-video" muted playsinline webkit-playsinline preload="metadata" poster="/assets/bonus-photo.webp">
+      <span class="video-badge">🤤 VÍDEO NA CAMA</span>
+      <video class="gallery-video" muted playsinline webkit-playsinline preload="metadata">
         <source src="/assets/trickyturbulentbrahmancow.mp4" type="video/mp4">
       </video>
       <button class="gallery-play-btn" aria-label="Reproduzir vídeo">
@@ -83,35 +83,28 @@ export function Hero(){
       <figcaption>Deitada na cama me tocando 🤤</figcaption>
     </figure>
 
-    <!-- Vídeo Prévia 3 -->
-    <figure class="short-video-frame" data-video-card>
-      <span class="video-badge">💦 SEM CENSURA</span>
-      <video class="gallery-video" muted playsinline webkit-playsinline preload="metadata" poster="/assets/short-photo-2.webp">
-        <source src="/assets/video-2.mp4" type="video/mp4">
-      </video>
-      <button class="gallery-play-btn" aria-label="Reproduzir vídeo">
-        <span class="play-icon">▶</span>
-        <span class="play-label">Assistir prévia</span>
-      </button>
-      <figcaption>Sem censura no banho 💦</figcaption>
-    </figure>
-
-    <!-- Foto 1 -->
+    <!-- Foto 1: Piscina Biquíni Branco -->
     <figure>
       <img loading="lazy" src="/assets/short-photo-1.webp" alt="Carolzinha à beira da piscina">
       <figcaption>À beira da piscina</figcaption>
     </figure>
 
-    <!-- Foto 2 -->
+    <!-- Foto 2: Cachoeira Sem Roupa -->
     <figure>
       <img loading="lazy" src="/assets/short-photo-2.webp" alt="Carolzinha na natureza">
       <figcaption>Um instante sem roupa na natureza</figcaption>
     </figure>
 
-    <!-- Foto 3 -->
+    <!-- Foto 3: Banheiro Toalha -->
     <figure>
-      <img loading="lazy" src="/assets/bonus-photo.webp" alt="Carolzinha bastidores exclusivos">
-      <figcaption>Bastidores exclusivos 🔞</figcaption>
+      <img loading="lazy" src="/assets/bonus-photo.webp" alt="Carolzinha saindo do banho">
+      <figcaption>Saindo do banho 💦</figcaption>
+    </figure>
+
+    <!-- Foto 4: Relaxando na Rede -->
+    <figure>
+      <img loading="lazy" src="/assets/carol-rede.jpg" alt="Carolzinha descansando na rede">
+      <figcaption>Descansando na rede... 😏</figcaption>
     </figure>
   </div>
   <a href="#acessos" class="gallery-next">Escolher como quer me ver ↓</a>
@@ -168,7 +161,7 @@ export function Hero(){
 <div class="mobile-bottom-bar" id="mobile-bottom">
   <div class="bar-profile">
     <span class="bar-avatar">
-      <img src="/assets/short-photo-1.webp" alt="Carolzinha">
+      <img src="/assets/carol-avatar.jpg" alt="Carolzinha">
       <span class="dot-online"></span>
     </span>
     <div class="bar-text">

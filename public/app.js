@@ -11,6 +11,7 @@ function reveal(next,reason){if(next<=level)return;level=next;surface.dataset.st
 document.querySelector('.contact').addEventListener('click',()=>emit('offers_navigation')); 
 emit('presell_view');
 setupIntro(video,document.getElementById('intro-play'),{reveal,manual:reduced||!!navigator.connection?.saveData});
+video.addEventListener('play',()=>pauseAllVideos(video));
 
 const galleryCards=document.querySelectorAll('[data-video-card]');
 const allGalleryVideos=[...galleryCards].map(c=>c.querySelector('.gallery-video')).filter(Boolean);
