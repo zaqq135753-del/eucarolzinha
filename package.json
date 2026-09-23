@@ -1,1 +1,10 @@
-{"name":"carolzinha-prive","private":true,"type":"module","scripts":{"build":"node build.mjs"}}
+{
+  "name": "carolzinha-prive",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node serve-presell.mjs",
+    "start": "node serve-presell.mjs",
+    "build": "node build.mjs"
+  }
+}
