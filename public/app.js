@@ -44,21 +44,61 @@ galleryCards.forEach(card=>{
   if('IntersectionObserver'in window)new IntersectionObserver(entries=>{if(entries.some(e=>!e.isIntersecting))v.pause()},{threshold:.2}).observe(v);
 });
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseAllVideos()});
-const dialog=document.getElementById('short-dialog'),bot=httpsLink(funnelConfig.starter.bot);
-if(bot){document.getElementById('short-bot').href=bot;document.getElementById('short-bot').hidden=false;document.getElementById('short-bot-pending').hidden=true}
+const dialog=document.getElementById('short-dialog');
+const shortBot=document.getElementById('short-bot');
+const starterBot=httpsLink(funnelConfig.starter.bot);
+if(shortBot&&starterBot) shortBot.href=starterBot;
+
 let clicked=false,seen=false,shown=false;const arrived=Date.now();try{shown=sessionStorage.getItem('short_starter_shown')==='1'}catch{}
-function openStarter(explicit=false){if(dialog.open||document.getElementById('primary-dialog').open||(!explicit&&(shown||clicked)))return;shown=true;try{sessionStorage.setItem('short_starter_shown','1')}catch{}pauseAllVideos();dialog.showModal();emit('starter_offer_viewed',{reason:explicit?'choice':'desktop_exit_signal'})}
-document.getElementById('short-starter').onclick=()=>openStarter(true);
-document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.close).close());document.getElementById('short-decline').onclick=()=>dialog.close();
-dialog.addEventListener('click',e=>{if(e.target!==dialog)return;const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close()});
-document.querySelectorAll('[data-offer]').forEach(a=>a.addEventListener('click',()=>{clicked=true;emit('offer_consultation_clicked',{offer:a.dataset.offer})}));
-document.getElementById('short-bot').addEventListener('click',()=>emit('starter_bot_clicked',{path:'secondary'}));
-if('IntersectionObserver'in window){const offersObserver=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){seen=true;emit('main_offers_viewed');offersObserver.disconnect()}},{threshold:.3});offersObserver.observe(document.getElementById('acessos'))}
+function openStarter(explicit=false){
+  const primaryDialog=document.getElementById('primary-dialog');
+  if(dialog?.open||primaryDialog?.open||(!explicit&&(shown||clicked)))return;
+  shown=true;try{sessionStorage.setItem('short_starter_shown','1')}catch{}
+  pauseAllVideos();
+  dialog?.showModal();
+  emit('starter_offer_viewed',{reason:explicit?'choice':'desktop_exit_signal'});
+}
+const shortStarterBtn=document.getElementById('short-starter');
+if(shortStarterBtn) shortStarterBtn.onclick=()=>openStarter(true);
+
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>{
+  const target=document.getElementById(b.dataset.close);
+  if(target) target.close();
+});
+const shortDecline=document.getElementById('short-decline');
+if(shortDecline) shortDecline.onclick=()=>dialog?.close();
+
+if(dialog){
+  dialog.addEventListener('click',e=>{if(e.target!==dialog)return;const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close()});
+}
+
+document.querySelectorAll('a[href*="wa.me"]').forEach(a=>{
+  a.addEventListener('click',()=>{
+    clicked=true;
+    emit('whatsapp_clicked',{href:a.href});
+  });
+});
+
+document.querySelectorAll('a[href*="t.me"]').forEach(a=>{
+  a.addEventListener('click',()=>{
+    clicked=true;
+    emit('telegram_clicked',{href:a.href});
+  });
+});
+
+if('IntersectionObserver'in window){
+  const acessosEl=document.getElementById('acessos');
+  if(acessosEl){
+    const offersObserver=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){seen=true;emit('main_offers_viewed');offersObserver.disconnect()}},{threshold:.3});
+    offersObserver.observe(acessosEl);
+  }
+}
 document.addEventListener('mouseleave',e=>{if(matchMedia('(hover:hover) and (pointer:fine)').matches&&e.clientY<=0&&seen&&Date.now()-arrived>20000)openStarter()});
 
-const mainBot=httpsLink(funnelConfig.main.bot),primaryDialog=document.getElementById('primary-dialog');
-document.querySelectorAll('[data-main-bot]').forEach(a=>{if(mainBot){a.href=mainBot;a.target='_top'}a.addEventListener('click',e=>{clicked=true;if(!mainBot){e.preventDefault();video.pause();extra.pause();primaryDialog.showModal();emit('main_invite_pending')}else emit('main_bot_clicked')})});
-primaryDialog.addEventListener('click',e=>{if(e.target!==primaryDialog)return;const r=primaryDialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)primaryDialog.close()});
+const primaryDialog=document.getElementById('primary-dialog');
+if(primaryDialog){
+  primaryDialog.addEventListener('click',e=>{if(e.target!==primaryDialog)return;const r=primaryDialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)primaryDialog.close()});
+}
 // Two measured text transitions, then a stable heading. No endless text cycling.
 let phraseStarted=false;
 function startPhrases(){if(phraseStarted||reduced)return;phraseStarted=true;const el=document.querySelector('.motion-phrase');let index=0;const phrases=['No seu tempo.','Do seu jeito.'];const change=()=>{if(document.hidden){setTimeout(change,1500);return}el.animate([{opacity:1,transform:'translateY(0)',filter:'blur(0)'},{opacity:0,transform:'translateY(-12px)',filter:'blur(5px)'}],{duration:350,easing:'ease-in',fill:'forwards'}).finished.then(()=>{el.textContent=phrases[index++];return el.animate([{opacity:0,transform:'translateY(14px)',filter:'blur(5px)'},{opacity:1,transform:'translateY(0)',filter:'blur(0)'}],{duration:600,easing:'cubic-bezier(.2,.8,.2,1)',fill:'forwards'}).finished}).then(()=>{if(index<phrases.length)setTimeout(change,4800)}).catch(()=>{})};setTimeout(change,4800)}

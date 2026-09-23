@@ -21,15 +21,21 @@ h1 em{display:block;font-weight:600;color:#f4b5ca} .wordmark small,.eyebrow{font
 .cta-stack{display:flex;flex-direction:column;gap:12px;width:100%}
 .contact{position:relative;text-decoration:none}
 .tg-svg{flex-shrink:0;color:#fff}
+.wp-svg{flex-shrink:0;color:#fff}
+.btn-whatsapp{background:linear-gradient(115deg,#128c7e,#25d366);color:#fff!important;border:1px solid rgba(255,255,255,0.25);box-shadow:0 10px 30px rgba(37,211,102,0.28)}
+.btn-whatsapp:hover{background:linear-gradient(115deg,#0e7569,#22bf5b);box-shadow:0 14px 40px rgba(37,211,102,0.45);transform:translateY(-2px);color:#fff!important}
 .cta-text{display:flex;flex-direction:column;text-align:left;line-height:1.2}
 .cta-text strong{font-size:15px;color:#fff}
 .cta-text small{font-size:11px;color:#fce4ee;font-weight:400;margin-top:2px}
 .contact-secondary{background:rgba(255,255,255,0.06);border:1px solid rgba(239,153,192,0.25);color:#f7c0d7;box-shadow:none}
 .contact-secondary:hover{background:rgba(255,255,255,0.12);color:#fff}
 
-.funnel-cards-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:24px;width:100%;margin:25px 0}
+.funnel-cards-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:24px;width:100%;margin:25px 0}
 .funnel-card{position:relative;padding:32px 26px;border-radius:22px;background:#171016;border:1px solid #ffffff18;display:flex;flex-direction:column;text-align:left}
 .free-card{border-color:#ffffff1c}
+.whatsapp-card{border-color:#25d36650;box-shadow:0 20px 60px rgba(37,211,102,0.15);background:radial-gradient(ellipse at top,#128c7e28,transparent 70%),#171216}
+.whatsapp-badge{background:linear-gradient(90deg,#128c7e,#25d366);color:#fff}
+.whatsapp-ribbon{position:absolute;top:14px;right:14px;padding:3px 8px;border-radius:12px;background:#25d36625;border:1px solid #25d36660;color:#55f08f;font-size:10px;font-weight:700}
 .vip-card{background:radial-gradient(ellipse at top,#6b203c60,transparent 70%),#1c1018;border:1px solid #e04a8460;box-shadow:0 20px 60px rgba(189,40,88,0.2)}
 .card-badge{display:inline-block;align-self:flex-start;padding:3px 9px;border-radius:6px;font-size:10px;font-weight:700;letter-spacing:1px;background:#ffffff15;color:#e8cbd9;margin-bottom:12px}
 .vip-badge{background:linear-gradient(90deg,#bd2858,#e04a84);color:#fff}
@@ -44,14 +50,18 @@ h1 em{display:block;font-weight:600;color:#f4b5ca} .wordmark small,.eyebrow{font
 .btn-vip{background:linear-gradient(115deg,#a62253,#da4d84);color:#fff;border:1px solid #ffb0d340;box-shadow:0 8px 30px #b6225a35}
 .btn-vip:hover{transform:translateY(-2px);box-shadow:0 12px 40px #b6225a50}
 
+.free-preview-box{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin:20px 0 0;padding:15px 20px;border-radius:14px;background:#ffffff06;border:1px dashed #ffffff20;font-size:13px;color:#dec2cf;flex-wrap:wrap;text-align:center}
+.free-preview-box a{color:#ff9bc4;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.free-preview-box a:hover{color:#fff}
+
 .mobile-bottom-bar{position:fixed;bottom:0;left:0;right:0;z-index:99;background:rgba(18,12,18,0.92);backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,0.12);padding:10px 16px env(safe-area-inset-bottom);display:none;align-items:center;justify-content:space-between;box-shadow:0 -10px 30px rgba(0,0,0,0.5)}
-.bar-avatar{position:relative;width:38px;height:38px;border-radius:50%;overflow:hidden;border:1px solid #e04a84;display:flex;align-items:center;justify-content:center}
-.avatar-badge{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:16px;background:linear-gradient(135deg,#bd2858,#e04a84)}
+.bar-avatar{position:relative;width:38px;height:38px;border-radius:50%;overflow:hidden;border:1px solid #25d366;display:flex;align-items:center;justify-content:center}
+.avatar-badge{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:16px;background:linear-gradient(135deg,#128c7e,#25d366)}
 .bar-avatar img{width:100%;height:100%;object-fit:cover}
 .dot-online{position:absolute;bottom:0;right:0;width:9px;height:9px;border-radius:50%;background:#1ed760;border:1.5px solid #120c12}
 .bar-text strong{display:block;font-size:13px;color:#fff}
 .bar-text small{display:block;font-size:10px;color:#55f08f}
-.bar-cta{padding:10px 16px;border-radius:10px;font-size:13px;font-weight:700;background:linear-gradient(115deg,#a62253,#da4d84);color:#fff;text-decoration:none;white-space:nowrap;box-shadow:0 4px 15px rgba(218,77,132,0.4)}
+.bar-cta{padding:10px 16px;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap}
 
 @media(max-width:768px){
   .funnel-cards-grid{grid-template-columns:1fr;gap:18px}
