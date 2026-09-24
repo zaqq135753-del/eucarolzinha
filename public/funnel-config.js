@@ -1,16 +1,16 @@
-// Configuração do funil da pressel integrado ao Telegram e canais de prévias.
+// Configuração do funil da pressel integrado ao WhatsApp.
 export const funnelConfig={
   main:{
-    bot:'https://t.me/eucarolzinha_bot?start=presell',
+    bot:'https://wa.me/message/AYCUNLYYIOSZO1',
     price:null,
     checkout:'',
     title:'Meu espaço, mais perto de você.',
-    items:['Fotos e vídeos do pacote','Acesso ao VIP exclusivo no Telegram','Entrada na área de membros']
+    items:['Fotos e vídeos do pacote','Acesso ao VIP exclusivo no WhatsApp','Atendimento 1x1']
   },
   starter:{
     price:16.90,
-    bot:'https://t.me/+N0qDwwVScTIxNGMx',
-    title:'Entrar no meu canal gratuito de prévias'
+    bot:'https://wa.me/message/AYCUNLYYIOSZO1',
+    title:'Liberar acesso no WhatsApp'
   },
   stories:[
     {src:'/assets/video-2.mp4',title:'Na intimidade sem filtro 💦'},

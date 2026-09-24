@@ -79,13 +79,6 @@ document.querySelectorAll('a[href*="wa.me"]').forEach(a=>{
   });
 });
 
-document.querySelectorAll('a[href*="t.me"]').forEach(a=>{
-  a.addEventListener('click',()=>{
-    clicked=true;
-    emit('telegram_clicked',{href:a.href});
-  });
-});
-
 if('IntersectionObserver'in window){
   const acessosEl=document.getElementById('acessos');
   if(acessosEl){
