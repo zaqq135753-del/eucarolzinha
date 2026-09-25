@@ -495,6 +495,193 @@ button {
 }
 
 /* ==========================================================================
+   INTERACTIVE LEAD PREFERENCE PICKER (HIGH ENGAGEMENT)
+   ========================================================================== */
+
+.picker-container {
+  max-width: 650px;
+  margin: 32px auto 20px;
+  padding: 0 16px;
+}
+
+.interactive-picker-card {
+  padding: 24px 20px;
+  border-radius: 22px;
+  background: radial-gradient(circle at 50% 0%, rgba(255, 45, 117, 0.12) 0%, rgba(18, 18, 28, 0.92) 80%);
+  border: 1px solid rgba(255, 45, 117, 0.28);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 45, 117, 0.08);
+}
+
+.picker-header {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.picker-step {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  background: rgba(255, 45, 117, 0.2);
+  color: #ff85a2;
+  border: 1px solid rgba(255, 45, 117, 0.35);
+  margin-bottom: 8px;
+}
+
+.picker-title {
+  font-size: clamp(20px, 5vw, 24px);
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.picker-subtitle {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.picker-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.picker-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 56px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.25s var(--ease-apple);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.picker-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.picker-btn:active {
+  transform: scale(0.98);
+}
+
+.picker-btn.active {
+  background: linear-gradient(135deg, rgba(255, 45, 117, 0.18), rgba(37, 211, 102, 0.14));
+  border-color: rgba(37, 211, 102, 0.55);
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.18), inset 0 0 0 1px rgba(37, 211, 102, 0.3);
+}
+
+.picker-emoji {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.picker-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.picker-info strong {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.picker-info small {
+  font-size: 12px;
+  color: #cbd5e1;
+}
+
+.picker-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: transparent;
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+}
+
+.picker-btn.active .picker-check {
+  background: var(--brand-whatsapp);
+  border-color: var(--brand-whatsapp);
+  color: #060609;
+}
+
+/* Feedback bubble */
+.picker-feedback {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 16px;
+  animation: fadeInBubble 0.3s ease;
+}
+
+@keyframes fadeInBubble {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.feedback-avatar {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.feedback-bubble {
+  font-size: 13px;
+  line-height: 1.4;
+  color: #e2e8f0;
+}
+
+.feedback-bubble strong {
+  color: #ff85a2;
+  margin-right: 4px;
+}
+
+.picker-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 14px 20px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 10px 25px var(--brand-whatsapp-glow);
+  animation: pulseCta 2.5s infinite;
+}
+
+@keyframes pulseCta {
+  0%, 100% { box-shadow: 0 10px 25px var(--brand-whatsapp-glow); }
+  50% { box-shadow: 0 12px 35px rgba(37, 211, 102, 0.55); }
+}
+
+/* ==========================================================================
    SMART VOICE NOTE (iOS iMESSAGE AUDIO PLAYER MOCKUP)
    ========================================================================== */
 
@@ -1395,17 +1582,17 @@ button {
   .experience {
     display: block;
     min-height: auto;
-    padding-top: 110px;
-    padding-bottom: 40px;
+    padding-top: 90px;
+    padding-bottom: 30px;
   }
   
   .portrait {
     inset: 0 0 auto;
     position: relative;
-    height: 60svh;
-    max-height: 520px;
-    border-radius: 24px;
-    margin-bottom: 24px;
+    height: 52svh;
+    max-height: 460px;
+    border-radius: 22px;
+    margin-bottom: 20px;
   }
 
   .portrait:after {
@@ -1420,12 +1607,37 @@ button {
 
   .intro-play {
     left: 50%;
-    top: 30svh;
+    top: 26svh;
+  }
+
+  /* Horizontal swipe carousel for mobile */
+  .media-strip-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 4px 16px;
+    margin: 0 -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+    scrollbar-width: none;
+  }
+  .media-strip-wrapper::-webkit-scrollbar {
+    display: none;
   }
 
   .media-strip {
-    grid-template-columns: 1fr;
-    gap: 20px;
+    display: flex;
+    flex-direction: row;
+    gap: 14px;
+    width: max-content;
+  }
+
+  .short-video-frame {
+    flex: 0 0 76vw;
+    max-width: 275px;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
   }
 
   .bento-grid {
@@ -1448,7 +1660,7 @@ button {
   }
 
   .short-footer {
-    padding-bottom: 100px;
+    padding-bottom: 95px;
     flex-direction: column;
     gap: 12px;
     text-align: center;
@@ -1456,6 +1668,9 @@ button {
 }
 
 @media (max-width: 600px) {
+  .dynamic-header {
+    padding: 12px 16px;
+  }
   .dynamic-island {
     padding: 5px 12px;
   }
@@ -1465,7 +1680,164 @@ button {
   .island-tag {
     display: none;
   }
+  .header-member-btn {
+    font-size: 11px;
+    padding: 6px 12px;
+  }
+  
+  .experience {
+    padding-top: 76px;
+    padding-bottom: 20px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .portrait {
+    height: 46svh;
+    max-height: 380px;
+    border-radius: 18px;
+    margin-bottom: 14px;
+  }
+
+  .intro-play {
+    top: 23svh;
+    padding: 10px 18px;
+    font-size: 13px;
+  }
+
   .hero-headline {
-    font-size: 34px;
+    font-size: 26px;
+    letter-spacing: -0.6px;
+    line-height: 1.15;
+  }
+
+  .hero-subtext {
+    font-size: 13.5px;
+    line-height: 1.45;
+    margin-bottom: 12px;
+  }
+
+  .specs-grid {
+    gap: 6px;
+  }
+
+  .spec-pill {
+    padding: 5px 10px;
+    font-size: 11px;
+    border-radius: 8px;
+    gap: 5px;
+  }
+
+  .apple-button {
+    min-height: 56px;
+    padding: 12px 18px;
+    border-radius: 16px;
+    gap: 12px;
+  }
+
+  .btn-main-title {
+    font-size: 14.5px;
+  }
+
+  .btn-sub-title {
+    font-size: 11px;
+  }
+
+  .section-header {
+    margin-bottom: 20px;
+    gap: 6px;
+  }
+
+  .section-title {
+    font-size: 23px;
+    letter-spacing: -0.5px;
+  }
+
+  .section-desc {
+    font-size: 13px;
+  }
+
+  .short-gallery {
+    margin: 30px auto;
+    padding: 20px 16px;
+  }
+
+  .portal-section {
+    margin: 30px auto 40px;
+    padding: 24px 16px;
+  }
+
+  .bento-card {
+    padding: 22px 18px;
+    border-radius: 20px;
+  }
+
+  .bento-title {
+    font-size: 21px;
+    letter-spacing: -0.5px;
+  }
+
+  .bento-desc {
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+
+  .bento-check-compact {
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .bento-check-compact li {
+    font-size: 12px;
+  }
+
+  .bento-cta {
+    min-height: 50px;
+    font-size: 13.5px;
+    padding: 12px 18px;
+  }
+
+  .voice-teaser-wrap {
+    margin: 20px auto;
+    padding: 0 16px;
+  }
+
+  .voice-teaser-card {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+
+  .voice-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .apple-dock-bar {
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+    padding: 8px 14px;
+    border-radius: 18px;
+  }
+
+  .dock-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .dock-text strong {
+    font-size: 12px;
+  }
+
+  .dock-text small {
+    font-size: 10px;
+  }
+
+  .dock-cta {
+    padding: 8px 12px;
+    font-size: 12px;
+    border-radius: 10px;
   }
 }

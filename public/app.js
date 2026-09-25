@@ -164,6 +164,52 @@ if (dynamicIsland) {
   });
 }
 
+// Interactive Lead Preference Picker (Alta Interação Mobile)
+const pickerButtons = document.querySelectorAll('.picker-btn');
+const feedbackMsg = document.getElementById('feedback-msg');
+const pickerBtnText = document.getElementById('picker-btn-text');
+const pickerWhatsappBtn = document.getElementById('picker-whatsapp-btn');
+
+const pickerResponses = {
+  'Vídeos na Cama': {
+    reply: '"Adorei sua escolha! Me chama no WhatsApp que eu já te mando essa opção:"',
+    cta: 'Liberar Vídeos na Cama no WhatsApp 💬',
+    encodedText: 'Oi Carol! Vi seu site e quero ver seus Vídeos na Cama sem cortes agora 💦'
+  },
+  'Chamada de Vídeo 1x1': {
+    reply: '"Amo chamada ao vivo! Me chama no WhatsApp pra gente combinar nosso horário agora:"',
+    cta: 'Agendar Chamada 1x1 no WhatsApp 📹',
+    encodedText: 'Oi Carol! Quero agendar uma Chamada de Vídeo 1x1 com você ao vivo 📹'
+  },
+  'Áudio com Meu Nome': {
+    reply: '"Vou gemer seu nome bem baixinho... Me manda seu nome no WhatsApp:"',
+    cta: 'Pedir Áudio com Meu Nome no WhatsApp 🎙️',
+    encodedText: 'Oi Carol! Quero um áudio íntimo com meu nome gravado pra mim 🎙️'
+  }
+};
+
+pickerButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    pickerButtons.forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-checked', 'false');
+    });
+    btn.classList.add('active');
+    btn.setAttribute('aria-checked', 'true');
+
+    const opt = btn.dataset.option;
+    const config = pickerResponses[opt] || pickerResponses['Vídeos na Cama'];
+
+    if (feedbackMsg) feedbackMsg.textContent = config.reply;
+    if (pickerBtnText) pickerBtnText.textContent = config.cta;
+    if (pickerWhatsappBtn) {
+      pickerWhatsappBtn.href = `https://wa.me/message/AYCUNLYYIOSZO1?text=${encodeURIComponent(config.encodedText)}`;
+    }
+
+    emit('lead_preference_selected', {option: opt});
+  });
+});
+
 // Voice Note Teaser (iMessage Audio Player Mockup)
 const voiceCard = document.getElementById('voice-teaser');
 const voicePlayBtn = document.getElementById('voice-play-btn');

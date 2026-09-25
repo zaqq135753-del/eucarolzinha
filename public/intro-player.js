@@ -1,6 +1,6 @@
-// Gerenciador do vídeo de abertura (Hero) iniciando a partir de 0.4s em slow motion suave e loop contínuo
+// Gerenciador do vídeo de abertura (Hero) iniciando a partir de 0.8s em slow motion suave e loop contínuo
 export function setupIntro(video, button, { reveal, manual=false, doc=document, timeout=8000 } = {}) {
-  const START_TIME = 0.4;
+  const START_TIME = 0.8;
   const SLOW_RATE = 0.70; // slow motion leve no início
   let pending = false;
   video.muted = true;
