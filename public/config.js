@@ -1,8 +1,8 @@
 // Configuração geral da Carolzinha Privé
 export const whatsappConfig = {
-  url: 'https://wa.me/message/AYCUNLYYIOSZO1',
-  number: '553191372791',
-  message: 'Oi, Carolzinha 😘 Vi suas prévias e quero saber como funciona seus conteúdos e chamada!'
+  url: 'https://wa.me/5531991372791?text=' + encodeURIComponent('oii Carol, te vi no tiktok e quero ver seus conteúdos sem censura 🙈🔥'),
+  number: '5531991372791',
+  message: 'oii Carol, te vi no tiktok e quero ver seus conteúdos sem censura 🙈🔥'
 };
 
 export const siteConfig = {

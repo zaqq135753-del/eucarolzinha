@@ -1,109 +1,380 @@
 import {funnelConfig,httpsLink} from './funnel-config.js';
 import {setupIntro} from './intro-player.js';
-import {siteConfig} from './config.js';import {Hero} from './components.js';import {sessionAttribution,captureAttribution} from './tracking.js';import {track} from './analytics.js';
-let attribution;try{attribution=sessionAttribution(location.search,sessionStorage)}catch{attribution=captureAttribution(location.search)}
-const emit=(event,extra={})=>track(event,{...attribution,...extra});
-document.getElementById('app').innerHTML=Hero();document.title=`${siteConfig.creatorName} — Convite Privé`;
-const video=document.getElementById('intro-video'),surface=document.querySelector('.experience'),stages=[...document.querySelectorAll('.stage')];
-const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;let level=0;
-stages.forEach(el=>{el.inert=true;el.setAttribute('aria-hidden','true')});
-function reveal(next,reason){if(next<=level)return;level=next;surface.dataset.stage=String(next);stages.forEach(el=>{const rank=el.classList.contains('stage-3')?3:el.classList.contains('stage-2')?2:1;if(rank<=next){el.classList.add('visible');el.inert=false;el.removeAttribute('aria-hidden')}});if(next===3){emit('offer_view',{reason});window.dispatchEvent(new Event('presell:intro-ready'))}}
-document.querySelector('.contact').addEventListener('click',()=>emit('offers_navigation')); 
-emit('presell_view');
-setupIntro(video,document.getElementById('intro-play'),{reveal,manual:reduced||!!navigator.connection?.saveData});
-video.addEventListener('play',()=>pauseAllVideos(video));
+import {siteConfig} from './config.js';
+import {Hero} from './components.js';
+import {sessionAttribution,captureAttribution} from './tracking.js';
+import {track} from './analytics.js';
 
-const galleryCards=document.querySelectorAll('[data-video-card]');
-const allGalleryVideos=[...galleryCards].map(c=>c.querySelector('.gallery-video')).filter(Boolean);
-function pauseAllVideos(except=null){
-  if(video&&video!==except)video.pause();
-  allGalleryVideos.forEach(v=>{if(v!==except&&!v.paused)v.pause()});
+let attribution;
+try {
+  attribution = sessionAttribution(location.search, sessionStorage);
+} catch {
+  attribution = captureAttribution(location.search);
 }
-galleryCards.forEach(card=>{
-  const v=card.querySelector('.gallery-video'),btn=card.querySelector('.gallery-play-btn'),lbl=btn?.querySelector('.play-label');
-  if(!v||!btn)return;
-  const togglePlay=()=>{
-    if(v.paused){
-      pauseAllVideos(v);
-      v.muted=false;
-      v.play().then(()=>{card.classList.add('is-playing');btn.hidden=true;emit('teaser_play',{src:v.currentSrc})}).catch(()=>{
-        v.muted=true;
-        v.play().then(()=>{card.classList.add('is-playing');btn.hidden=true;emit('teaser_play',{src:v.currentSrc,muted:true})}).catch(()=>{
-          btn.hidden=false;if(lbl)lbl.textContent='Tentar novamente';
-        });
-      });
-    }else{v.pause()}
-  };
-  card.addEventListener('click',e=>{if(e.target.closest('figcaption'))return;togglePlay()});
-  v.addEventListener('pause',()=>{
-    card.classList.remove('is-playing');btn.hidden=false;
-    if(v.ended){if(lbl)lbl.textContent='↻ Ver novamente';emit('teaser_completed',{src:v.currentSrc})}
-    else{if(lbl)lbl.textContent='▶ Continuar prévia'}
+
+const emit = (event, extra = {}) => track(event, {...attribution, ...extra});
+
+document.getElementById('app').innerHTML = Hero();
+document.title = `${siteConfig.creatorName} — Experiência Privé`;
+
+const video = document.getElementById('intro-video');
+const surface = document.querySelector('.experience');
+const stages = [...document.querySelectorAll('.stage')];
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let level = 0;
+
+stages.forEach(el => {
+  el.inert = true;
+  el.setAttribute('aria-hidden', 'true');
+});
+
+function reveal(next, reason) {
+  if (next <= level) return;
+  level = next;
+  if (surface) surface.dataset.stage = String(next);
+  stages.forEach(el => {
+    const rank = el.classList.contains('stage-3') ? 3 : el.classList.contains('stage-2') ? 2 : 1;
+    if (rank <= next) {
+      el.classList.add('visible');
+      el.inert = false;
+      el.removeAttribute('aria-hidden');
+    }
   });
-  v.addEventListener('ended',()=>{card.classList.remove('is-playing');btn.hidden=false;if(lbl)lbl.textContent='↻ Ver novamente'});
-  if('IntersectionObserver'in window)new IntersectionObserver(entries=>{if(entries.some(e=>!e.isIntersecting))v.pause()},{threshold:.2}).observe(v);
-});
-document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseAllVideos()});
-const dialog=document.getElementById('short-dialog');
-const shortBot=document.getElementById('short-bot');
-const starterBot=httpsLink(funnelConfig.starter.bot);
-if(shortBot&&starterBot) shortBot.href=starterBot;
-
-let clicked=false,seen=false,shown=false;const arrived=Date.now();try{shown=sessionStorage.getItem('short_starter_shown')==='1'}catch{}
-function openStarter(explicit=false){
-  const primaryDialog=document.getElementById('primary-dialog');
-  if(dialog?.open||primaryDialog?.open||(!explicit&&(shown||clicked)))return;
-  shown=true;try{sessionStorage.setItem('short_starter_shown','1')}catch{}
-  pauseAllVideos();
-  dialog?.showModal();
-  emit('starter_offer_viewed',{reason:explicit?'choice':'desktop_exit_signal'});
-}
-const shortStarterBtn=document.getElementById('short-starter');
-if(shortStarterBtn) shortStarterBtn.onclick=()=>openStarter(true);
-
-document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>{
-  const target=document.getElementById(b.dataset.close);
-  if(target) target.close();
-});
-const shortDecline=document.getElementById('short-decline');
-if(shortDecline) shortDecline.onclick=()=>dialog?.close();
-
-if(dialog){
-  dialog.addEventListener('click',e=>{if(e.target!==dialog)return;const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close()});
-}
-
-document.querySelectorAll('a[href*="wa.me"]').forEach(a=>{
-  a.addEventListener('click',()=>{
-    clicked=true;
-    emit('whatsapp_clicked',{href:a.href});
-  });
-});
-
-if('IntersectionObserver'in window){
-  const acessosEl=document.getElementById('acessos');
-  if(acessosEl){
-    const offersObserver=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){seen=true;emit('main_offers_viewed');offersObserver.disconnect()}},{threshold:.3});
-    offersObserver.observe(acessosEl);
+  if (next === 3) {
+    emit('offer_view', {reason});
+    window.dispatchEvent(new Event('presell:intro-ready'));
   }
 }
-document.addEventListener('mouseleave',e=>{if(matchMedia('(hover:hover) and (pointer:fine)').matches&&e.clientY<=0&&seen&&Date.now()-arrived>20000)openStarter()});
 
-const primaryDialog=document.getElementById('primary-dialog');
-if(primaryDialog){
-  primaryDialog.addEventListener('click',e=>{if(e.target!==primaryDialog)return;const r=primaryDialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)primaryDialog.close()});
-}
-// Two measured text transitions, then a stable heading. No endless text cycling.
-let phraseStarted=false;
-function startPhrases(){if(phraseStarted||reduced)return;phraseStarted=true;const el=document.querySelector('.motion-phrase');let index=0;const phrases=['No seu tempo.','Do seu jeito.'];const change=()=>{if(document.hidden){setTimeout(change,1500);return}el.animate([{opacity:1,transform:'translateY(0)',filter:'blur(0)'},{opacity:0,transform:'translateY(-12px)',filter:'blur(5px)'}],{duration:350,easing:'ease-in',fill:'forwards'}).finished.then(()=>{el.textContent=phrases[index++];return el.animate([{opacity:0,transform:'translateY(14px)',filter:'blur(5px)'},{opacity:1,transform:'translateY(0)',filter:'blur(0)'}],{duration:600,easing:'cubic-bezier(.2,.8,.2,1)',fill:'forwards'}).finished}).then(()=>{if(index<phrases.length)setTimeout(change,4800)}).catch(()=>{})};setTimeout(change,4800)}
-if(level===3)startPhrases();else window.addEventListener('presell:intro-ready',startPhrases,{once:true});
-const revealNodes=document.querySelectorAll('.short-gallery,.portal-copy,.invitation-card,.funnel-card');
-if(!reduced&&'IntersectionObserver'in window){const motionObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('motion-entered');motionObserver.unobserve(entry.target)}}),{threshold:.12});revealNodes.forEach(el=>{el.classList.add('motion-pending');motionObserver.observe(el)})}
-const strip=document.querySelector('.media-strip'),figures=[...strip.children],galleryControls=document.createElement('div');galleryControls.className='gallery-controls';galleryControls.setAttribute('aria-label','Navegar pelas prévias');figures.forEach((fig,i)=>{const b=document.createElement('button');b.setAttribute('aria-label','Ver prévia '+(i+1));b.textContent=String(i+1).padStart(2,'0');b.onclick=()=>strip.scrollTo({left:fig.offsetLeft-strip.firstElementChild.offsetLeft,behavior:reduced?'instant':'smooth'});galleryControls.append(b)});strip.after(galleryControls);
+document.querySelector('.apple-button, .contact')?.addEventListener('click', () => emit('offers_navigation'));
+emit('presell_view');
 
-const mobileBar=document.getElementById('mobile-bottom');
-if(mobileBar){
-  window.addEventListener('scroll',()=>{
-    if(window.scrollY > 280) mobileBar.style.display='flex';
-    else mobileBar.style.display='none';
-  },{passive:true});
+setupIntro(video, document.getElementById('intro-play'), {
+  reveal,
+  manual: reduced || !!navigator.connection?.saveData
+});
+
+if (video) {
+  video.addEventListener('play', () => pauseAllVideos(video));
 }
+
+// Video Teasers in Gallery
+const galleryCards = document.querySelectorAll('[data-video-card]');
+const allGalleryVideos = [...galleryCards].map(c => c.querySelector('.gallery-video')).filter(Boolean);
+
+function pauseAllVideos(except = null) {
+  if (video && video !== except) video.pause();
+  allGalleryVideos.forEach(v => {
+    if (v !== except && !v.paused) v.pause();
+  });
+}
+
+galleryCards.forEach(card => {
+  const v = card.querySelector('.gallery-video');
+  const btn = card.querySelector('.gallery-play-btn');
+  const lbl = btn?.querySelector('.play-label');
+  if (!v || !btn) return;
+
+  const togglePlay = () => {
+    if (v.paused) {
+      pauseAllVideos(v);
+      v.muted = false;
+      v.play()
+        .then(() => {
+          card.classList.add('is-playing');
+          btn.hidden = true;
+          emit('teaser_play', {src: v.currentSrc});
+        })
+        .catch(() => {
+          v.muted = true;
+          v.play()
+            .then(() => {
+              card.classList.add('is-playing');
+              btn.hidden = true;
+              emit('teaser_play', {src: v.currentSrc, muted: true});
+            })
+            .catch(() => {
+              btn.hidden = false;
+              if (lbl) lbl.textContent = 'Tentar novamente';
+            });
+        });
+    } else {
+      v.pause();
+    }
+  };
+
+  card.addEventListener('click', e => {
+    if (e.target.closest('figcaption')) return;
+    togglePlay();
+  });
+
+  v.addEventListener('pause', () => {
+    card.classList.remove('is-playing');
+    btn.hidden = false;
+    if (v.ended) {
+      if (lbl) lbl.textContent = '↻ Ver novamente';
+      emit('teaser_completed', {src: v.currentSrc});
+    } else {
+      if (lbl) lbl.textContent = '▶ Assistir com áudio';
+    }
+  });
+
+  v.addEventListener('ended', () => {
+    card.classList.remove('is-playing');
+    btn.hidden = false;
+    if (lbl) lbl.textContent = '↻ Ver novamente';
+  });
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(entries => {
+      if (entries.some(e => !e.isIntersecting)) v.pause();
+    }, {threshold: 0.2}).observe(v);
+  }
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) pauseAllVideos();
+});
+
+// Apple Dynamic Island state toggling & click
+const dynamicIsland = document.getElementById('dynamic-island');
+const islandText = document.getElementById('island-text');
+if (dynamicIsland) {
+  const states = [
+    'Online no WhatsApp agora',
+    '💬 1 novo áudio de prévia liberado',
+    '🔥 1.482 membros ativos hoje'
+  ];
+  let stateIndex = 0;
+  setInterval(() => {
+    if (document.hidden) return;
+    stateIndex = (stateIndex + 1) % states.length;
+    if (islandText) {
+      islandText.style.opacity = '0';
+      setTimeout(() => {
+        islandText.textContent = states[stateIndex];
+        islandText.style.opacity = '1';
+      }, 200);
+    }
+  }, 4500);
+
+  dynamicIsland.addEventListener('click', () => {
+    emit('dynamic_island_clicked');
+    window.open('https://wa.me/message/AYCUNLYYIOSZO1', '_blank', 'noopener');
+  });
+}
+
+// Voice Note Teaser (iMessage Audio Player Mockup)
+const voiceCard = document.getElementById('voice-teaser');
+const voicePlayBtn = document.getElementById('voice-play-btn');
+const voiceTime = voiceCard?.querySelector('.voice-time');
+let voicePlaying = false;
+let voiceCountdown = 18;
+let voiceTimer = null;
+
+if (voicePlayBtn && voiceCard) {
+  voicePlayBtn.addEventListener('click', () => {
+    voicePlaying = !voicePlaying;
+    if (voicePlaying) {
+      voiceCard.classList.add('is-active');
+      voicePlayBtn.querySelector('.voice-btn-icon').textContent = '❚❚';
+      emit('voice_teaser_play');
+      clearInterval(voiceTimer);
+      voiceTimer = setInterval(() => {
+        voiceCountdown--;
+        if (voiceTime) {
+          voiceTime.textContent = `0:${voiceCountdown < 10 ? '0' : ''}${voiceCountdown}`;
+        }
+        if (voiceCountdown <= 0) {
+          clearInterval(voiceTimer);
+          voicePlaying = false;
+          voiceCard.classList.remove('is-active');
+          voicePlayBtn.querySelector('.voice-btn-icon').textContent = '▶';
+          voiceCountdown = 18;
+          if (voiceTime) voiceTime.textContent = '0:18';
+          // Prompt user to listen rest on WhatsApp
+          window.open('https://wa.me/message/AYCUNLYYIOSZO1', '_blank', 'noopener');
+        }
+      }, 1000);
+    } else {
+      voiceCard.classList.remove('is-active');
+      voicePlayBtn.querySelector('.voice-btn-icon').textContent = '▶';
+      clearInterval(voiceTimer);
+    }
+  });
+}
+
+// Smart Live Activity Toasts (Google / Stripe Style Social Proof)
+const liveToast = document.getElementById('live-toast');
+const toastTitle = document.getElementById('toast-title');
+const toastText = document.getElementById('toast-text');
+const toastTime = document.getElementById('toast-time');
+const toastClose = document.getElementById('toast-close');
+
+const socialProofs = [
+  {name: 'Pedro S. (Belo Horizonte)', action: 'Acabou de liberar o VIP no WhatsApp', time: 'há 2 min'},
+  {name: 'Lucas M. (São Paulo)', action: 'Agendou Chamada de Vídeo 1x1', time: 'há 4 min'},
+  {name: 'Rodrigo C. (Rio de Janeiro)', action: 'Liberou o Acesso VIP Completo', time: 'há 7 min'},
+  {name: 'Matheus F. (Curitiba)', action: 'Pediu áudio exclusivo com seu nome', time: 'há 11 min'},
+  {name: 'Guilherme T. (Campinas)', action: 'Acabou de entrar no atendimento 1x1', time: 'há 14 min'}
+];
+let toastIndex = 0;
+let toastTimeout = null;
+
+function showNextToast() {
+  if (!liveToast || document.hidden) return;
+  const item = socialProofs[toastIndex % socialProofs.length];
+  toastIndex++;
+  if (toastTitle) toastTitle.textContent = item.name;
+  if (toastText) toastText.textContent = item.action;
+  if (toastTime) toastTime.textContent = `${item.time} · ⚡ Verificado`;
+  
+  liveToast.hidden = false;
+  liveToast.classList.remove('toast-hiding');
+  emit('live_toast_shown', {lead: item.name});
+
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    liveToast.classList.add('toast-hiding');
+    setTimeout(() => { liveToast.hidden = true; }, 400);
+  }, 6000);
+}
+
+if (liveToast) {
+  setTimeout(() => {
+    showNextToast();
+    setInterval(showNextToast, 22000);
+  }, 4000);
+
+  if (toastClose) {
+    toastClose.addEventListener('click', e => {
+      e.stopPropagation();
+      liveToast.classList.add('toast-hiding');
+      setTimeout(() => { liveToast.hidden = true; }, 400);
+    });
+  }
+
+  liveToast.addEventListener('click', () => {
+    emit('live_toast_clicked');
+    window.open('https://wa.me/message/AYCUNLYYIOSZO1', '_blank', 'noopener');
+  });
+}
+
+// Smart Retention Sheet (Apple Glass Modal)
+const smartExitDialog = document.getElementById('smart-exit-dialog');
+let userEngaged = false;
+let exitShown = false;
+const arrivedAt = Date.now();
+
+try {
+  exitShown = sessionStorage.getItem('smart_exit_shown') === '1';
+} catch {}
+
+function openSmartExit(reason = 'exit_intent') {
+  if (exitShown || userEngaged || smartExitDialog?.open) return;
+  exitShown = true;
+  try {
+    sessionStorage.setItem('smart_exit_shown', '1');
+  } catch {}
+  pauseAllVideos();
+  smartExitDialog?.showModal();
+  emit('smart_retention_viewed', {reason});
+}
+
+// Exit-intent detection for desktop (mouse leaving top of screen)
+document.addEventListener('mouseleave', e => {
+  if (matchMedia('(hover:hover) and (pointer:fine)').matches && e.clientY <= 0 && Date.now() - arrivedAt > 15000) {
+    openSmartExit('desktop_top_exit');
+  }
+});
+
+// Mobile exit / inactivity trigger (scrolled whole page after 25s)
+let maxScrollPercent = 0;
+window.addEventListener('scroll', () => {
+  const total = document.documentElement.scrollHeight - window.innerHeight;
+  if (total > 0) {
+    const current = (window.scrollY / total) * 100;
+    if (current > maxScrollPercent) maxScrollPercent = current;
+    if (maxScrollPercent > 70 && Date.now() - arrivedAt > 28000) {
+      openSmartExit('scroll_depth_idle');
+    }
+  }
+}, {passive: true});
+
+// Close buttons for modals
+document.querySelectorAll('[data-close]').forEach(b => {
+  b.addEventListener('click', () => {
+    const target = document.getElementById(b.dataset.close);
+    target?.close();
+  });
+});
+
+document.getElementById('modal-decline')?.addEventListener('click', () => {
+  smartExitDialog?.close();
+});
+
+if (smartExitDialog) {
+  smartExitDialog.addEventListener('click', e => {
+    if (e.target === smartExitDialog) {
+      const r = smartExitDialog.getBoundingClientRect();
+      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) {
+        smartExitDialog.close();
+      }
+    }
+  });
+}
+
+// Tracking & direct redirection on all WhatsApp links
+document.querySelectorAll('a[href*="wa.me"]').forEach(a => {
+  a.addEventListener('click', () => {
+    userEngaged = true;
+    emit('whatsapp_clicked', {href: a.href});
+  });
+});
+
+// Mobile Dock Bar (iOS Tab Bar) visibility on scroll
+const mobileDock = document.getElementById('mobile-dock');
+if (mobileDock) {
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 240) {
+      mobileDock.style.display = 'flex';
+    } else {
+      mobileDock.style.display = 'none';
+    }
+  }, {passive: true});
+}
+
+// Title phrase transitions
+let phraseStarted = false;
+function startPhrases() {
+  if (phraseStarted || reduced) return;
+  phraseStarted = true;
+  const el = document.querySelector('.motion-phrase');
+  if (!el) return;
+  let index = 0;
+  const phrases = ['No seu tempo.', 'Do seu jeito.', 'Sem censura.'];
+  const change = () => {
+    if (document.hidden) {
+      setTimeout(change, 1500);
+      return;
+    }
+    el.animate([
+      {opacity: 1, transform: 'translateY(0)', filter: 'blur(0)'},
+      {opacity: 0, transform: 'translateY(-12px)', filter: 'blur(5px)'}
+    ], {duration: 350, easing: 'ease-in', fill: 'forwards'})
+    .finished.then(() => {
+      el.textContent = phrases[index++];
+      return el.animate([
+        {opacity: 0, transform: 'translateY(14px)', filter: 'blur(5px)'},
+        {opacity: 1, transform: 'translateY(0)', filter: 'blur(0)'}
+      ], {duration: 600, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards'}).finished;
+    })
+    .then(() => {
+      if (index < phrases.length) setTimeout(change, 4500);
+    }).catch(() => {});
+  };
+  setTimeout(change, 4500);
+}
+
+if (level === 3) startPhrases();
+else window.addEventListener('presell:intro-ready', startPhrases, {once: true});
