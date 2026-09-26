@@ -22,6 +22,7 @@ const surface = document.querySelector('.experience');
 const stages = [...document.querySelectorAll('.stage')];
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let level = 0;
+if (surface) surface.dataset.stage = '0';
 
 stages.forEach(el => {
   el.inert = true;
@@ -41,10 +42,20 @@ function reveal(next, reason) {
     }
   });
   if (next === 3) {
+    document.body.classList.add('funnel-unlocked');
     emit('offer_view', {reason});
     window.dispatchEvent(new Event('presell:intro-ready'));
   }
 }
+
+// Se o lead rolar a tela antes, destrava o funil imediatamente
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 50 && level < 3) {
+    reveal(1, 'scroll');
+    reveal(2, 'scroll');
+    reveal(3, 'scroll');
+  }
+}, {passive: true});
 
 document.querySelector('.apple-button, .contact')?.addEventListener('click', () => emit('offers_navigation'));
 emit('presell_view');
@@ -382,11 +393,7 @@ document.querySelectorAll('a[href*="wa.me"]').forEach(a => {
 const mobileDock = document.getElementById('mobile-dock');
 if (mobileDock) {
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 240) {
-      mobileDock.style.display = 'flex';
-    } else {
-      mobileDock.style.display = 'none';
-    }
+    mobileDock.classList.toggle('is-visible', window.scrollY > 300);
   }, {passive: true});
 }
 
