@@ -1,7 +1,9 @@
+import {DEFAULT_WHATSAPP_URL} from './config.js';
+
 // Configuração do funil da pressel integrado ao WhatsApp.
 export const funnelConfig={
   main:{
-    bot:'https://wa.me/5531991372791?text=' + encodeURIComponent('oii Carol, te vi no tiktok e quero ver seus conteúdos sem censura 🙈🔥'),
+    bot: DEFAULT_WHATSAPP_URL,
     price:null,
     checkout:'',
     title:'Meu espaço, mais perto de você.',
@@ -9,7 +11,7 @@ export const funnelConfig={
   },
   starter:{
     price:16.90,
-    bot:'https://wa.me/5531991372791?text=' + encodeURIComponent('oii Carol, te vi no tiktok e quero ver seus conteúdos sem censura 🙈🔥'),
+    bot: DEFAULT_WHATSAPP_URL,
     title:'Liberar acesso no WhatsApp'
   },
   stories:[

@@ -1,6 +1,6 @@
 import {funnelConfig,httpsLink} from './funnel-config.js';
 import {setupIntro} from './intro-player.js';
-import {siteConfig} from './config.js';
+import {siteConfig, DEFAULT_WHATSAPP_URL, DEFAULT_WHATSAPP_MESSAGE} from './config.js';
 import {Hero} from './components.js';
 import {sessionAttribution,captureAttribution} from './tracking.js';
 import {track} from './analytics.js';
@@ -196,7 +196,7 @@ if (dynamicIsland) {
 
   dynamicIsland.addEventListener('click', () => {
     emit('dynamic_island_clicked');
-    window.open('https://wa.me/message/AYCUNLYYIOSZO1', '_blank', 'noopener');
+    window.open(DEFAULT_WHATSAPP_URL, '_blank', 'noopener');
   });
 }
 
@@ -210,17 +210,17 @@ const pickerResponses = {
   'Vídeos na Cama': {
     reply: '"Adorei sua escolha! Me chama no WhatsApp que eu já te mando essa opção:"',
     cta: 'Liberar Vídeos na Cama no WhatsApp 💬',
-    encodedText: 'Oi Carol! Vi seu site e quero ver seus Vídeos na Cama sem cortes agora 💦'
+    encodedText: DEFAULT_WHATSAPP_MESSAGE
   },
   'Chamada de Vídeo 1x1': {
     reply: '"Amo chamada ao vivo! Me chama no WhatsApp pra gente combinar nosso horário agora:"',
     cta: 'Agendar Chamada 1x1 no WhatsApp 📹',
-    encodedText: 'Oi Carol! Quero agendar uma Chamada de Vídeo 1x1 com você ao vivo 📹'
+    encodedText: DEFAULT_WHATSAPP_MESSAGE
   },
   'Fotos & Ensaios Privés': {
     reply: '"Adorei sua escolha! Me chama no WhatsApp que eu já te mando os ensaios sem censura:"',
     cta: 'Liberar Fotos & Ensaios no WhatsApp 📸',
-    encodedText: 'Oi Carol! Vi seu site e quero receber seus ensaios e fotos sem censura no WhatsApp 📸'
+    encodedText: DEFAULT_WHATSAPP_MESSAGE
   }
 };
 
@@ -298,7 +298,7 @@ if (liveToast) {
 
   liveToast.addEventListener('click', () => {
     emit('live_toast_clicked');
-    window.open('https://wa.me/message/AYCUNLYYIOSZO1', '_blank', 'noopener');
+    window.open(DEFAULT_WHATSAPP_URL, '_blank', 'noopener');
   });
 }
 
