@@ -43,7 +43,7 @@ export function Hero(){
       </div>
 
       <div class="stage stage-2">
-        <p class="hero-subtext">Vídeos explícitos em 4K, áudios íntimos com seu nome e chamada de vídeo 1x1 ao vivo no WhatsApp.</p>
+        <p class="hero-subtext">Vídeos explícitos em 4K sem cortes, fotos íntimas exclusivas e chamada de vídeo 1x1 ao vivo no WhatsApp.</p>
         
         <div class="specs-grid">
           <div class="spec-pill">
@@ -105,11 +105,11 @@ export function Hero(){
           <span class="picker-check" aria-hidden="true">✓</span>
         </button>
 
-        <button class="picker-btn" data-option="Áudio com Meu Nome" type="button" role="radio" aria-checked="false">
-          <span class="picker-emoji" aria-hidden="true">🎙️</span>
+        <button class="picker-btn" data-option="Fotos & Ensaios Privés" type="button" role="radio" aria-checked="false">
+          <span class="picker-emoji" aria-hidden="true">📸</span>
           <div class="picker-info">
-            <strong>Áudio com Meu Nome</strong>
-            <small>Gemendo com seu nome gravado agora</small>
+            <strong>Fotos & Ensaios Privés</strong>
+            <small>Ensaios 100% sem censura e fotos explícitas</small>
           </div>
           <span class="picker-check" aria-hidden="true">✓</span>
         </button>
@@ -132,54 +132,12 @@ export function Hero(){
     </div>
   </div>
 
-  <!-- Interactive iOS Voice Note Teaser Card -->
-  <div class="voice-teaser-wrap">
-    <div class="voice-teaser-card glass-panel" id="voice-teaser">
-      <div class="voice-avatar-wrap">
-        <span class="voice-avatar" aria-hidden="true">💋</span>
-        <span class="voice-status-dot" aria-hidden="true"></span>
-      </div>
-      <div class="voice-content">
-        <div class="voice-header">
-          <span class="voice-sender">Carolzinha · Mensagem de voz</span>
-          <span class="voice-time">0:18</span>
-        </div>
-        <div class="voice-player-bar">
-          <button class="voice-play-btn" id="voice-play-btn" type="button" aria-label="Reproduzir prévia de voz">
-            <span class="voice-btn-icon" aria-hidden="true">▶</span>
-          </button>
-          <div class="waveform-container" id="waveform" aria-hidden="true">
-            <span class="waveform-bar" style="height:35%"></span>
-            <span class="waveform-bar" style="height:65%"></span>
-            <span class="waveform-bar" style="height:100%"></span>
-            <span class="waveform-bar" style="height:55%"></span>
-            <span class="waveform-bar" style="height:80%"></span>
-            <span class="waveform-bar" style="height:40%"></span>
-            <span class="waveform-bar" style="height:90%"></span>
-            <span class="waveform-bar" style="height:70%"></span>
-            <span class="waveform-bar" style="height:85%"></span>
-            <span class="waveform-bar" style="height:50%"></span>
-            <span class="waveform-bar" style="height:75%"></span>
-            <span class="waveform-bar" style="height:95%"></span>
-            <span class="waveform-bar" style="height:60%"></span>
-            <span class="waveform-bar" style="height:45%"></span>
-            <span class="waveform-bar" style="height:80%"></span>
-          </div>
-        </div>
-        <div class="voice-footer">
-          <span class="voice-hint">"Oi amor, me chama no WhatsApp pra gente conversar 😉"</span>
-          <a class="voice-cta" href="https://wa.me/message/AYCUNLYYIOSZO1" target="_blank" rel="noopener">Ouvir no WhatsApp 💬</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Video Teasers Gallery (Mobile Horizontal Snap Swipe) -->
   <section class="short-gallery" id="previas" aria-labelledby="gallery-title">
     <div class="section-header">
       <span class="tech-chip"><span class="chip-spark">🔥</span> PRÉVIAS REAIS</span>
       <h2 class="section-title" id="gallery-title">Espie só <span class="gradient-accent">um pouco.</span></h2>
-      <p class="section-desc">Deslize para ver as prévias com som ligado:</p>
+      <p class="section-desc">Deslize para ver as prévias reais sem censura:</p>
     </div>
 
     <div class="media-strip-wrapper">
@@ -191,9 +149,9 @@ export function Hero(){
           <video class="gallery-video" muted playsinline webkit-playsinline preload="metadata">
             <source src="/assets/video-2.mp4" type="video/mp4">
           </video>
-          <button class="gallery-play-btn" aria-label="Reproduzir prévia com áudio">
+          <button class="gallery-play-btn" aria-label="Reproduzir prévia de vídeo">
             <span aria-hidden="true">▶</span>
-            <span class="play-label">Toque para ouvir</span>
+            <span class="play-label">Toque para assistir</span>
           </button>
           <figcaption>Na intimidade sem filtro 💦</figcaption>
         </figure>
@@ -205,9 +163,9 @@ export function Hero(){
           <video class="gallery-video" muted playsinline webkit-playsinline preload="metadata">
             <source src="/assets/belovedprestigioussandbarshark.mp4" type="video/mp4">
           </video>
-          <button class="gallery-play-btn" aria-label="Reproduzir prévia com áudio">
+          <button class="gallery-play-btn" aria-label="Reproduzir prévia de vídeo">
             <span aria-hidden="true">▶</span>
-            <span class="play-label">Toque para ouvir</span>
+            <span class="play-label">Toque para assistir</span>
           </button>
           <figcaption>No espelho me provocando 🔥</figcaption>
         </figure>
@@ -215,13 +173,13 @@ export function Hero(){
         <!-- Vídeo 3: Na Cama -->
         <figure class="short-video-frame" data-video-card>
           <span class="video-badge">🤤 NA CAMA</span>
-          <span class="video-spec-badge">SOM REAL</span>
+          <span class="video-spec-badge">1080p 60FPS</span>
           <video class="gallery-video" muted playsinline webkit-playsinline preload="metadata">
             <source src="/assets/trickyturbulentbrahmancow.mp4" type="video/mp4">
           </video>
-          <button class="gallery-play-btn" aria-label="Reproduzir prévia com áudio">
+          <button class="gallery-play-btn" aria-label="Reproduzir prévia de vídeo">
             <span aria-hidden="true">▶</span>
-            <span class="play-label">Toque para ouvir</span>
+            <span class="play-label">Toque para assistir</span>
           </button>
           <figcaption>Deitada na cama me tocando 🤤</figcaption>
         </figure>
@@ -250,7 +208,7 @@ export function Hero(){
         <p class="bento-desc">Meu acervo completo com todos os vídeos explícitos sem cortes e fotos íntimas direto no seu WhatsApp.</p>
         
         <ul class="bento-check-compact">
-          <li><span>✓</span> Vídeos me tocando até gozar com som real</li>
+          <li><span>✓</span> Vídeos explícitos em 4K me tocando até gozar</li>
           <li><span>✓</span> Fotos e ensaios 100% sem censura</li>
           <li><span>✓</span> Cobrança discreta e sigilo absoluto</li>
         </ul>
@@ -321,25 +279,19 @@ export function Hero(){
     <div class="modal-card glass-panel">
       <button class="modal-close" id="modal-close" data-close="smart-exit-dialog" aria-label="Fechar janela">×</button>
       <div class="modal-pill-badge">✨ PRÉVIA SECRETA</div>
-      <h2 id="modal-headline" class="modal-title">Antes de ir... <span class="gradient-accent">ouça isso.</span></h2>
-      <p class="modal-desc">Eu separei um áudio secreto que não publiquei aqui. Clica no botão para receber direto no WhatsApp:</p>
+      <h2 id="modal-headline" class="modal-title">Antes de ir... <span class="gradient-accent">veja isso.</span></h2>
+      <p class="modal-desc">Separei uma prévia secreta em vídeo que não publiquei aqui na página. Clica no botão para receber direto no WhatsApp:</p>
       
-      <div class="modal-voice-preview">
-        <div class="modal-voice-bars" aria-hidden="true">
-          <span class="voice-anim-bar"></span>
-          <span class="voice-anim-bar"></span>
-          <span class="voice-anim-bar"></span>
-          <span class="voice-anim-bar"></span>
-          <span class="voice-anim-bar"></span>
-        </div>
-        <span class="modal-voice-label">Áudio de Carolzinha gravado há 3 min (0:19)</span>
+      <div class="modal-secret-badge">
+        <span class="secret-icon" aria-hidden="true">🎬</span>
+        <span class="modal-secret-label">Vídeo secreto sem censura (0:28)</span>
       </div>
 
       <a class="apple-button btn-whatsapp modal-action" href="https://wa.me/message/AYCUNLYYIOSZO1" target="_blank" rel="noopener">
         <svg class="wp-svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.41a8.16 8.16 0 012.4 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.19 8.19 0 01-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.02-1.24-.74-.66-1.24-1.48-1.39-1.73-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.78 2.72 4.31 3.81.6.26 1.07.42 1.44.53.61.19 1.16.17 1.6.1.49-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.17-.48-.29z"/>
         </svg>
-        <span>Receber Áudio Secreto no WhatsApp 💋</span>
+        <span>Receber Vídeo Secreto no WhatsApp 💋</span>
       </a>
 
       <button class="modal-decline" id="modal-decline" type="button">Continuar na página</button>

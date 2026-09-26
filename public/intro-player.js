@@ -69,13 +69,13 @@ export function setupIntro(video, button, { reveal, manual=false, doc=document, 
       video.playbackRate = 1.0;
     }
 
-    // 1º momento: Vídeo em tela cheia (trava no funil) durante os primeiros ~3.4s
-    // 2º momento: Sobe o texto do título (stage 1) e permanece ali por 3.6 segundos
+    // 1º momento: Vídeo em tela cheia (trava no funil) durante os primeiros ~3.5s reais (2.5s a 0.70x = 3.57s)
+    // 2º momento: Sobe o texto do título (stage 1) e permanece ali por ~3.5 segundos reais
     // 3º momento: Sobe os detalhes e chips de especificações (stage 2)
     // 4º momento: Sobe o CTA do WhatsApp e destrava toda a continuação da página (stage 3)
-    if (t >= START_TIME + 8.5) reveal(3, 'video');
-    else if (t >= START_TIME + 7.0) reveal(2, 'video');
-    else if (t >= START_TIME + 3.4) reveal(1, 'video');
+    if (t >= START_TIME + 7.5) reveal(3, 'video');
+    else if (t >= START_TIME + 5.8) reveal(2, 'video');
+    else if (t >= START_TIME + 2.5) reveal(1, 'video');
   });
 
   video.addEventListener('ended', () => {

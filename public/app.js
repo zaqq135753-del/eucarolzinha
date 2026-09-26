@@ -48,13 +48,38 @@ function reveal(next, reason) {
   }
 }
 
-// Se o lead rolar a tela antes, destrava o funil imediatamente
-window.addEventListener('scroll', () => {
-  if (window.scrollY > 50 && level < 3) {
-    reveal(1, 'scroll');
-    reveal(2, 'scroll');
-    reveal(3, 'scroll');
+function unlockFunnel(reason = 'interaction') {
+  if (level < 3) {
+    reveal(1, reason);
+    reveal(2, reason);
+    reveal(3, reason);
   }
+}
+
+// Se o lead interagir (toque na tela, swipe, clique ou rolagem), destrava o funil imediatamente
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 30 && level < 3) unlockFunnel('scroll');
+}, {passive: true});
+
+surface?.addEventListener('click', e => {
+  if (e.target.closest('#intro-play')) return;
+  if (level < 3) unlockFunnel('screen_tap');
+});
+
+let touchStartY = 0;
+window.addEventListener('touchstart', e => {
+  if (e.touches && e.touches[0]) touchStartY = e.touches[0].clientY;
+}, {passive: true});
+
+window.addEventListener('touchmove', e => {
+  if (level < 3 && e.touches && e.touches[0]) {
+    const deltaY = touchStartY - e.touches[0].clientY;
+    if (Math.abs(deltaY) > 15) unlockFunnel('touch_move');
+  }
+}, {passive: true});
+
+window.addEventListener('wheel', e => {
+  if (level < 3 && Math.abs(e.deltaY) > 10) unlockFunnel('wheel');
 }, {passive: true});
 
 document.querySelector('.apple-button, .contact')?.addEventListener('click', () => emit('offers_navigation'));
@@ -126,7 +151,7 @@ galleryCards.forEach(card => {
       if (lbl) lbl.textContent = '↻ Ver novamente';
       emit('teaser_completed', {src: v.currentSrc});
     } else {
-      if (lbl) lbl.textContent = '▶ Assistir com áudio';
+      if (lbl) lbl.textContent = '▶ Assistir vídeo';
     }
   });
 
@@ -153,8 +178,8 @@ const islandText = document.getElementById('island-text');
 if (dynamicIsland) {
   const states = [
     'Online no WhatsApp agora',
-    '💬 1 novo áudio de prévia liberado',
-    '🔥 1.482 membros ativos hoje'
+    '🔥 Novos vídeos sem censura liberados',
+    '✨ Mais de 1.480 membros ativos hoje'
   ];
   let stateIndex = 0;
   setInterval(() => {
@@ -192,10 +217,10 @@ const pickerResponses = {
     cta: 'Agendar Chamada 1x1 no WhatsApp 📹',
     encodedText: 'Oi Carol! Quero agendar uma Chamada de Vídeo 1x1 com você ao vivo 📹'
   },
-  'Áudio com Meu Nome': {
-    reply: '"Vou gemer seu nome bem baixinho... Me manda seu nome no WhatsApp:"',
-    cta: 'Pedir Áudio com Meu Nome no WhatsApp 🎙️',
-    encodedText: 'Oi Carol! Quero um áudio íntimo com meu nome gravado pra mim 🎙️'
+  'Fotos & Ensaios Privés': {
+    reply: '"Adorei sua escolha! Me chama no WhatsApp que eu já te mando os ensaios sem censura:"',
+    cta: 'Liberar Fotos & Ensaios no WhatsApp 📸',
+    encodedText: 'Oi Carol! Vi seu site e quero receber seus ensaios e fotos sem censura no WhatsApp 📸'
   }
 };
 
@@ -221,46 +246,6 @@ pickerButtons.forEach(btn => {
   });
 });
 
-// Voice Note Teaser (iMessage Audio Player Mockup)
-const voiceCard = document.getElementById('voice-teaser');
-const voicePlayBtn = document.getElementById('voice-play-btn');
-const voiceTime = voiceCard?.querySelector('.voice-time');
-let voicePlaying = false;
-let voiceCountdown = 18;
-let voiceTimer = null;
-
-if (voicePlayBtn && voiceCard) {
-  voicePlayBtn.addEventListener('click', () => {
-    voicePlaying = !voicePlaying;
-    if (voicePlaying) {
-      voiceCard.classList.add('is-active');
-      voicePlayBtn.querySelector('.voice-btn-icon').textContent = '❚❚';
-      emit('voice_teaser_play');
-      clearInterval(voiceTimer);
-      voiceTimer = setInterval(() => {
-        voiceCountdown--;
-        if (voiceTime) {
-          voiceTime.textContent = `0:${voiceCountdown < 10 ? '0' : ''}${voiceCountdown}`;
-        }
-        if (voiceCountdown <= 0) {
-          clearInterval(voiceTimer);
-          voicePlaying = false;
-          voiceCard.classList.remove('is-active');
-          voicePlayBtn.querySelector('.voice-btn-icon').textContent = '▶';
-          voiceCountdown = 18;
-          if (voiceTime) voiceTime.textContent = '0:18';
-          // Prompt user to listen rest on WhatsApp
-          window.open('https://wa.me/message/AYCUNLYYIOSZO1', '_blank', 'noopener');
-        }
-      }, 1000);
-    } else {
-      voiceCard.classList.remove('is-active');
-      voicePlayBtn.querySelector('.voice-btn-icon').textContent = '▶';
-      clearInterval(voiceTimer);
-    }
-  });
-}
-
 // Smart Live Activity Toasts (Google / Stripe Style Social Proof)
 const liveToast = document.getElementById('live-toast');
 const toastTitle = document.getElementById('toast-title');
@@ -272,7 +257,7 @@ const socialProofs = [
   {name: 'Pedro S. (Belo Horizonte)', action: 'Acabou de liberar o VIP no WhatsApp', time: 'há 2 min'},
   {name: 'Lucas M. (São Paulo)', action: 'Agendou Chamada de Vídeo 1x1', time: 'há 4 min'},
   {name: 'Rodrigo C. (Rio de Janeiro)', action: 'Liberou o Acesso VIP Completo', time: 'há 7 min'},
-  {name: 'Matheus F. (Curitiba)', action: 'Pediu áudio exclusivo com seu nome', time: 'há 11 min'},
+  {name: 'Matheus F. (Curitiba)', action: 'Liberou fotos e ensaio exclusivo', time: 'há 11 min'},
   {name: 'Guilherme T. (Campinas)', action: 'Acabou de entrar no atendimento 1x1', time: 'há 14 min'}
 ];
 let toastIndex = 0;

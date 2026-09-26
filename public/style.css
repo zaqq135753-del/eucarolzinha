@@ -55,6 +55,34 @@ body {
   padding-bottom: 80px;
 }
 
+/* While funnel is locked, prevent scrolling past the hero video hook */
+body:not(.funnel-unlocked) {
+  overflow: hidden !important;
+  height: 100svh !important;
+  max-height: 100svh !important;
+}
+
+body:not(.funnel-unlocked) .picker-container,
+body:not(.funnel-unlocked) .short-gallery,
+body:not(.funnel-unlocked) .portal-section,
+body:not(.funnel-unlocked) .apple-dock-bar,
+body:not(.funnel-unlocked) .short-footer {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 0.8s ease, transform 0.8s var(--ease-apple);
+}
+
+body.funnel-unlocked .picker-container,
+body.funnel-unlocked .short-gallery,
+body.funnel-unlocked .portal-section,
+body.funnel-unlocked .apple-dock-bar,
+body.funnel-unlocked .short-footer {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
 #app {
   overflow-x: hidden;
   max-width: 100%;
@@ -698,166 +726,6 @@ button {
 }
 
 /* ==========================================================================
-   SMART VOICE NOTE (iOS iMESSAGE AUDIO PLAYER MOCKUP)
-   ========================================================================== */
-
-.voice-teaser-wrap {
-  max-width: 1100px;
-  margin: 30px auto;
-  padding: 0 24px;
-}
-
-.voice-teaser-card {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  padding: 20px 24px;
-  background: rgba(18, 18, 28, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 20px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-}
-
-.voice-avatar-wrap {
-  position: relative;
-  flex-shrink: 0;
-}
-
-.voice-avatar {
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--brand-rose), #9b1a47);
-  font-size: 22px;
-  border: 2px solid rgba(255, 255, 255, 0.15);
-}
-
-.voice-status-dot {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--brand-whatsapp);
-  border: 2px solid #0f0f18;
-}
-
-.voice-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.voice-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 13px;
-}
-
-.voice-sender {
-  font-weight: 700;
-  color: #fff;
-}
-
-.voice-time {
-  color: var(--text-dim);
-  font-variant-numeric: tabular-nums;
-  font-size: 12px;
-}
-
-.voice-player-bar {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.voice-play-btn {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: var(--brand-whatsapp);
-  color: #fff;
-  font-size: 14px;
-  box-shadow: 0 4px 15px var(--brand-whatsapp-glow);
-  transition: transform 0.2s ease;
-  flex-shrink: 0;
-}
-
-.voice-play-btn:hover {
-  transform: scale(1.08);
-}
-
-.waveform-container {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  height: 28px;
-  flex: 1;
-}
-
-.waveform-bar {
-  width: 3.5px;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.25);
-  transition: background 0.3s ease, height 0.3s ease;
-}
-
-.voice-teaser-card.is-active .waveform-bar {
-  background: var(--brand-whatsapp);
-  animation: wave-bounce 1.2s ease-in-out infinite alternate;
-}
-
-.voice-teaser-card.is-active .waveform-bar:nth-child(2n) {
-  animation-delay: 0.15s;
-}
-.voice-teaser-card.is-active .waveform-bar:nth-child(3n) {
-  animation-delay: 0.3s;
-}
-
-@keyframes wave-bounce {
-  0% { transform: scaleY(0.4); }
-  100% { transform: scaleY(1.2); }
-}
-
-.voice-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.voice-hint {
-  font-size: 13px;
-  color: #cbd5e1;
-  font-style: italic;
-}
-
-.voice-cta {
-  font-size: 12px;
-  font-weight: 700;
-  color: #55f08f;
-  background: rgba(37, 211, 102, 0.12);
-  padding: 5px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(37, 211, 102, 0.28);
-  white-space: nowrap;
-  transition: all 0.2s ease;
-}
-
-.voice-cta:hover {
-  background: var(--brand-whatsapp);
-  color: #fff;
-}
-
-/* ==========================================================================
    4K VIDEO TEASERS GALLERY
    ========================================================================== */
 
@@ -1433,44 +1301,26 @@ button {
   margin-bottom: 22px;
 }
 
-.modal-voice-preview {
+.modal-secret-badge {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  gap: 10px;
   padding: 12px 18px;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   margin-bottom: 24px;
   width: 100%;
+  box-sizing: border-box;
 }
 
-.modal-voice-bars {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  height: 20px;
+.secret-icon {
+  font-size: 18px;
 }
 
-.voice-anim-bar {
-  width: 3px;
-  height: 100%;
-  border-radius: 2px;
-  background: var(--brand-whatsapp);
-  animation: voice-pulse 1s infinite alternate;
-}
-.voice-anim-bar:nth-child(2) { animation-delay: 0.2s; height: 60%; }
-.voice-anim-bar:nth-child(3) { animation-delay: 0.4s; height: 90%; }
-.voice-anim-bar:nth-child(4) { animation-delay: 0.1s; height: 40%; }
-.voice-anim-bar:nth-child(5) { animation-delay: 0.3s; height: 75%; }
-
-@keyframes voice-pulse {
-  from { transform: scaleY(0.4); }
-  to { transform: scaleY(1.1); }
-}
-
-.modal-voice-label {
-  font-size: 12px;
+.modal-secret-label {
+  font-size: 13px;
   font-weight: 600;
   color: #e2e8f0;
 }
@@ -1598,66 +1448,113 @@ button {
   .experience {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: flex-start;
     min-height: 100svh;
-    padding-top: 80px;
-    padding-bottom: 25px;
+    padding-top: 64px;
+    padding-bottom: 24px;
     padding-left: 16px;
     padding-right: 16px;
     overflow: hidden;
     width: 100%;
     box-sizing: border-box;
-    transition: min-height 0.8s var(--ease-apple), padding 0.8s var(--ease-apple);
+    transition: padding 0.8s var(--ease-apple);
   }
 
-  /* No início (Stage 0), o vídeo roda em tela cheia travando a atenção do lead */
+  /* No início (Stage 0), o vídeo roda em tela cheia travando a atenção do lead (100svh, sem texto) */
   .experience[data-stage="0"] {
+    position: relative;
+    height: 100svh;
     min-height: 100svh;
+    max-height: 100svh;
     padding: 0;
+    margin: 0;
+    overflow: hidden;
   }
 
   .experience[data-stage="0"] .portrait {
+    position: absolute;
+    inset: 0;
+    width: 100%;
     height: 100svh;
     min-height: 100svh;
     max-height: 100svh;
     border-radius: 0;
-    margin-bottom: 0;
+    margin: 0;
+    z-index: 1;
+  }
+
+  .experience[data-stage="0"] .portrait video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 25%;
+  }
+
+  .experience[data-stage="0"] .portrait:after {
+    opacity: 0.15;
   }
 
   .experience[data-stage="0"] .conversation {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform: translateY(100%);
     opacity: 0;
-    transform: translateY(50px);
     pointer-events: none;
-  }
-  
-  /* Hero video estendido para baixo com presença marcante */
-  .portrait {
-    inset: 0 0 auto;
-    position: relative;
-    height: 72svh;
-    min-height: 500px;
-    max-height: 640px;
-    border-radius: 24px;
-    margin-bottom: 22px;
-    overflow: hidden;
-    transition: height 0.9s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.9s ease;
+    z-index: 2;
   }
 
-  .portrait:after {
-    background: linear-gradient(0deg, var(--bg-base) 14%, rgba(6, 6, 9, 0.65) 45%, transparent 85%);
+  .experience[data-stage="0"] .intro-play {
+    top: 50svh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+  }
+  
+  /* Quando os textos começam a subir (Stage 1, 2 e 3) */
+  .experience:not([data-stage="0"]) .portrait {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: 58svh;
+    min-height: 400px;
+    max-height: 520px;
+    border-radius: 0 0 28px 28px;
+    margin-bottom: 18px;
+    overflow: hidden;
+    z-index: 1;
+    transition: height 0.9s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.9s cubic-bezier(0.16, 1, 0.3, 1), margin-bottom 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .experience:not([data-stage="0"]) .portrait:after {
+    background: linear-gradient(0deg, var(--bg-base) 18%, rgba(6, 6, 9, 0.65) 55%, transparent 85%);
+    opacity: 1;
+    transition: opacity 0.8s ease;
   }
   
   .conversation {
+    position: relative;
     width: 100%;
     max-width: 100%;
     padding-left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
     box-sizing: border-box;
-    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
+    z-index: 2;
+    transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s ease;
+  }
+
+  .experience:not([data-stage="0"]) .conversation {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
   }
 
   .stage {
     opacity: 0;
-    transform: translateY(22px);
+    transform: translateY(24px);
     transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     pointer-events: none;
   }
@@ -1865,15 +1762,19 @@ button {
   }
   
   .experience {
-    padding-top: 72px;
-    padding-bottom: 20px;
-    padding-left: 14px;
-    padding-right: 14px;
+    padding-top: 58px;
+    padding-bottom: 18px;
+    padding-left: 12px;
+    padding-right: 12px;
   }
 
   .experience[data-stage="0"] {
+    height: 100svh;
     min-height: 100svh;
+    max-height: 100svh;
     padding: 0;
+    margin: 0;
+    overflow: hidden;
   }
 
   .experience[data-stage="0"] .portrait {
@@ -1881,20 +1782,19 @@ button {
     min-height: 100svh;
     max-height: 100svh;
     border-radius: 0;
-    margin-bottom: 0;
+    margin: 0;
   }
 
-  /* Altura estendida para baixo no celular conforme pedido */
-  .portrait {
-    height: 72svh;
-    min-height: 490px;
-    max-height: 620px;
-    border-radius: 22px;
-    margin-bottom: 18px;
+  .experience:not([data-stage="0"]) .portrait {
+    height: 56svh;
+    min-height: 380px;
+    max-height: 490px;
+    border-radius: 0 0 24px 24px;
+    margin-bottom: 14px;
   }
 
   .intro-play {
-    top: 35svh;
+    top: 50svh;
     padding: 10px 18px;
     font-size: 13px;
   }
