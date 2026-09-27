@@ -142,12 +142,13 @@ if (dynamicIsland) {
   });
 }
 
-// Pop-up Educativo: Sair do Navegador do Telegram (5 Segundos)
+// Pop-up Educativo: Sair do Navegador do Telegram (5 Segundos ou ao Clicar nos Botões de Redirect)
 function initTelegramPopup() {
   const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   const tgInstructions = document.getElementById('tg-instructions');
   const tgArrowLabel = document.getElementById('tg-arrow-label');
   const tgArrow = document.getElementById('tg-arrow');
+  const tgDialog = document.getElementById('telegram-browser-dialog');
 
   if (isIOS) {
     if (tgInstructions) {
@@ -175,31 +176,64 @@ function initTelegramPopup() {
     }
   }
 
-  // Disparo após 5 segundos
+  const openTgModal = (trigger = 'timer_5s') => {
+    if (tgDialog && !tgDialog.open) {
+      tgDialog.showModal();
+      emit('telegram_popup_shown', {trigger, platform: isIOS ? 'ios' : 'android'});
+    }
+  };
+
+  const closeTg = (confirmed = false) => {
+    try { sessionStorage.setItem('tg_popup_dismissed', '1'); } catch {}
+    tgDialog?.close();
+    if (confirmed) {
+      emit('telegram_popup_confirmed', {platform: isIOS ? 'ios' : 'android'});
+    }
+  };
+
+  // 1. Disparo após 5 segundos
   setTimeout(() => {
     try {
       if (sessionStorage.getItem('tg_popup_dismissed') === '1') return;
     } catch {}
-
-    const tgDialog = document.getElementById('telegram-browser-dialog');
-    if (tgDialog && !tgDialog.open) {
-      tgDialog.showModal();
-      emit('telegram_popup_shown', {platform: isIOS ? 'ios' : 'android'});
-    }
+    openTgModal('timer_5s');
   }, 5000);
 
-  const closeTg = () => {
-    try { sessionStorage.setItem('tg_popup_dismissed', '1'); } catch {}
-    document.getElementById('telegram-browser-dialog')?.close();
-  };
+  // 2. Disparo integrado nos botões de redirect para os canais (atualmente WhatsApp)
+  document.querySelectorAll('a[href*="wa.me"], .btn-whatsapp, #tg-hint-open').forEach(el => {
+    if (el.id === 'tg-action-whatsapp') {
+      // Botão de ação direta dentro do próprio modal
+      el.addEventListener('click', () => {
+        closeTg(true);
+      });
+      return;
+    }
 
-  document.getElementById('tg-modal-close')?.addEventListener('click', closeTg);
-  document.getElementById('tg-modal-dismiss')?.addEventListener('click', closeTg);
+    if (el.id === 'tg-hint-open') {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        openTgModal('inline_hint');
+      });
+      return;
+    }
 
-  const tgDialog = document.getElementById('telegram-browser-dialog');
+    // Botões de redirect externos: se o usuário ainda não visualizou o passo a passo, exibe o popup
+    el.addEventListener('click', (e) => {
+      let isDismissed = false;
+      try { isDismissed = sessionStorage.getItem('tg_popup_dismissed') === '1'; } catch {}
+      if (!isDismissed) {
+        e.preventDefault();
+        openTgModal('redirect_button');
+      }
+    });
+  });
+
+  document.getElementById('tg-modal-close')?.addEventListener('click', () => closeTg(false));
+  document.getElementById('tg-modal-dismiss')?.addEventListener('click', () => closeTg(false));
+
   if (tgDialog) {
     tgDialog.addEventListener('click', e => {
-      if (e.target === tgDialog) closeTg();
+      if (e.target === tgDialog) closeTg(false);
     });
   }
 }
