@@ -19,74 +19,16 @@ document.title = `${siteConfig.creatorName} — Experiência Privé`;
 
 const video = document.getElementById('intro-video');
 const surface = document.querySelector('.experience');
-const stages = [...document.querySelectorAll('.stage')];
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-let level = 0;
-if (surface) surface.dataset.stage = '0';
 
-stages.forEach(el => {
-  el.inert = true;
-  el.setAttribute('aria-hidden', 'true');
-});
-
-function reveal(next, reason) {
-  if (next <= level) return;
-  level = next;
-  if (surface) surface.dataset.stage = String(next);
-  stages.forEach(el => {
-    const rank = el.classList.contains('stage-3') ? 3 : el.classList.contains('stage-2') ? 2 : 1;
-    if (rank <= next) {
-      el.classList.add('visible');
-      el.inert = false;
-      el.removeAttribute('aria-hidden');
-    }
-  });
-  if (next === 3) {
-    document.body.classList.add('funnel-unlocked');
-    emit('offer_view', {reason});
-    window.dispatchEvent(new Event('presell:intro-ready'));
-  }
-}
-
-function unlockFunnel(reason = 'interaction') {
-  if (level < 3) {
-    reveal(1, reason);
-    reveal(2, reason);
-    reveal(3, reason);
-  }
-}
-
-// Se o lead interagir (toque na tela, swipe, clique ou rolagem), destrava o funil imediatamente
-window.addEventListener('scroll', () => {
-  if (window.scrollY > 30 && level < 3) unlockFunnel('scroll');
-}, {passive: true});
-
-surface?.addEventListener('click', e => {
-  if (e.target.closest('#intro-play')) return;
-  if (level < 3) unlockFunnel('screen_tap');
-});
-
-let touchStartY = 0;
-window.addEventListener('touchstart', e => {
-  if (e.touches && e.touches[0]) touchStartY = e.touches[0].clientY;
-}, {passive: true});
-
-window.addEventListener('touchmove', e => {
-  if (level < 3 && e.touches && e.touches[0]) {
-    const deltaY = touchStartY - e.touches[0].clientY;
-    if (Math.abs(deltaY) > 15) unlockFunnel('touch_move');
-  }
-}, {passive: true});
-
-window.addEventListener('wheel', e => {
-  if (level < 3 && Math.abs(e.deltaY) > 10) unlockFunnel('wheel');
-}, {passive: true});
-
-document.querySelector('.apple-button, .contact')?.addEventListener('click', () => emit('offers_navigation'));
+// Funil 100% destravado imediatamente no novo layout direto
+document.body.classList.add('funnel-unlocked');
+emit('offer_view', {reason: 'page_load'});
 emit('presell_view');
 
+document.querySelector('.apple-button, .contact')?.addEventListener('click', () => emit('offers_navigation'));
+
 setupIntro(video, document.getElementById('intro-play'), {
-  reveal,
   manual: reduced || !!navigator.connection?.saveData
 });
 
@@ -200,51 +142,68 @@ if (dynamicIsland) {
   });
 }
 
-// Interactive Lead Preference Picker (Alta Interação Mobile)
-const pickerButtons = document.querySelectorAll('.picker-btn');
-const feedbackMsg = document.getElementById('feedback-msg');
-const pickerBtnText = document.getElementById('picker-btn-text');
-const pickerWhatsappBtn = document.getElementById('picker-whatsapp-btn');
+// Pop-up Educativo: Sair do Navegador do Telegram (5 Segundos)
+function initTelegramPopup() {
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const tgInstructions = document.getElementById('tg-instructions');
+  const tgArrowLabel = document.getElementById('tg-arrow-label');
+  const tgArrow = document.getElementById('tg-arrow');
 
-const pickerResponses = {
-  'Vídeos na Cama': {
-    reply: '"Adorei sua escolha! Me chama no WhatsApp que eu já te mando essa opção:"',
-    cta: 'Liberar Vídeos na Cama no WhatsApp 💬',
-    encodedText: DEFAULT_WHATSAPP_MESSAGE
-  },
-  'Chamada de Vídeo 1x1': {
-    reply: '"Amo chamada ao vivo! Me chama no WhatsApp pra gente combinar nosso horário agora:"',
-    cta: 'Agendar Chamada 1x1 no WhatsApp 📹',
-    encodedText: DEFAULT_WHATSAPP_MESSAGE
-  },
-  'Fotos & Ensaios Privés': {
-    reply: '"Adorei sua escolha! Me chama no WhatsApp que eu já te mando os ensaios sem censura:"',
-    cta: 'Liberar Fotos & Ensaios no WhatsApp 📸',
-    encodedText: DEFAULT_WHATSAPP_MESSAGE
-  }
-};
-
-pickerButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    pickerButtons.forEach(b => {
-      b.classList.remove('active');
-      b.setAttribute('aria-checked', 'false');
-    });
-    btn.classList.add('active');
-    btn.setAttribute('aria-checked', 'true');
-
-    const opt = btn.dataset.option;
-    const config = pickerResponses[opt] || pickerResponses['Vídeos na Cama'];
-
-    if (feedbackMsg) feedbackMsg.textContent = config.reply;
-    if (pickerBtnText) pickerBtnText.textContent = config.cta;
-    if (pickerWhatsappBtn) {
-      pickerWhatsappBtn.href = `https://wa.me/message/AYCUNLYYIOSZO1?text=${encodeURIComponent(config.encodedText)}`;
+  if (isIOS) {
+    if (tgInstructions) {
+      tgInstructions.innerHTML = `
+        <div class="tg-step-row">
+          <div class="tg-step-num">1</div>
+          <div class="tg-step-text">
+            Toque no ícone de <strong>compartilhar / bússola</strong> (🧭 ou ⬆) no rodapé ou canto da tela.
+          </div>
+        </div>
+        <div class="tg-step-row">
+          <div class="tg-step-num">2</div>
+          <div class="tg-step-text">
+            Selecione <strong>"Abrir no Safari"</strong>.
+          </div>
+        </div>
+      `;
     }
+    if (tgArrowLabel) {
+      tgArrowLabel.textContent = 'Toque no ícone de bússola / compartilhar abaixo';
+    }
+    if (tgArrow) {
+      const pulse = tgArrow.querySelector('.tg-arrow-pulse');
+      if (pulse) pulse.textContent = '↘';
+    }
+  }
 
-    emit('lead_preference_selected', {option: opt});
-  });
-});
+  // Disparo após 5 segundos
+  setTimeout(() => {
+    try {
+      if (sessionStorage.getItem('tg_popup_dismissed') === '1') return;
+    } catch {}
+
+    const tgDialog = document.getElementById('telegram-browser-dialog');
+    if (tgDialog && !tgDialog.open) {
+      tgDialog.showModal();
+      emit('telegram_popup_shown', {platform: isIOS ? 'ios' : 'android'});
+    }
+  }, 5000);
+
+  const closeTg = () => {
+    try { sessionStorage.setItem('tg_popup_dismissed', '1'); } catch {}
+    document.getElementById('telegram-browser-dialog')?.close();
+  };
+
+  document.getElementById('tg-modal-close')?.addEventListener('click', closeTg);
+  document.getElementById('tg-modal-dismiss')?.addEventListener('click', closeTg);
+
+  const tgDialog = document.getElementById('telegram-browser-dialog');
+  if (tgDialog) {
+    tgDialog.addEventListener('click', e => {
+      if (e.target === tgDialog) closeTg();
+    });
+  }
+}
+initTelegramPopup();
 
 // Smart Live Activity Toasts (Google / Stripe Style Social Proof)
 const liveToast = document.getElementById('live-toast');
@@ -414,5 +373,4 @@ function startPhrases() {
   setTimeout(change, 4500);
 }
 
-if (level === 3) startPhrases();
-else window.addEventListener('presell:intro-ready', startPhrases, {once: true});
+startPhrases();

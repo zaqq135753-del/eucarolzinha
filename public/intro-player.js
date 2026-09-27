@@ -59,23 +59,15 @@ export function setupIntro(video, button, { reveal, manual=false, doc=document, 
       video.playbackRate = SLOW_RATE;
     }
 
-    // Começa em slow motion leve (0.70x) e acelera suavemente para velocidade normal após 2.5s
-    if (t < START_TIME + 2.5) {
+    // Começa em slow motion suave e normaliza velocidade
+    if (t < START_TIME + 2.0) {
       video.playbackRate = SLOW_RATE;
-    } else if (t < START_TIME + 4.0) {
-      const prog = (t - (START_TIME + 2.5)) / 1.5;
+    } else if (t < START_TIME + 3.5) {
+      const prog = (t - (START_TIME + 2.0)) / 1.5;
       video.playbackRate = SLOW_RATE + prog * (1.0 - SLOW_RATE);
     } else {
       video.playbackRate = 1.0;
     }
-
-    // 1º momento: Vídeo em tela cheia (trava no funil) durante os primeiros ~3.5s reais (2.5s a 0.70x = 3.57s)
-    // 2º momento: Sobe o texto do título (stage 1) e permanece ali por ~3.5 segundos reais
-    // 3º momento: Sobe os detalhes e chips de especificações (stage 2)
-    // 4º momento: Sobe o CTA do WhatsApp e destrava toda a continuação da página (stage 3)
-    if (t >= START_TIME + 7.5) reveal(3, 'video');
-    else if (t >= START_TIME + 5.8) reveal(2, 'video');
-    else if (t >= START_TIME + 2.5) reveal(1, 'video');
   });
 
   video.addEventListener('ended', () => {
