@@ -13,7 +13,7 @@ Site com entrada pública, login compartilhado e biblioteca privada de membros.
 - `/privado/conta`: atendimento e saída.
 - `/admin`: administração exclusiva da proprietária via Sign in with ChatGPT.
 
-O pagamento inicial é realizado pelo WhatsApp. A proprietária entrega ao cliente o endereço `/entrar` e as credenciais compartilhadas. Não existe liberação automática por pagamento nesta versão.
+O funil inicial direciona para https://t.me/eucarolzinha_bot?start=site. A proprietária entrega ao cliente o endereço `/entrar` e as credenciais compartilhadas. Não existe liberação automática por pagamento nesta versão.
 
 ## Configuração
 
@@ -40,6 +40,9 @@ A senha em texto puro não é incluída no projeto. Credenciais salvas pela admi
 ## Build e verificação
 
 ```sh
+npm install
+npm run dev
+npm run build
 node build.mjs
 node tests/access.test.mjs
 ```
@@ -57,3 +60,11 @@ Para uma hospedagem diferente, adapte o provisionamento do R2 e a autenticação
 ## Conteúdo
 
 Os dois vídeos fornecidos estão em `private-media/`. As capas são quadros extraídos desses vídeos. Novas fotos e vídeos podem ser enviados no painel administrativo. Nenhuma coleção adicional ou foto exclusiva foi inventada.
+
+## Prévia local
+
+`npm run dev` abre http://127.0.0.1:3000 e serve somente `public/`, com suporte a intervalos de vídeo. Use `PORT` para mudar a porta. Login, biblioteca privada, APIs e administração exigem o Worker/R2 e não funcionam nessa prévia.
+
+## Vercel
+
+O projeto atual usa Worker/R2 e autenticação do Sites. Para publicar somente a pressel na Vercel, configure Framework Preset como Other, Build Command como `npm run build` e Output Directory como `public`. Nunca publique `dist` ou `private-media`. A área de membros exige uma migração de backend antes de funcionar na Vercel. Um push na branch de produção dispara o deploy apenas se a integração GitHub estiver configurada.

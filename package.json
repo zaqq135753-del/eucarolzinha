@@ -1,1 +1,14 @@
-{"name":"carolzinha-prive","private":true,"type":"module","scripts":{"build":"node build.mjs"}}
+{
+  "name": "carolzinha-prive",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node serve-presell.mjs",
+    "test": "node tests/access.test.mjs && node tests/mobile-video.test.mjs",
+    "start": "node serve-presell.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

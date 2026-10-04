@@ -1,2 +1,3 @@
-import {whatsappConfig} from './config.js';
-export function whatsappUrl(config=whatsappConfig){const number=config.number.replace(/[\s()+-]/g,'');return /^[1-9]\d{9,14}$/.test(number)?`https://wa.me/${number}?text=${encodeURIComponent(config.message)}`:null;}
+// Compatibility for older imports; all contact links now use Telegram.
+import {TELEGRAM_BOT_URL} from './config.js';
+export function whatsappUrl(){return `${TELEGRAM_BOT_URL}?start=site`;}
