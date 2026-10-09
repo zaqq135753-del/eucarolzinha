@@ -13,6 +13,8 @@ import {
 } from './tracking.js';
 
 import { track } from './analytics.js';
+import { TelegramWebChat } from './chat.js';
+import { setupBoosters } from './boosters.js';
 
 
 // ======================================================
@@ -685,23 +687,21 @@ document
 
     link.addEventListener(
       'click',
-      () => {
-
-        clicked =
-          true;
-
+      (e) => {
+        e.preventDefault();
+        clicked = true;
 
         emit(
-          'telegram_bot_clicked',
+          'telegram_chat_opened',
           {
-            source:
-              'main_cta',
-
-            destination:
-              BOT_URL
+            source: 'main_cta',
+            destination: 'native_webchat'
           }
         );
 
+        if (window.chatInstance) {
+          window.chatInstance.open();
+        }
       }
     );
 
@@ -709,7 +709,25 @@ document
 
 
 // ======================================================
-// LINKS GERAIS QUE LEVAM AO BOT
+// INSTANCIAÇÃO DO CHAT NATIVO EMBUTIDO
+// ======================================================
+
+const chatInstance = new TelegramWebChat({
+  target: document.body,
+  isModal: true
+});
+window.chatInstance = chatInstance;
+
+// Ativa os gatilhos de conversão (Push fake, prova social, exit intent)
+setupBoosters(chatInstance);
+
+// Se a URL contiver ?chat=1 ou #chat, abre direto
+if (new URLSearchParams(location.search).get('chat') === '1' || location.hash === '#chat') {
+  setTimeout(() => chatInstance.open(), 300);
+}
+
+// ======================================================
+// LINKS GERAIS QUE LEVAM AO BOT (INTERCEPTAÇÃO PARA CHAT NATIVO)
 // ======================================================
 
 document
@@ -720,19 +738,18 @@ document
 
     link.addEventListener(
       'click',
-      () => {
-
-        clicked =
-          true;
+      (e) => {
+        e.preventDefault();
+        clicked = true;
 
         emit(
-          'telegram_redirect',
+          'telegram_redirect_intercepted',
           {
-            href:
-              link.href
+            href: link.href
           }
         );
 
+        chatInstance.open();
       }
     );
 

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0e1621">
+  <title>Carolzinha Satler — Chat Privado</title>
+  <link rel="stylesheet" href="chat.css">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #0e1621;
+      overflow: hidden;
+    }
+    #chat-root {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    @media (max-width: 600px) {
+      #chat-root {
+        height: 100svh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="chat-root"></div>
+
+  <script type="module">
+    import { TelegramWebChat } from './chat.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const chat = new TelegramWebChat({
+        target: document.getElementById('chat-root'),
+        isModal: false
+      });
+      chat.open();
+    });
+  </script>
+</body>
+</html>
