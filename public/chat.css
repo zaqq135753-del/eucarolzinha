@@ -774,3 +774,68 @@
 .tg-upsell-skip-btn:hover {
   color: #94a3b8;
 }
+
+
+/* Botão Flutuante de Acesso Rápido ao Webchat */
+.tg-floating-trigger {
+  position: fixed;
+  bottom: 22px;
+  right: 20px;
+  z-index: 99998;
+  background: linear-gradient(135deg, #17212b, #0f1620);
+  border: 1.5px solid rgba(230, 57, 115, 0.45);
+  border-radius: 35px;
+  padding: 8px 18px 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(230, 57, 115, 0.2);
+  cursor: pointer;
+  color: #fff;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  font-family: inherit;
+}
+
+.tg-floating-trigger:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(230, 57, 115, 0.4);
+}
+
+.tg-floating-avatar-wrap {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.tg-floating-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid #e63973;
+}
+
+.tg-floating-label {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.tg-floating-label strong {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.tg-floating-label small {
+  font-size: 11px;
+  color: #4bd865;
+  font-weight: 600;
+}
+
+@keyframes tgPulseGreen {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6); }
+  70% { transform: scale(1.02); box-shadow: 0 0 0 12px rgba(34, 197, 94, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}

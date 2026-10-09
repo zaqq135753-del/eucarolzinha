@@ -104,10 +104,29 @@ export class TelegramWebChat {
   open() {
     if (this.overlay) {
       this.overlay.classList.add('active');
-      if (this.state.step === 'start') {
+      const params = new URLSearchParams(location.search);
+      if (params.get('status') === 'approved' || params.get('paid') === '1' || params.get('demo_approved') === '1') {
+        this.showPaidSuccess();
+      } else if (this.state.step === 'start') {
         this.startFunnel();
       }
     }
+  }
+
+  async showPaidSuccess() {
+    this.state.step = 'paid_approved';
+    const planKey = new URLSearchParams(location.search).get('plan') || '15d';
+    const planPricesNum = { '7d': 8.90, '15d': 14.90, '30d': 24.90 };
+    const paidValue = planPricesNum[planKey] || 14.90;
+    const txId = new URLSearchParams(location.search).get('tx') || `tx_pushin_${Date.now()}`;
+    trackPurchase(paidValue, txId);
+
+    await this.showTyping('confirmando pagamento com a Pushin Pay...', 1200);
+    this.addMessage(
+      '🎉 <b>PAGAMENTO CONFIRMADO COM SUCESSO!</b> 🥰🔥\n\n' +
+      'seu acesso ao VIP já tá garantidinho amor! Mas antes de você entrar no Telegram, olha o que eu separei exclusivamente pra você:'
+    );
+    this.showUpsell1App();
   }
 
   close() {
@@ -117,6 +136,10 @@ export class TelegramWebChat {
       this.messagesEl.querySelectorAll('video').forEach(v => v.pause());
       this.onClose();
     }
+  }
+
+  isOpen() {
+    return this.overlay && this.overlay.classList.contains('active');
   }
 
   scrollToBottom() {
@@ -505,13 +528,13 @@ export class TelegramWebChat {
         <span id="tg-status-text">Aguardando confirmação bancária...</span>
       </div>
 
-      <button type="button" class="tg-pix-simulate-btn" id="tg-simulate-pay">
-        ⚡ Já paguei no banco (Confirmar Pix) ✅
-      </button>
-
-      <a href="${planUrl}" target="_blank" rel="noopener" class="tg-pix-real-link">
-        Ou abrir checkout oficial da Pushin Pay ↗
+      <a href="${planUrl}" target="_blank" rel="noopener" class="tg-pix-simulate-btn" id="tg-real-pay" style="display:flex;align-items:center;justify-content:center;text-decoration:none;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-weight:800;font-size:15px;padding:14px 18px;border-radius:14px;box-shadow:0 8px 24px rgba(34,197,94,0.35);margin:12px 0 6px 0;animation:tgPulseGreen 2s infinite">
+        💳 Pagar no Pix Seguro na Pushin Pay (${planPrices[planKey]}) 🔒
       </a>
+
+      <button type="button" class="tg-pix-check-action-btn" id="tg-check-pay" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:#cbd5e1;padding:10px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;margin-top:6px;transition:all 0.2s">
+        🔄 Já fiz o Pix no meu banco (Conferir status)
+      </button>
     `;
 
     this.messagesEl.appendChild(checkoutCard);
@@ -533,60 +556,61 @@ export class TelegramWebChat {
       }, 3500);
     };
 
-    // Ação de confirmar / simular pagamento
-    const simulateBtn = checkoutCard.querySelector('#tg-simulate-pay');
-    simulateBtn.onclick = () => {
-      this.handlePaidConfirmation(checkoutCard);
+    // Ação do botão principal da Pushin Pay
+    const realPayBtn = checkoutCard.querySelector('#tg-real-pay');
+    realPayBtn.onclick = () => {
+      trackInitiateCheckout(planKey, planPricesNum[planKey] || 14.90);
+    };
+
+    // Ação de checar pagamento: NUNCA aprova de graça, orienta o cliente com realismo
+    const checkBtn = checkoutCard.querySelector('#tg-check-pay');
+    checkBtn.onclick = () => {
+      this.handlePaymentCheck(checkoutCard, planUrl, planPrices[planKey]);
     };
   }
 
-  async handlePaidConfirmation(checkoutCard) {
-    if (this.pixTimerInterval) clearInterval(this.pixTimerInterval);
-
-    // Atualiza status do card para identificando
+  async handlePaymentCheck(checkoutCard, planUrl, planPriceStr) {
     if (checkoutCard) {
       const statusText = checkoutCard.querySelector('#tg-status-text');
       const dot = checkoutCard.querySelector('#tg-status-dot');
-      if (statusText) statusText.textContent = 'Identificando transação Pix no banco...';
-      if (dot) dot.classList.add('success');
-      const simBtn = checkoutCard.querySelector('#tg-simulate-pay');
-      if (simBtn) {
-        simBtn.disabled = true;
-        simBtn.style.opacity = '0.7';
-        simBtn.textContent = '⏳ Conferindo transação...';
+      if (statusText) statusText.textContent = 'Consultando Banco Central & Pushin Pay...';
+      if (dot) dot.style.background = '#eab308';
+      const checkBtn = checkoutCard.querySelector('#tg-check-pay');
+      if (checkBtn) {
+        checkBtn.disabled = true;
+        checkBtn.style.opacity = '0.6';
+        checkBtn.textContent = '⏳ Verificando no sistema...';
+        setTimeout(() => {
+          checkBtn.disabled = false;
+          checkBtn.style.opacity = '1';
+          checkBtn.textContent = '🔄 Conferir novamente';
+        }, 8000);
       }
     }
 
-    this.addMessage('Já paguei o Pix, me libera amor! ✅', 'out');
-    await this.showTyping('verificando na Pushin Pay...', 1400);
+    this.addMessage('Já fiz o Pix no meu banco, confere aí amor! ⏳', 'out');
+    await this.showTyping('consultando Pushin Pay...', 1500);
 
     this.addMessage(
       'recebi seu aviso aqui, amor! 💋\n\n' +
-      'o sistema tá só validando o comprovante da transação... aguenta 3 segundinhos que já libero a chave do quarto! ⏳🔥'
+      'o sistema da Pushin Pay está sincronizando com o Banco Central... assim que a compensação do seu Pix for confirmada, sua liberação VIP ocorre automaticamente na hora! ⏳\n\n' +
+      '⚠️ <i>Dica: Se você ainda não abriu o aplicativo do seu banco para transferir, toque no botão abaixo para concluir com segurança no checkout oficial da Pushin Pay:</i>'
     );
 
-      // Simulação da aprovação do webhook da Pushin Pay
-      setTimeout(async () => {
-        if (checkoutCard) {
-          const statusText = checkoutCard.querySelector('#tg-status-text');
-          if (statusText) statusText.textContent = '✅ Pagamento confirmado via Pix!';
-        }
-
-        // Dispara Evento 8: Purchase (Pagamento Aprovado)
-        const planPricesNum = { '7d': 8.90, '15d': 14.90, '30d': 24.90 };
-        const paidValue = planPricesNum[this.state.selectedPlan] || 14.90;
-        const txId = `tx_pix_${Date.now()}`;
-        trackPurchase(paidValue, txId);
-
-        await this.showTyping('liberando acesso...', 1000);
-        this.addMessage(
-          '🎉 <b>PAGAMENTO APROVADO COM SUCESSO!</b> 🥰🔥\n\n' +
-          'seu acesso ao VIP já tá garantidinho amor! Mas antes de você entrar no Telegram, olha o que eu separei exclusivamente pra você:'
-        );
-
-        this.showUpsell1App();
-      }, 2500);
-    }
+    const pendingBox = document.createElement('div');
+    pendingBox.className = 'tg-pix-pending-notice';
+    pendingBox.style.cssText = 'background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.3);border-radius:14px;padding:12px;margin:8px 0;text-align:center';
+    pendingBox.innerHTML = `
+      <div style="font-size:13px;color:#facc15;font-weight:600;margin-bottom:8px">
+        ⏳ Aguardando confirmação bancária na Pushin Pay
+      </div>
+      <a href="${planUrl}" target="_blank" rel="noopener" style="display:inline-block;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-weight:700;font-size:13.5px;padding:10px 16px;border-radius:10px;text-decoration:none;box-shadow:0 4px 14px rgba(34,197,94,0.3)">
+        👉 Abrir / Concluir Pagamento na Pushin Pay (${planPriceStr}) ↗
+      </a>
+    `;
+    this.messagesEl.appendChild(pendingBox);
+    this.scrollToBottom();
+  }
 
     // ----------------------------------------------------
     // UPSELL 1: APP EXCLUSIVO PRIVÉ COM ATUALIZAÇÕES
@@ -633,35 +657,44 @@ export class TelegramWebChat {
 
     async handleUpsell1Payment() {
       this.addMessage('Quero adicionar o App Privé por R$ 19,90! 🔥', 'out');
-      await this.showTyping('gerando Pix do App...', 900);
+      await this.showTyping('preparando ativação...', 1000);
 
-      const pixCard = document.createElement('div');
-      pixCard.className = 'tg-checkout-card';
-      pixCard.innerHTML = `
+      this.addMessage(
+        'perfeito, amor! 📲🤤\n\n' +
+        'sua vaga no <b>App Exclusivo Carolzinha Privé</b> tá reservada por apenas <b>+R$ 19,90</b>!\n\n' +
+        'para vincular seu login de membro e receber a senha de acesso da biblioteca secreta, conclua a ativação no botão abaixo:'
+      );
+
+      const up1Box = document.createElement('div');
+      up1Box.className = 'tg-checkout-card';
+      up1Box.style.borderColor = '#e63973';
+      up1Box.innerHTML = `
         <div class="tg-checkout-header">
-          <span class="tg-checkout-badge">📲 Pix Adicional do App</span>
+          <span class="tg-checkout-badge">📲 Ativação VIP do App</span>
           <span class="tg-pix-timer">Taxa única: <strong>R$ 19,90</strong></span>
         </div>
-        <div class="tg-pix-qr-container">
-          ${this.generateQrSvg()}
-        </div>
-        <button type="button" class="tg-pix-simulate-btn" id="tg-up1-confirm-pix" style="background:linear-gradient(135deg,#22c55e,#16a34a)">
-          ⚡ Já paguei o Pix do App (+R$ 19,90) ✅
+        <p style="font-size:12.5px;color:#cbd5e1;margin:8px 0;line-height:1.4">
+          Acesso liberado imediatamente no nosso bot oficial com login e senha da área de membros.
+        </p>
+        <a href="https://t.me/eucarolzinha_bot?start=upsell_app" target="_blank" rel="noopener" class="tg-pix-simulate-btn" id="tg-up1-real-btn" style="display:flex;align-items:center;justify-content:center;text-decoration:none;background:linear-gradient(135deg,#e63973,#c2185b);color:#fff;font-weight:800;font-size:14.5px;padding:12px;border-radius:12px;box-shadow:0 6px 20px rgba(230,57,115,0.35);margin:6px 0">
+          🔥 Concluir Ativação do App no Telegram (+R$ 19,90) ↗
+        </a>
+        <button type="button" class="tg-upsell-skip-btn" id="tg-up1-continue-step" style="width:100%;background:none;border:none;color:#94a3b8;font-size:12px;cursor:pointer;padding:8px">
+          Continuar para o próximo passo →
         </button>
       `;
 
-      this.messagesEl.appendChild(pixCard);
+      this.messagesEl.appendChild(up1Box);
       this.scrollToBottom();
 
-      pixCard.querySelector('#tg-up1-confirm-pix').onclick = async () => {
-        pixCard.remove();
-        // Dispara Evento 9b: Upsell1_Purchase
+      up1Box.querySelector('#tg-up1-real-btn').onclick = () => {
         trackUpsell1Purchase(19.90);
-
-        this.addMessage('Já paguei o Pix do App! ✅', 'out');
-        await this.showTyping('ativando licença do app...', 1200);
-        this.addMessage('✅ <b>APP EXCLUSIVO LIBERADO!</b> Seu login e senha foram vinculados ao seu acesso 🥰📱');
         setTimeout(() => this.showUpsell2Raffle(), 1500);
+      };
+
+      up1Box.querySelector('#tg-up1-continue-step').onclick = () => {
+        up1Box.remove();
+        this.showUpsell2Raffle();
       };
     }
 
@@ -721,34 +754,39 @@ export class TelegramWebChat {
     this.addMessage('Quero minha cota do sorteio por R$ 9,90! 🎟️', 'out');
     await this.showTyping('gerando número da sorte...', 900);
 
-    const pixCard = document.createElement('div');
-    pixCard.className = 'tg-checkout-card';
-    pixCard.innerHTML = `
+    const luckyNumber = Math.floor(100 + Math.random() * 900);
+    this.addMessage(
+      `🎟️ <b>COTA #${luckyNumber} PRÉ-RESERVADA!</b> 🥰🔥\n\n` +
+      `para confirmar seu bilhete oficial da Rifa Secreta e concorrer à chamada de vídeo de 30min e à calcinha perfumada, toque no botão abaixo:`
+    );
+
+    const up2Box = document.createElement('div');
+    up2Box.className = 'tg-checkout-card';
+    up2Box.style.borderColor = '#eab308';
+    up2Box.innerHTML = `
       <div class="tg-checkout-header">
-        <span class="tg-checkout-badge">🎟️ Cota VIP do Sorteio</span>
+        <span class="tg-checkout-badge" style="background:rgba(234,179,8,0.2);color:#facc15">🎟️ Bilhete da Sorte #${luckyNumber}</span>
         <span class="tg-pix-timer">Valor: <strong>R$ 9,90</strong></span>
       </div>
-      <div class="tg-pix-qr-container">
-        ${this.generateQrSvg()}
-      </div>
-      <button type="button" class="tg-pix-simulate-btn" id="tg-up2-confirm-pix" style="background:linear-gradient(135deg,#eab308,#ca8a04);color:#000;font-weight:800">
-        ⚡ Já paguei o Pix da Cota (R$ 9,90) ✅
+      <a href="https://t.me/eucarolzinha_bot?start=cota_${luckyNumber}" target="_blank" rel="noopener" class="tg-pix-simulate-btn" id="tg-up2-real-btn" style="display:flex;align-items:center;justify-content:center;text-decoration:none;background:linear-gradient(135deg,#eab308,#ca8a04);color:#000;font-weight:800;font-size:14.5px;padding:12px;border-radius:12px;box-shadow:0 6px 20px rgba(234,179,8,0.35);margin:6px 0">
+        🎟️ Confirmar Cota #${luckyNumber} no Telegram (R$ 9,90) ↗
+      </a>
+      <button type="button" class="tg-upsell-skip-btn" id="tg-up2-continue-final" style="width:100%;background:none;border:none;color:#94a3b8;font-size:12px;cursor:pointer;padding:8px">
+        Ir para o Canal VIP do Telegram →
       </button>
     `;
 
-    this.messagesEl.appendChild(pixCard);
+    this.messagesEl.appendChild(up2Box);
     this.scrollToBottom();
 
-    pixCard.querySelector('#tg-up2-confirm-pix').onclick = async () => {
-      pixCard.remove();
-      // Dispara Evento 10b: Upsell2_Purchase
+    up2Box.querySelector('#tg-up2-real-btn').onclick = () => {
       trackUpsell2Purchase(9.90);
+      setTimeout(() => this.showFinalVipAccess(), 1500);
+    };
 
-      this.addMessage('Já paguei minha cota! ✅', 'out');
-      await this.showTyping('registrando bilhete...', 1100);
-      const luckyNumber = Math.floor(100 + Math.random() * 900);
-      this.addMessage(`🎟️ <b>COTA #${luckyNumber} CONFIRMADA!</b> Você já está concorrendo à chamada e ao prêmio especial 🥰🔥`);
-      setTimeout(() => this.showFinalVipAccess(), 1600);
+    up2Box.querySelector('#tg-up2-continue-final').onclick = () => {
+      up2Box.remove();
+      this.showFinalVipAccess();
     };
   }
 

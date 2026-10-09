@@ -34,9 +34,11 @@ export function setupBoosters(chatInstance) {
 
     document.body.appendChild(banner);
 
-    // Dispara após 6 segundos na página
+    // Dispara após 6 segundos na página SOMENTE se o chat não estiver aberto e não for /chat
     setTimeout(() => {
-      if (!exitShown) {
+      const isChatPage = window.location.pathname.includes('/chat') || window.location.search.includes('chat=1');
+      const isChatOpen = chatInstance && typeof chatInstance.isOpen === 'function' && chatInstance.isOpen();
+      if (!exitShown && !isChatOpen && !isChatPage) {
         banner.classList.add('active');
       }
     }, 6000);

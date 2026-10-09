@@ -146,6 +146,9 @@ function reveal(next, reason) {
 
 }
 
+// Desbloqueia o funil da landing page imediatamente no carregamento
+reveal(3, 'direct');
+
 
 // ======================================================
 // EVENTOS GERAIS
@@ -729,8 +732,31 @@ window.chatInstance = chatInstance;
 // Ativa os gatilhos de conversão (Push fake, prova social, exit intent)
 setupBoosters(chatInstance);
 
-// Se a URL contiver ?chat=1 ou #chat, abre direto
-if (new URLSearchParams(location.search).get('chat') === '1' || location.hash === '#chat') {
+// Botão Flutuante de Acesso Direto ao Chat
+const floatingChat = document.createElement('button');
+floatingChat.type = 'button';
+floatingChat.className = 'tg-floating-trigger';
+floatingChat.innerHTML = `
+  <div class="tg-floating-avatar-wrap">
+    <img src="/assets/carol-avatar.jpg" alt="Carolzinha" class="tg-floating-avatar" />
+    <span class="tg-status-dot"></span>
+  </div>
+  <div class="tg-floating-label">
+    <strong>Carolzinha Satler</strong>
+    <small>online no privado • abrir chat 🔥</small>
+  </div>
+`;
+document.body.appendChild(floatingChat);
+floatingChat.onclick = () => chatInstance.open();
+
+// Se a URL contiver parâmetros de chat ou status de pagamento aprovado, abre direto
+const searchParams = new URLSearchParams(location.search);
+if (
+  searchParams.get('chat') === '1' ||
+  searchParams.get('status') === 'approved' ||
+  searchParams.get('paid') === '1' ||
+  location.hash === '#chat'
+) {
   setTimeout(() => chatInstance.open(), 300);
 }
 

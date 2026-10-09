@@ -6,6 +6,14 @@
   <meta name="theme-color" content="#0e1621">
   <title>Carolzinha Satler — Chat Privado</title>
   <link rel="stylesheet" href="chat.css">
+  <link rel="stylesheet" href="boosters.css">
+  <script>
+    fetch('https://telegram-vip-funnel.onrender.com/api/track/presell', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event: 'chat_page_view' })
+    }).catch(() => {});
+  </script>
   <style>
     body, html {
       margin: 0;
@@ -34,6 +42,7 @@
   <script type="module">
     import { TelegramWebChat } from './chat.js';
     import { trackChatOpened } from './tracking.js';
+    import { setupBoosters } from './boosters.js';
 
     document.addEventListener('DOMContentLoaded', () => {
       trackChatOpened('main_cta');
@@ -41,6 +50,8 @@
         target: document.getElementById('chat-root'),
         isModal: false
       });
+      window.chatInstance = chat;
+      setupBoosters(chat);
       chat.open();
     });
   </script>
