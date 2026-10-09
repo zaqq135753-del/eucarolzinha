@@ -661,17 +661,37 @@ export class TelegramWebChat {
     // Ação de copiar código Pix (Evento 7: PixCodeCopied)
     const copyBtn = checkoutCard.querySelector('#tg-pix-copy-action');
     const inputField = checkoutCard.querySelector('#tg-pix-code-field');
-    copyBtn.onclick = () => {
-      inputField.select();
-      navigator.clipboard?.writeText(realPixCode).catch(() => {});
+    const doCopyPix = () => {
+      let copied = false;
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(realPixCode).catch(() => {});
+          copied = true;
+        }
+      } catch (err) {}
+
+      // Fallback robusto garantido para WebViews de TikTok/Instagram e mobile antigo
+      try {
+        inputField.focus();
+        inputField.select();
+        inputField.setSelectionRange(0, 99999);
+        const successful = document.execCommand('copy');
+        if (successful) copied = true;
+      } catch (err) {}
+
       trackPixCopied(planPricesNum[planKey] || 14.90);
       copyBtn.classList.add('copied');
-      copyBtn.innerHTML = '✓ Código Copiado!';
+      copyBtn.innerHTML = '✅ Pix Copiado! Cola no Banco';
+      copyBtn.style.background = '#059669';
       setTimeout(() => {
         copyBtn.classList.remove('copied');
-        copyBtn.innerHTML = '📋 Copiar Pix';
-      }, 3500);
+        copyBtn.innerHTML = '📋 Copiar Código Pix';
+        copyBtn.style.background = '';
+      }, 4000);
     };
+
+    copyBtn.onclick = doCopyPix;
+    inputField.onclick = doCopyPix;
 
     // Ação do botão principal da Pushin Pay
     const realPayBtn = checkoutCard.querySelector('#tg-real-pay');
