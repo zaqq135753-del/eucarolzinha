@@ -550,39 +550,205 @@ export class TelegramWebChat {
         if (statusText) statusText.textContent = '✅ Pagamento confirmado via Pix!';
       }
 
-      await this.showTyping('liberando VIP...', 1100);
+      await this.showTyping('liberando acesso...', 1000);
       this.addMessage(
         '🎉 <b>PAGAMENTO APROVADO COM SUCESSO!</b> 🥰🔥\n\n' +
-        'amor, seu acesso VIP tá 100% liberadinho agora mesmo! clica no botão abaixo pra entrar no nosso cantinho exclusivo no Telegram e curtir tudo sem censura 👇😈'
+        'seu acesso ao VIP já tá garantidinho amor! Mas antes de você entrar no Telegram, olha o que eu separei exclusivamente pra você:'
       );
 
-      const vipCard = document.createElement('div');
-      vipCard.className = 'tg-checkout-card';
-      vipCard.style.borderColor = '#eab308';
-      vipCard.innerHTML = `
-        <div style="font-size:32px;margin-bottom:8px">🔑✨</div>
-        <div style="font-size:18px;font-weight:800;color:#facc15;margin-bottom:6px">
-          CANAL VIP LIBERADO!
-        </div>
-        <p style="font-size:13px;color:#d1d5db;margin:0 0 16px;line-height:1.4">
-          Toque no botão abaixo para resgatar sua entrada no canal secreto e ver todos os vídeos e conteúdos exclusivos:
-        </p>
-        <a href="${TELEGRAM_DIRECT_URL}" target="_blank" rel="noopener" class="tg-checkout-btn-pay" style="background:linear-gradient(135deg, #eab308, #ca8a04);color:#000;font-weight:800;font-size:15px;box-shadow:0 8px 25px rgba(234,179,8,0.4)">
-          🔓 ENTRAR NO CANAL VIP NO TELEGRAM ↗
-        </a>
-      `;
-      this.messagesEl.appendChild(vipCard);
-      this.scrollToBottom();
+      this.showUpsell1App();
+    }, 2500);
+  }
 
-      this.setActions([
-        {
-          label: '🔓 ENTRAR NO CANAL VIP NO TELEGRAM 🤤',
-          onClick: () => {
-            window.open(TELEGRAM_DIRECT_URL, '_blank');
-          }
+  // ----------------------------------------------------
+  // UPSELL 1: APP EXCLUSIVO PRIVÉ COM ATUALIZAÇÕES
+  // ----------------------------------------------------
+  async showUpsell1App() {
+    await this.showTyping('preparando proposta...', 900);
+
+    const upsellCard = document.createElement('div');
+    upsellCard.className = 'tg-upsell-box';
+    upsellCard.innerHTML = `
+      <span class="tg-upsell-badge">📲 OPORTUNIDADE ÚNICA · 60% OFF</span>
+      <h4 class="tg-upsell-title">App Exclusivo Carolzinha Privé</h4>
+      <p class="tg-upsell-desc">
+        Acesse minha biblioteca privada com galeria secreta, vídeos longos sem tarja e atualizações diárias direto no seu celular.
+      </p>
+      <div class="tg-upsell-price-wrap">
+        <span class="tg-upsell-old-price">R$ 49,90</span>
+        <span class="tg-upsell-price">R$ 19,90</span>
+      </div>
+      <button type="button" class="tg-upsell-accept-btn" id="tg-up1-accept">
+        🔥 QUERO ADICIONAR O APP POR +R$ 19,90 🤤
+      </button>
+      <button type="button" class="tg-upsell-skip-btn" id="tg-up1-skip">
+        Não quero, prefiro ficar só com o Telegram ↗
+      </button>
+    `;
+
+    this.messagesEl.appendChild(upsellCard);
+    this.scrollToBottom();
+
+    upsellCard.querySelector('#tg-up1-accept').onclick = () => {
+      upsellCard.remove();
+      this.handleUpsell1Payment();
+    };
+
+    upsellCard.querySelector('#tg-up1-skip').onclick = () => {
+      upsellCard.remove();
+      this.showUpsell2Raffle();
+    };
+  }
+
+  async handleUpsell1Payment() {
+    this.addMessage('Quero adicionar o App Privé por R$ 19,90! 🔥', 'out');
+    await this.showTyping('gerando Pix do App...', 900);
+
+    const pixCard = document.createElement('div');
+    pixCard.className = 'tg-checkout-card';
+    pixCard.innerHTML = `
+      <div class="tg-checkout-header">
+        <span class="tg-checkout-badge">📲 Pix Adicional do App</span>
+        <span class="tg-pix-timer">Taxa única: <strong>R$ 19,90</strong></span>
+      </div>
+      <div class="tg-pix-qr-container">
+        ${this.generateQrSvg()}
+      </div>
+      <button type="button" class="tg-pix-simulate-btn" id="tg-up1-confirm-pix" style="background:linear-gradient(135deg,#22c55e,#16a34a)">
+        ⚡ Já paguei o Pix do App (+R$ 19,90) ✅
+      </button>
+    `;
+
+    this.messagesEl.appendChild(pixCard);
+    this.scrollToBottom();
+
+    pixCard.querySelector('#tg-up1-confirm-pix').onclick = async () => {
+      pixCard.remove();
+      this.addMessage('Já paguei o Pix do App! ✅', 'out');
+      await this.showTyping('ativando licença do app...', 1200);
+      this.addMessage('✅ <b>APP EXCLUSIVO LIBERADO!</b> Seu login e senha foram vinculados ao seu acesso 🥰📱');
+      setTimeout(() => this.showUpsell2Raffle(), 1500);
+    };
+  }
+
+  // ----------------------------------------------------
+  // UPSELL 2: SORTEIO DA RIFA SECRETA
+  // ----------------------------------------------------
+  async showUpsell2Raffle() {
+    await this.showTyping('digitando...', 900);
+
+    this.addMessage(
+      'e tem mais um detalhe especial amor... 👀🎁\n\n' +
+      'todo mês eu faço um <b>SORTEIO VIP</b> exclusivo entre os membros ativos:'
+    );
+
+    const raffleCard = document.createElement('div');
+    raffleCard.className = 'tg-upsell-box';
+    raffleCard.style.borderColor = 'rgba(234, 179, 8, 0.5)';
+    raffleCard.innerHTML = `
+      <span class="tg-upsell-badge" style="background:rgba(234,179,8,0.2);color:#facc15;border-color:rgba(234,179,8,0.5)">
+        🎟️ SORTEIO EXCLUSIVO DESTE MÊS
+      </span>
+      <h4 class="tg-upsell-title">Sorteio da Rifa Secreta VIP</h4>
+      <p class="tg-upsell-desc" style="text-align:left;padding:0 8px">
+        🏆 <b>1º Lugar:</b> Chamada de Vídeo íntima de 30min comigo ao vivo na cama.<br>
+        🏆 <b>2º Lugar:</b> Minha calcinha usada favorita com meu perfume enviada discretamente para sua casa.
+      </p>
+      <div class="tg-upsell-price-wrap">
+        <span class="tg-upsell-old-price">R$ 29,90</span>
+        <span class="tg-upsell-price" style="color:#facc15">R$ 9,90</span> <small style="color:#94a3b8">/ cota</small>
+      </div>
+      <button type="button" class="tg-upsell-accept-btn" id="tg-up2-accept" style="background:linear-gradient(115deg,#ca8a04,#eab308);color:#000">
+        🎟️ QUERO GARANTIR MINHA COTA POR R$ 9,90 😈
+      </button>
+      <button type="button" class="tg-upsell-skip-btn" id="tg-up2-skip">
+        Ir direto para o meu acesso no Telegram ↗
+      </button>
+    `;
+
+    this.messagesEl.appendChild(raffleCard);
+    this.scrollToBottom();
+
+    raffleCard.querySelector('#tg-up2-accept').onclick = () => {
+      raffleCard.remove();
+      this.handleUpsell2Payment();
+    };
+
+    raffleCard.querySelector('#tg-up2-skip').onclick = () => {
+      raffleCard.remove();
+      this.showFinalVipAccess();
+    };
+  }
+
+  async handleUpsell2Payment() {
+    this.addMessage('Quero minha cota do sorteio por R$ 9,90! 🎟️', 'out');
+    await this.showTyping('gerando número da sorte...', 900);
+
+    const pixCard = document.createElement('div');
+    pixCard.className = 'tg-checkout-card';
+    pixCard.innerHTML = `
+      <div class="tg-checkout-header">
+        <span class="tg-checkout-badge">🎟️ Cota VIP do Sorteio</span>
+        <span class="tg-pix-timer">Valor: <strong>R$ 9,90</strong></span>
+      </div>
+      <div class="tg-pix-qr-container">
+        ${this.generateQrSvg()}
+      </div>
+      <button type="button" class="tg-pix-simulate-btn" id="tg-up2-confirm-pix" style="background:linear-gradient(135deg,#eab308,#ca8a04);color:#000;font-weight:800">
+        ⚡ Já paguei o Pix da Cota (R$ 9,90) ✅
+      </button>
+    `;
+
+    this.messagesEl.appendChild(pixCard);
+    this.scrollToBottom();
+
+    pixCard.querySelector('#tg-up2-confirm-pix').onclick = async () => {
+      pixCard.remove();
+      this.addMessage('Já paguei minha cota! ✅', 'out');
+      await this.showTyping('registrando bilhete...', 1100);
+      const luckyNumber = Math.floor(100 + Math.random() * 900);
+      this.addMessage(`🎟️ <b>COTA #${luckyNumber} CONFIRMADA!</b> Você já está concorrendo à chamada e ao prêmio especial 🥰🔥`);
+      setTimeout(() => this.showFinalVipAccess(), 1600);
+    };
+  }
+
+  // ----------------------------------------------------
+  // ENTREGA FINAL: TELEGRAM VIP
+  // ----------------------------------------------------
+  async showFinalVipAccess() {
+    await this.showTyping('gerando chave final...', 1100);
+
+    this.addMessage(
+      'prontinho, amor! tudo preparado com muito carinho 🥰🔥\n\n' +
+      'agora sim... você tá 100% liberado! clica no botão abaixo pra entrar no nosso cantinho exclusivo no Telegram e curtir tudo sem censura 👇😈'
+    );
+
+    const vipCard = document.createElement('div');
+    vipCard.className = 'tg-checkout-card';
+    vipCard.style.borderColor = '#eab308';
+    vipCard.innerHTML = `
+      <div style="font-size:32px;margin-bottom:8px">🔑✨</div>
+      <div style="font-size:18px;font-weight:800;color:#facc15;margin-bottom:6px">
+        CANAL VIP LIBERADO!
+      </div>
+      <p style="font-size:13px;color:#d1d5db;margin:0 0 16px;line-height:1.4">
+        Toque no botão abaixo para resgatar sua entrada no canal secreto e ver todos os vídeos e conteúdos exclusivos:
+      </p>
+      <a href="${TELEGRAM_DIRECT_URL}" target="_blank" rel="noopener" class="tg-checkout-btn-pay" style="background:linear-gradient(135deg, #eab308, #ca8a04);color:#000;font-weight:800;font-size:15px;box-shadow:0 8px 25px rgba(234,179,8,0.4)">
+        🔓 ENTRAR NO CANAL VIP NO TELEGRAM ↗
+      </a>
+    `;
+    this.messagesEl.appendChild(vipCard);
+    this.scrollToBottom();
+
+    this.setActions([
+      {
+        label: '🔓 ENTRAR NO CANAL VIP NO TELEGRAM 🤤',
+        onClick: () => {
+          window.open(TELEGRAM_DIRECT_URL, '_blank');
         }
-      ]);
-    }, 2800);
+      }
+    ]);
   }
 }
 
