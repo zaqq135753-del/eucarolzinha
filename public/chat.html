@@ -33,8 +33,10 @@
 
   <script type="module">
     import { TelegramWebChat } from './chat.js';
+    import { trackChatOpened } from './tracking.js';
 
     document.addEventListener('DOMContentLoaded', () => {
+      trackChatOpened('main_cta');
       const chat = new TelegramWebChat({
         target: document.getElementById('chat-root'),
         isModal: false

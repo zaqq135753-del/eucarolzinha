@@ -2,6 +2,20 @@
 // TELEGRAM WEB CHAT - FLUXO NATIVO NA PRE-SELL
 // ======================================================
 
+import {
+  trackPreview1,
+  trackGift,
+  trackPlansView,
+  trackInitiateCheckout,
+  trackPixCopied,
+  trackPurchase,
+  trackUpsell1View,
+  trackUpsell1Purchase,
+  trackUpsell2View,
+  trackUpsell2Purchase,
+  trackCompleteRegistration
+} from './tracking.js';
+
 const PUSHINPAY_LINKS = {
   '7d': 'https://app.pushinpay.com.br/service/pay/A2EDB903-5026-4F10-9C19-2ED96008CA38',
   '15d': 'https://app.pushinpay.com.br/service/pay/A2E6EB06-7D4A-4E80-9B8C-A571478CEF8D',
@@ -238,6 +252,7 @@ export class TelegramWebChat {
 
     await this.showTyping('enviando vídeo...', 1100);
     this.addMessage('', 'in', { video: '/assets/previa-1.mp4' });
+    trackPreview1();
 
     this.setActions([
       {
@@ -275,6 +290,7 @@ export class TelegramWebChat {
 
     await this.showTyping('enviando presente...', 1200);
     this.addMessage('', 'in', { video: '/assets/previa-3.mp4' });
+    trackGift();
 
     await this.showTyping('digitando...', 800);
     this.addMessage(
@@ -361,6 +377,7 @@ export class TelegramWebChat {
     `;
 
     this.messagesEl.appendChild(plansCard);
+    trackPlansView();
     this.scrollToBottom();
 
     plansCard.querySelectorAll('.tg-plan-item').forEach(el => {
@@ -442,7 +459,11 @@ export class TelegramWebChat {
     this.state.selectedPlan = planKey;
     const planNames = { '7d': '7 Dias (R$ 8,90)', '15d': '15 Dias (R$ 14,90)', '30d': '30 Dias (R$ 24,90)' };
     const planPrices = { '7d': 'R$ 8,90', '15d': 'R$ 14,90', '30d': 'R$ 24,90' };
+    const planPricesNum = { '7d': 8.90, '15d': 14.90, '30d': 24.90 };
     const planUrl = PUSHINPAY_LINKS[planKey];
+
+    // Dispara Evento 6: InitiateCheckout
+    trackInitiateCheckout(planKey, planPricesNum[planKey] || 14.90);
 
     this.addMessage(`Quero o plano de ${planNames[planKey]} 🔥`, 'out');
     await this.showTyping('gerando Pix exclusivo...', 1000);
@@ -497,12 +518,13 @@ export class TelegramWebChat {
     this.scrollToBottom();
     this.startPixTimer(checkoutCard);
 
-    // Ação de copiar código Pix
+    // Ação de copiar código Pix (Evento 7: PixCodeCopied)
     const copyBtn = checkoutCard.querySelector('#tg-pix-copy-action');
     const inputField = checkoutCard.querySelector('#tg-pix-code-field');
     copyBtn.onclick = () => {
       inputField.select();
       navigator.clipboard?.writeText(pixCode).catch(() => {});
+      trackPixCopied(planPricesNum[planKey] || 14.90);
       copyBtn.classList.add('copied');
       copyBtn.innerHTML = '✓ Copiado!';
       setTimeout(() => {
@@ -543,98 +565,113 @@ export class TelegramWebChat {
       'o sistema tá só validando o comprovante da transação... aguenta 3 segundinhos que já libero a chave do quarto! ⏳🔥'
     );
 
-    // Simulação da aprovação do webhook da Pushin Pay
-    setTimeout(async () => {
-      if (checkoutCard) {
-        const statusText = checkoutCard.querySelector('#tg-status-text');
-        if (statusText) statusText.textContent = '✅ Pagamento confirmado via Pix!';
-      }
+      // Simulação da aprovação do webhook da Pushin Pay
+      setTimeout(async () => {
+        if (checkoutCard) {
+          const statusText = checkoutCard.querySelector('#tg-status-text');
+          if (statusText) statusText.textContent = '✅ Pagamento confirmado via Pix!';
+        }
 
-      await this.showTyping('liberando acesso...', 1000);
-      this.addMessage(
-        '🎉 <b>PAGAMENTO APROVADO COM SUCESSO!</b> 🥰🔥\n\n' +
-        'seu acesso ao VIP já tá garantidinho amor! Mas antes de você entrar no Telegram, olha o que eu separei exclusivamente pra você:'
-      );
+        // Dispara Evento 8: Purchase (Pagamento Aprovado)
+        const planPricesNum = { '7d': 8.90, '15d': 14.90, '30d': 24.90 };
+        const paidValue = planPricesNum[this.state.selectedPlan] || 14.90;
+        const txId = `tx_pix_${Date.now()}`;
+        trackPurchase(paidValue, txId);
 
-      this.showUpsell1App();
-    }, 2500);
-  }
+        await this.showTyping('liberando acesso...', 1000);
+        this.addMessage(
+          '🎉 <b>PAGAMENTO APROVADO COM SUCESSO!</b> 🥰🔥\n\n' +
+          'seu acesso ao VIP já tá garantidinho amor! Mas antes de você entrar no Telegram, olha o que eu separei exclusivamente pra você:'
+        );
 
-  // ----------------------------------------------------
-  // UPSELL 1: APP EXCLUSIVO PRIVÉ COM ATUALIZAÇÕES
-  // ----------------------------------------------------
-  async showUpsell1App() {
-    await this.showTyping('preparando proposta...', 900);
+        this.showUpsell1App();
+      }, 2500);
+    }
 
-    const upsellCard = document.createElement('div');
-    upsellCard.className = 'tg-upsell-box';
-    upsellCard.innerHTML = `
-      <span class="tg-upsell-badge">📲 OPORTUNIDADE ÚNICA · 60% OFF</span>
-      <h4 class="tg-upsell-title">App Exclusivo Carolzinha Privé</h4>
-      <p class="tg-upsell-desc">
-        Acesse minha biblioteca privada com galeria secreta, vídeos longos sem tarja e atualizações diárias direto no seu celular.
-      </p>
-      <div class="tg-upsell-price-wrap">
-        <span class="tg-upsell-old-price">R$ 49,90</span>
-        <span class="tg-upsell-price">R$ 19,90</span>
-      </div>
-      <button type="button" class="tg-upsell-accept-btn" id="tg-up1-accept">
-        🔥 QUERO ADICIONAR O APP POR +R$ 19,90 🤤
-      </button>
-      <button type="button" class="tg-upsell-skip-btn" id="tg-up1-skip">
-        Não quero, prefiro ficar só com o Telegram ↗
-      </button>
-    `;
+    // ----------------------------------------------------
+    // UPSELL 1: APP EXCLUSIVO PRIVÉ COM ATUALIZAÇÕES
+    // ----------------------------------------------------
+    async showUpsell1App() {
+      // Dispara Evento 9a: Upsell1_View
+      trackUpsell1View(19.90);
 
-    this.messagesEl.appendChild(upsellCard);
-    this.scrollToBottom();
+      await this.showTyping('preparando proposta...', 900);
 
-    upsellCard.querySelector('#tg-up1-accept').onclick = () => {
-      upsellCard.remove();
-      this.handleUpsell1Payment();
-    };
+      const upsellCard = document.createElement('div');
+      upsellCard.className = 'tg-upsell-box';
+      upsellCard.innerHTML = `
+        <span class="tg-upsell-badge">📲 OPORTUNIDADE ÚNICA · 60% OFF</span>
+        <h4 class="tg-upsell-title">App Exclusivo Carolzinha Privé</h4>
+        <p class="tg-upsell-desc">
+          Acesse minha biblioteca privada com galeria secreta, vídeos longos sem tarja e atualizações diárias direto no seu celular.
+        </p>
+        <div class="tg-upsell-price-wrap">
+          <span class="tg-upsell-old-price">R$ 49,90</span>
+          <span class="tg-upsell-price">R$ 19,90</span>
+        </div>
+        <button type="button" class="tg-upsell-accept-btn" id="tg-up1-accept">
+          🔥 QUERO ADICIONAR O APP POR +R$ 19,90 🤤
+        </button>
+        <button type="button" class="tg-upsell-skip-btn" id="tg-up1-skip">
+          Não quero, prefiro ficar só com o Telegram ↗
+        </button>
+      `;
 
-    upsellCard.querySelector('#tg-up1-skip').onclick = () => {
-      upsellCard.remove();
-      this.showUpsell2Raffle();
-    };
-  }
+      this.messagesEl.appendChild(upsellCard);
+      this.scrollToBottom();
 
-  async handleUpsell1Payment() {
-    this.addMessage('Quero adicionar o App Privé por R$ 19,90! 🔥', 'out');
-    await this.showTyping('gerando Pix do App...', 900);
+      upsellCard.querySelector('#tg-up1-accept').onclick = () => {
+        upsellCard.remove();
+        this.handleUpsell1Payment();
+      };
 
-    const pixCard = document.createElement('div');
-    pixCard.className = 'tg-checkout-card';
-    pixCard.innerHTML = `
-      <div class="tg-checkout-header">
-        <span class="tg-checkout-badge">📲 Pix Adicional do App</span>
-        <span class="tg-pix-timer">Taxa única: <strong>R$ 19,90</strong></span>
-      </div>
-      <div class="tg-pix-qr-container">
-        ${this.generateQrSvg()}
-      </div>
-      <button type="button" class="tg-pix-simulate-btn" id="tg-up1-confirm-pix" style="background:linear-gradient(135deg,#22c55e,#16a34a)">
-        ⚡ Já paguei o Pix do App (+R$ 19,90) ✅
-      </button>
-    `;
+      upsellCard.querySelector('#tg-up1-skip').onclick = () => {
+        upsellCard.remove();
+        this.showUpsell2Raffle();
+      };
+    }
 
-    this.messagesEl.appendChild(pixCard);
-    this.scrollToBottom();
+    async handleUpsell1Payment() {
+      this.addMessage('Quero adicionar o App Privé por R$ 19,90! 🔥', 'out');
+      await this.showTyping('gerando Pix do App...', 900);
 
-    pixCard.querySelector('#tg-up1-confirm-pix').onclick = async () => {
-      pixCard.remove();
-      this.addMessage('Já paguei o Pix do App! ✅', 'out');
-      await this.showTyping('ativando licença do app...', 1200);
-      this.addMessage('✅ <b>APP EXCLUSIVO LIBERADO!</b> Seu login e senha foram vinculados ao seu acesso 🥰📱');
-      setTimeout(() => this.showUpsell2Raffle(), 1500);
-    };
-  }
+      const pixCard = document.createElement('div');
+      pixCard.className = 'tg-checkout-card';
+      pixCard.innerHTML = `
+        <div class="tg-checkout-header">
+          <span class="tg-checkout-badge">📲 Pix Adicional do App</span>
+          <span class="tg-pix-timer">Taxa única: <strong>R$ 19,90</strong></span>
+        </div>
+        <div class="tg-pix-qr-container">
+          ${this.generateQrSvg()}
+        </div>
+        <button type="button" class="tg-pix-simulate-btn" id="tg-up1-confirm-pix" style="background:linear-gradient(135deg,#22c55e,#16a34a)">
+          ⚡ Já paguei o Pix do App (+R$ 19,90) ✅
+        </button>
+      `;
+
+      this.messagesEl.appendChild(pixCard);
+      this.scrollToBottom();
+
+      pixCard.querySelector('#tg-up1-confirm-pix').onclick = async () => {
+        pixCard.remove();
+        // Dispara Evento 9b: Upsell1_Purchase
+        trackUpsell1Purchase(19.90);
+
+        this.addMessage('Já paguei o Pix do App! ✅', 'out');
+        await this.showTyping('ativando licença do app...', 1200);
+        this.addMessage('✅ <b>APP EXCLUSIVO LIBERADO!</b> Seu login e senha foram vinculados ao seu acesso 🥰📱');
+        setTimeout(() => this.showUpsell2Raffle(), 1500);
+      };
+    }
 
   // ----------------------------------------------------
   // UPSELL 2: SORTEIO DA RIFA SECRETA
   // ----------------------------------------------------
   async showUpsell2Raffle() {
+    // Dispara Evento 10a: Upsell2_View
+    trackUpsell2View(9.90);
+
     await this.showTyping('digitando...', 900);
 
     this.addMessage(
@@ -704,6 +741,9 @@ export class TelegramWebChat {
 
     pixCard.querySelector('#tg-up2-confirm-pix').onclick = async () => {
       pixCard.remove();
+      // Dispara Evento 10b: Upsell2_Purchase
+      trackUpsell2Purchase(9.90);
+
       this.addMessage('Já paguei minha cota! ✅', 'out');
       await this.showTyping('registrando bilhete...', 1100);
       const luckyNumber = Math.floor(100 + Math.random() * 900);
@@ -734,17 +774,26 @@ export class TelegramWebChat {
       <p style="font-size:13px;color:#d1d5db;margin:0 0 16px;line-height:1.4">
         Toque no botão abaixo para resgatar sua entrada no canal secreto e ver todos os vídeos e conteúdos exclusivos:
       </p>
-      <a href="${TELEGRAM_DIRECT_URL}" target="_blank" rel="noopener" class="tg-checkout-btn-pay" style="background:linear-gradient(135deg, #eab308, #ca8a04);color:#000;font-weight:800;font-size:15px;box-shadow:0 8px 25px rgba(234,179,8,0.4)">
+      <a href="${TELEGRAM_DIRECT_URL}" target="_blank" rel="noopener" class="tg-checkout-btn-pay" id="tg-final-telegram-link" style="background:linear-gradient(135deg, #eab308, #ca8a04);color:#000;font-weight:800;font-size:15px;box-shadow:0 8px 25px rgba(234,179,8,0.4)">
         🔓 ENTRAR NO CANAL VIP NO TELEGRAM ↗
       </a>
     `;
     this.messagesEl.appendChild(vipCard);
     this.scrollToBottom();
 
+    // Dispara Evento 11: CompleteRegistration no clique
+    const linkBtn = vipCard.querySelector('#tg-final-telegram-link');
+    if (linkBtn) {
+      linkBtn.onclick = () => {
+        trackCompleteRegistration('telegram_vip');
+      };
+    }
+
     this.setActions([
       {
         label: '🔓 ENTRAR NO CANAL VIP NO TELEGRAM 🤤',
         onClick: () => {
+          trackCompleteRegistration('telegram_vip');
           window.open(TELEGRAM_DIRECT_URL, '_blank');
         }
       }

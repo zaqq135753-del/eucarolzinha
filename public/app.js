@@ -9,7 +9,9 @@ import { Hero } from './components.js';
 
 import {
   sessionAttribution,
-  captureAttribution
+  captureAttribution,
+  trackPageView,
+  trackChatOpened
 } from './tracking.js';
 
 import { track } from './analytics.js';
@@ -44,6 +46,9 @@ const emit = (event, extra = {}) =>
     ...attribution,
     ...extra
   });
+
+// Dispara Evento 1: PageView + PresellView { page: 'presell' }
+trackPageView();
 
 
 // ======================================================
@@ -698,6 +703,9 @@ document
             destination: 'native_webchat'
           }
         );
+
+        // Dispara Evento 2: Lead ou ChatOpened { source: 'main_cta' }
+        trackChatOpened('main_cta');
 
         if (window.chatInstance) {
           window.chatInstance.open();

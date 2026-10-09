@@ -3,6 +3,8 @@
 // Notificação Topo, Prova Social, Exit-Intent & Back Redirect
 // ======================================================
 
+import { trackChatOpened } from './tracking.js';
+
 const TELEGRAM_VIP_URL = 'https://t.me/eucarolzinha_bot?start=site_vip';
 
 export function setupBoosters(chatInstance) {
@@ -47,6 +49,7 @@ export function setupBoosters(chatInstance) {
       }
       banner.classList.remove('active');
       if (chatInstance) {
+        trackChatOpened('fake_push');
         chatInstance.open();
       }
     };
@@ -162,6 +165,7 @@ export function setupBoosters(chatInstance) {
     overlay.querySelector('#tg-exit-accept').onclick = () => {
       closeExitModal();
       if (chatInstance) {
+        trackChatOpened('fake_push');
         chatInstance.open();
         // Direciona direto para o plano de 7 dias com o desconto
         chatInstance.handlePlanSelected('7d');
