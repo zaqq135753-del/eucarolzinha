@@ -275,39 +275,65 @@ export function trackChatOpened(source = 'main_cta') {
 }
 
 // 3. Viu a Prévia 1 (ViewContent_Preview1)
-export function trackPreview1() {
-  trackPixelEvent('ViewContent_Preview1', { content_name: 'previa_1' }, 'ViewContent');
+export function trackPreview1(contentName = 'previa_1') {
+  trackPixelEvent('ViewContent_Preview1', { content_name: contentName }, 'ViewContent');
 }
 
-// 4. Recebeu o Presentinho (ViewContent_Gift)
-export function trackGift() {
-  trackPixelEvent('ViewContent_Gift', { content_name: 'presentinho_vip' }, 'ViewContent');
+// 4. Clique para ver a Prévia 2 (Click_Preview2)
+export function trackPreview2Click(choice = 'me_mostra_mais') {
+  trackPixelEvent('Click_Preview2', { choice });
 }
 
-// 5. Visualizou Planos (ViewContent_Plans)
+// 5. Viu a Prévia 2 (ViewContent_Preview2)
+export function trackPreview2View(contentName = 'previa_2') {
+  trackPixelEvent('ViewContent_Preview2', { content_name: contentName }, 'ViewContent');
+}
+
+// 6. Solicitou o Presentinho (Click_GiftRequest)
+export function trackGiftRequest(choice = 'quero_presente') {
+  trackPixelEvent('Click_GiftRequest', { choice });
+}
+
+// 7. Recebeu o Presentinho (ViewContent_Gift)
+export function trackGift(contentName = 'presentinho_vip') {
+  trackPixelEvent('ViewContent_Gift', { content_name: contentName }, 'ViewContent');
+}
+
+// 8. Visualizou Planos (ViewContent_Plans)
 export function trackPlansView() {
   trackPixelEvent('ViewContent_Plans', { content_name: 'tabela_planos' }, 'ViewContent');
 }
 
-// 6. Escolheu Plano / Pix (InitiateCheckout)
+// 9. Escolheu Plano / Pix (InitiateCheckout)
 export function trackInitiateCheckout(planKey = '15d', value = 14.90) {
   trackPixelEvent(
     'InitiateCheckout',
     {
       value,
       currency: 'BRL',
-      content_name: `plano_${planKey}`
+      content_name: `plano_${planKey}`,
+      plan: planKey
     },
     'InitiateCheckout'
   );
 }
 
-// 7. Copiou Código Pix (PixCodeCopied)
+// 10. Copiou Código Pix (PixCodeCopied)
 export function trackPixCopied(value = 14.90) {
   trackPixelEvent('PixCodeCopied', { value, currency: 'BRL' });
 }
 
-// 8. Pagamento Aprovado (Purchase)
+// 11. Clicou no botão oficial Pushin Pay (Click_PushinPay)
+export function trackPushinPayClick(planKey = '15d', value = 14.90) {
+  trackPixelEvent('Click_PushinPay', { plan: planKey, value, currency: 'BRL' });
+}
+
+// 12. Clicou em "Já fiz o Pix / Conferir Status" (PaymentCheckRequested)
+export function trackPaymentCheckRequested(planKey = '15d') {
+  trackPixelEvent('PaymentCheckRequested', { plan: planKey });
+}
+
+// 13. Pagamento Aprovado (Purchase)
 export function trackPurchase(value = 14.90, transactionId = '') {
   trackPixelEvent(
     'Purchase',
@@ -355,10 +381,15 @@ if (typeof window !== 'undefined') {
     trackPageView,
     trackChatOpened,
     trackPreview1,
+    trackPreview2Click,
+    trackPreview2View,
+    trackGiftRequest,
     trackGift,
     trackPlansView,
     trackInitiateCheckout,
     trackPixCopied,
+    trackPushinPayClick,
+    trackPaymentCheckRequested,
     trackPurchase,
     trackUpsell1View,
     trackUpsell1Purchase,
