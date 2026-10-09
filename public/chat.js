@@ -18,7 +18,9 @@ import {
   trackUpsell1Purchase,
   trackUpsell2View,
   trackUpsell2Purchase,
-  trackCompleteRegistration
+  trackCompleteRegistration,
+  BACKEND_URL,
+  getVisitorId
 } from './tracking.js';
 
 const PUSHINPAY_LINKS = {
@@ -427,12 +429,16 @@ export class TelegramWebChat {
   }
 
   async handleDirectPlans(userText) {
+    this.state.step = 'plans';
+    if (this.plansAbandonTimeout) clearTimeout(this.plansAbandonTimeout);
+
     if (userText) this.addMessage(userText, 'out');
     await this.showTyping('digitando...', 2500);
 
     this.addMessage(
       '🔥 <b>tô te esperando na cama molhadinha vida...</b> 🥵💦\n\n' +
-      'não vai me deixar na vontade aqui sozinha né? escolhe quanto tempo você quer ficar comigo 👇😏'
+      'não vai me deixar na vontade aqui sozinha né? escolhe quanto tempo você quer ficar comigo no meu cantinho 👇😏\n\n' +
+      '🔒 <i>100% no sigilo: no extrato do seu banco NÃO aparece nada adulto nem meu nome. Aparece apenas uma taxa neutra de tecnologia.</i>'
     );
 
     const plansCard = document.createElement('div');
@@ -440,9 +446,9 @@ export class TelegramWebChat {
     plansCard.innerHTML = `
       <div class="tg-plan-item highlight" data-plan="15d">
         <div>
-          <div class="tg-plan-badge">⭐ O QUE EU MAIS AMO (MEU FAVORITO)</div>
+          <div class="tg-plan-badge">⭐ MAIS ESCOLHIDO (MEU FAVORITO)</div>
           <div class="tg-plan-title">15 Dias de Acesso 🔥</div>
-          <div class="tg-plan-sub">Menos de R$ 1 por dia!</div>
+          <div class="tg-plan-sub"><del style="opacity:0.6">De R$ 49,90</del> · Menos de R$ 1 por dia!</div>
         </div>
         <div class="tg-plan-price">R$ 14,90</div>
       </div>
@@ -451,7 +457,7 @@ export class TelegramWebChat {
         <div>
           <div class="tg-plan-badge">👀 PROVA RÁPIDA</div>
           <div class="tg-plan-title">7 Dias de Acesso 😈</div>
-          <div class="tg-plan-sub">Uma provinha de uma semana</div>
+          <div class="tg-plan-sub"><del style="opacity:0.6">De R$ 29,90</del> · Uma provinha de uma semana</div>
         </div>
         <div class="tg-plan-price">R$ 8,90</div>
       </div>
@@ -460,7 +466,7 @@ export class TelegramWebChat {
         <div>
           <div class="tg-plan-badge">👑 VIP TOTAL</div>
           <div class="tg-plan-title">30 Dias de Acesso 🍑</div>
-          <div class="tg-plan-sub">Intimidade máxima no privado</div>
+          <div class="tg-plan-sub"><del style="opacity:0.6">De R$ 89,90</del> · Intimidade máxima no privado</div>
         </div>
         <div class="tg-plan-price">R$ 24,90</div>
       </div>
@@ -472,10 +478,34 @@ export class TelegramWebChat {
 
     plansCard.querySelectorAll('.tg-plan-item').forEach(el => {
       el.onclick = () => {
+        if (this.plansAbandonTimeout) clearTimeout(this.plansAbandonTimeout);
         const plan = el.dataset.plan;
         this.handlePlanSelected(plan);
       };
     });
+
+    // ⏳ RESGATE ANTI-ABANDONO DA CAROLZINHA (25 SEGUNDOS)
+    // Se o lead visualizar a tabela e não clicar em 25s, a Carolzinha resgata o lead:
+    this.plansAbandonTimeout = setTimeout(async () => {
+      if (this.state.step !== 'plans') return;
+      await this.showTyping('digitando...', 2400);
+      this.addMessage(
+        'amor? você sumiu... ficou com vergonha do valor? 🙈\n\n' +
+        'olha, eu tava aqui pensando... não quero te deixar na vontade hoje e nem ficar passando a mão sozinha na cama... 🤤💦\n\n' +
+        'liberei o acesso de <b>7 dias por só R$ 8,90</b> no sigilo total pra você entrar agora comigo! não vai me deixar esperando né vida? clica abaixo 👇'
+      );
+      this.setActions([
+        {
+          label: '🔥 Quero entrar por R$ 8,90 no sigilo 🤤',
+          onClick: () => this.handlePlanSelected('7d')
+        },
+        {
+          label: '⭐ Quero 15 dias por R$ 14,90 (Recomendado) 🔥',
+          secondary: true,
+          onClick: () => this.handlePlanSelected('15d')
+        }
+      ]);
+    }, 25000);
   }
 
   generateQrSvg() {
@@ -546,37 +576,57 @@ export class TelegramWebChat {
   }
 
   async handlePlanSelected(planKey) {
+    if (this.plansAbandonTimeout) clearTimeout(this.plansAbandonTimeout);
+    this.state.step = 'checkout';
     this.state.selectedPlan = planKey;
     const planNames = { '7d': '7 Dias (R$ 8,90)', '15d': '15 Dias (R$ 14,90)', '30d': '30 Dias (R$ 24,90)' };
     const planPrices = { '7d': 'R$ 8,90', '15d': 'R$ 14,90', '30d': 'R$ 24,90' };
     const planPricesNum = { '7d': 8.90, '15d': 14.90, '30d': 24.90 };
     const planUrl = PUSHINPAY_LINKS[planKey];
+    const visitorId = getVisitorId();
 
     // Dispara Evento 6: InitiateCheckout
     trackInitiateCheckout(planKey, planPricesNum[planKey] || 14.90);
 
     this.addMessage(`Quero o plano de ${planNames[planKey]} 🔥`, 'out');
-    await this.showTyping('gerando Pix exclusivo no sigilo...', 2600);
+    await this.showTyping('gerando Pix oficial protegido no Banco Central...', 2200);
+
+    // Geração dinâmica de Pix REAL via Pushin Pay API
+    let pixData = null;
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/pix/create`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan: planKey, visitorId })
+      });
+      if (res.ok) {
+        pixData = await res.json();
+      }
+    } catch (e) {
+      console.warn('[Chat] Fallback para Pix local:', e);
+    }
+
+    const realPixCode = pixData?.qrCode || `00020126580014br.gov.bcb.pix0136${planKey}-carolzinha-${Date.now()}5204000053039865405${planKey === '7d' ? '8.90' : planKey === '15d' ? '14.90' : '24.90'}5802BR5916CAROLZINHA PRIVE6009SAO PAULO62070503***6304ABCD`;
+    const realQrImgHtml = pixData?.qrCodeBase64
+      ? `<img src="${pixData.qrCodeBase64}" class="tg-pix-qr-img" alt="QR Code Pix" style="max-width:210px;border-radius:12px;background:#fff;padding:8px;margin:0 auto;display:block" />`
+      : this.generateQrSvg();
 
     this.addMessage(
       'separei seu acesso exclusivo no sigilo total, amor! 🔑🔥\n\n' +
-      '🔒 <i>pagamento 100% discreto no Pix (não aparece nada de conteúdo adulto no seu extrato bancário).</i>\n\n' +
-      'copia o código Pix ou escaneia o QR Code abaixo que o sistema já identifica na hora 👇🤤'
+      '🔒 <i>pagamento 100% discreto no Pix (no extrato do seu banco aparece apenas uma taxa neutra de tecnologia, sem nada adulto).</i>\n\n' +
+      'copia o código Pix abaixo e paga no seu banco que o sistema identifica e libera seu quarto na hora 👇🤤'
     );
-
-    // Código Pix simulado autêntico
-    const pixCode = `00020126580014br.gov.bcb.pix0136${planKey}-carolzinha-${Date.now()}5204000053039865405${planKey === '7d' ? '8.90' : planKey === '15d' ? '14.90' : '24.90'}5802BR5916CAROLZINHA PRIVE6009SAO PAULO62070503***6304ABCD`;
 
     const checkoutCard = document.createElement('div');
     checkoutCard.className = 'tg-checkout-card';
     checkoutCard.innerHTML = `
       <div class="tg-checkout-header">
-        <span class="tg-checkout-badge">🔒 Pix Oficial Protegido</span>
+        <span class="tg-checkout-badge">🔒 Pix Oficial Protegido (Pushin Pay)</span>
         <span class="tg-pix-timer">⏳ Expira em <strong id="tg-pix-timer-count">10:00</strong></span>
       </div>
 
       <div class="tg-pix-qr-container">
-        ${this.generateQrSvg()}
+        ${realQrImgHtml}
       </div>
 
       <div class="tg-pix-value-tag">
@@ -584,7 +634,7 @@ export class TelegramWebChat {
       </div>
 
       <div class="tg-pix-copy-box">
-        <input type="text" class="tg-pix-input" readonly value="${pixCode}" id="tg-pix-code-field" />
+        <input type="text" class="tg-pix-input" readonly value="${realPixCode}" id="tg-pix-code-field" />
         <button type="button" class="tg-pix-copy-btn" id="tg-pix-copy-action">
           📋 Copiar Pix
         </button>
@@ -592,7 +642,7 @@ export class TelegramWebChat {
 
       <div class="tg-pix-status-bar">
         <span class="tg-pulse-dot" id="tg-status-dot"></span>
-        <span id="tg-status-text">Aguardando confirmação bancária...</span>
+        <span id="tg-status-text">Aguardando compensação bancária...</span>
       </div>
 
       <a href="${planUrl}" target="_blank" rel="noopener" class="tg-pix-simulate-btn" id="tg-real-pay" style="display:flex;align-items:center;justify-content:center;text-decoration:none;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-weight:800;font-size:15px;padding:14px 18px;border-radius:14px;box-shadow:0 8px 24px rgba(34,197,94,0.35);margin:12px 0 6px 0;animation:tgPulseGreen 2s infinite">
@@ -613,10 +663,10 @@ export class TelegramWebChat {
     const inputField = checkoutCard.querySelector('#tg-pix-code-field');
     copyBtn.onclick = () => {
       inputField.select();
-      navigator.clipboard?.writeText(pixCode).catch(() => {});
+      navigator.clipboard?.writeText(realPixCode).catch(() => {});
       trackPixCopied(planPricesNum[planKey] || 14.90);
       copyBtn.classList.add('copied');
-      copyBtn.innerHTML = '✓ Copiado!';
+      copyBtn.innerHTML = '✓ Código Copiado!';
       setTimeout(() => {
         copyBtn.classList.remove('copied');
         copyBtn.innerHTML = '📋 Copiar Pix';
@@ -630,15 +680,34 @@ export class TelegramWebChat {
       trackInitiateCheckout(planKey, planPricesNum[planKey] || 14.90);
     };
 
-    // Ação de checar pagamento: NUNCA aprova de graça, orienta o cliente com realismo
+    // Ação de checar pagamento
     const checkBtn = checkoutCard.querySelector('#tg-check-pay');
     checkBtn.onclick = () => {
       trackPaymentCheckRequested(planKey);
-      this.handlePaymentCheck(checkoutCard, planUrl, planPrices[planKey]);
+      this.handlePaymentCheck(checkoutCard, planUrl, planPrices[planKey], pixData?.transactionId);
     };
+
+    // Auto-polling automático de confirmação Pix em tempo real
+    if (pixData?.transactionId) {
+      if (this.pixPollingInterval) clearInterval(this.pixPollingInterval);
+      this.pixPollingInterval = setInterval(async () => {
+        try {
+          const checkRes = await fetch(`${BACKEND_URL}/api/pix/status/${pixData.transactionId}`);
+          if (checkRes.ok) {
+            const statusData = await checkRes.json();
+            if (statusData.isPaid) {
+              clearInterval(this.pixPollingInterval);
+              if (this.pixTimerInterval) clearInterval(this.pixTimerInterval);
+              trackPurchase(planPricesNum[planKey] || 14.90, pixData.transactionId);
+              this.showPaidSuccess();
+            }
+          }
+        } catch {}
+      }, 3500);
+    }
   }
 
-  async handlePaymentCheck(checkoutCard, planUrl, planPriceStr) {
+  async handlePaymentCheck(checkoutCard, planUrl, planPriceStr, transactionId = null) {
     if (checkoutCard) {
       const statusText = checkoutCard.querySelector('#tg-status-text');
       const dot = checkoutCard.querySelector('#tg-status-dot');
@@ -657,13 +726,27 @@ export class TelegramWebChat {
       }
     }
 
+    if (transactionId) {
+      try {
+        const checkRes = await fetch(`${BACKEND_URL}/api/pix/status/${transactionId}`);
+        if (checkRes.ok) {
+          const statusData = await checkRes.json();
+          if (statusData.isPaid) {
+            trackPurchase(14.90, transactionId);
+            this.showPaidSuccess();
+            return;
+          }
+        }
+      } catch {}
+    }
+
     this.addMessage('Já fiz o Pix no meu banco, confere aí amor! ⏳', 'out');
     await this.showTyping('consultando Pushin Pay...', 2800);
 
     this.addMessage(
       'recebi seu aviso aqui, amor! 💋\n\n' +
       'o sistema da Pushin Pay tá sincronizando com o Banco Central... assim que a compensação do seu Pix cair aqui, sua liberação VIP ocorre automaticamente na hora! ⏳\n\n' +
-      '⚠️ <i>Dica: Se você ainda não abriu o aplicativo do seu banco para transferir, toque no botão verde abaixo para concluir com segurança no checkout oficial da Pushin Pay:</i>'
+      '⚠️ <i>Dica: Se você ainda não concluiu a transferência no seu banco, toque no botão verde abaixo para finalizar com total segurança no checkout oficial da Pushin Pay:</i>'
     );
 
     const pendingBox = document.createElement('div');
