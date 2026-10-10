@@ -44,16 +44,23 @@
     import { trackChatOpened } from './tracking.js';
     import { setupBoosters } from './boosters.js';
 
-    document.addEventListener('DOMContentLoaded', () => {
-      trackChatOpened('main_cta');
+    function startChat() {
+      trackChatOpened('chat_page');
+      const root = document.getElementById('chat-root') || document.body;
       const chat = new TelegramWebChat({
-        target: document.getElementById('chat-root'),
+        target: root,
         isModal: false
       });
       window.chatInstance = chat;
       setupBoosters(chat);
       chat.open();
-    });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', startChat);
+    } else {
+      startChat();
+    }
   </script>
 </body>
 </html>

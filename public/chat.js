@@ -125,14 +125,17 @@ export class TelegramWebChat {
       if (existing) existing.remove();
       const div = document.createElement('div');
       div.innerHTML = html.trim();
-      this.target.appendChild(div.firstChild);
-      this.overlay = document.getElementById('tg-chat-overlay');
+      const overlayEl = div.firstElementChild;
+      this.target.appendChild(overlayEl);
+      this.overlay = document.getElementById('tg-chat-overlay') || overlayEl;
       this.container = this.overlay.querySelector('.tg-chat-container');
     } else {
       this.target.innerHTML = html.trim();
       this.overlay = this.target.querySelector('.tg-modal-overlay');
-      this.overlay.classList.add('active');
-      this.overlay.style.position = 'relative';
+      if (this.overlay) {
+        this.overlay.classList.add('active');
+        this.overlay.style.position = 'relative';
+      }
       this.container = this.target.querySelector('.tg-chat-container');
     }
 
@@ -236,7 +239,7 @@ export class TelegramWebChat {
     if (extra.video) {
       innerContent += `
         <div class="tg-video-wrap">
-          <video class="tg-video" src="${extra.video}" playsinline webkit-playsinline loop preload="auto"></video>
+          <video class="tg-video" src="${extra.video}" muted playsinline webkit-playsinline loop preload="auto"></video>
           <div class="tg-video-overlay-btn">▶</div>
           <button class="tg-video-sound-btn" type="button">🔊 Som</button>
         </div>
