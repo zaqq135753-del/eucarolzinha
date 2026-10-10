@@ -338,9 +338,9 @@ export class TelegramWebChat {
       'oii amor... tava aqui morgando no tédio na cama pensando em você e não aguentei, tive que gravar isso agora... 👀🔥'
     );
 
-    // Entrada: vídeo 1 toca por 2s e apaga
+    // Entrada: vídeo 3 toca por 2s e apaga
     await this.showTyping('enviando vídeo...', 2000);
-    const wrongVideoMsg = this.addMessage('', 'in', { video: this.videos.video1.url });
+    const wrongVideoMsg = this.addMessage('', 'in', { video: this.videos.video3.url });
 
     // Permite reproduzir por 2.2 segundos para atiçar a curiosidade máxima
     await new Promise(r => setTimeout(r, 2200));
@@ -365,10 +365,10 @@ export class TelegramWebChat {
       'olha esse aqui então... coloca o fone de ouvido aí e assiste com calma 👇👅💦'
     );
 
-    // Envia o vídeo 3!
+    // Envia o vídeo 1!
     await this.showTyping('enviando vídeo...', 3000);
-    this.addMessage('', 'in', { video: this.videos.video3.url });
-    trackPreview1(this.videos.video3.name);
+    this.addMessage('', 'in', { video: this.videos.video1.url });
+    trackPreview1(this.videos.video1.name);
 
     this.setActions([
       {
