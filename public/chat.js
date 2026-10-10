@@ -146,6 +146,10 @@ export class TelegramWebChat {
     }
   }
 
+  isOpen() {
+    return Boolean(this.overlay && this.overlay.classList.contains('active'));
+  }
+
   open() {
     if (this.overlay) {
       this.state.opened = true;

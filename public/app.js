@@ -749,7 +749,7 @@ floatingChat.innerHTML = `
 document.body.appendChild(floatingChat);
 floatingChat.onclick = () => chatInstance.open();
 
-// Se a URL contiver parâmetros de chat ou status de pagamento aprovado, abre direto
+// Se a URL contiver parâmetros explícitos de chat ou pagamento aprovado, abre direto
 const searchParams = new URLSearchParams(location.search);
 if (
   searchParams.get('chat') === '1' ||
@@ -759,13 +759,39 @@ if (
 ) {
   setTimeout(() => chatInstance.open(), 300);
 } else {
-  // AUTO-OPEN INTELIGENTE: abre o chat automaticamente após 1.5s
-  // Multiplica a taxa de entrada no chat de 12.5% para mais de 75%!
-  setTimeout(() => {
-    if (!chatInstance.state.opened) {
-      chatInstance.open();
+  // GATILHO POR ROLAGEM INTELIGENTE:
+  // Permite o lead rolar a página com calma, conhecer a Carol e ver o vídeo do topo.
+  // Quando o lead rola até a seção de prévias/galeria (#previas), dispara o convite do chat.
+  let scrollTriggered = false;
+  const triggerChatInvite = () => {
+    if (scrollTriggered || chatInstance.isOpen()) return;
+    scrollTriggered = true;
+    const banner = document.getElementById('tg-push-banner');
+    if (banner) {
+      banner.classList.add('active');
     }
-  }, 1400);
+  };
+
+  const previasSection = document.getElementById('previas');
+  if (previasSection && 'IntersectionObserver' in window) {
+    new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          triggerChatInvite();
+          obs.disconnect();
+        }
+      });
+    }, { threshold: 0.25 }).observe(previasSection);
+  }
+
+  // Se o lead rolar mais de 45% da página no mobile
+  window.addEventListener('scroll', () => {
+    const scrollPos = window.scrollY + window.innerHeight;
+    const totalHeight = document.documentElement.scrollHeight;
+    if (!scrollTriggered && scrollPos / totalHeight >= 0.45) {
+      triggerChatInvite();
+    }
+  }, { passive: true });
 }
 
 // ======================================================
