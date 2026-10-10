@@ -3,6 +3,7 @@
 // ======================================================
 
 import {
+  trackChatOpened,
   trackPreview1,
   trackPreview2Click,
   trackPreview2View,
@@ -139,11 +140,11 @@ export class TelegramWebChat {
       this.container = this.target.querySelector('.tg-chat-container');
     }
 
-    this.messagesEl = document.getElementById('tg-messages');
-    this.footerEl = document.getElementById('tg-action-footer');
-    this.statusEl = document.getElementById('tg-user-status');
+    this.messagesEl = this.overlay?.querySelector('#tg-messages') || document.getElementById('tg-messages');
+    this.footerEl = this.overlay?.querySelector('#tg-action-footer') || document.getElementById('tg-action-footer');
+    this.statusEl = this.overlay?.querySelector('#tg-user-status') || document.getElementById('tg-user-status');
 
-    const closeBtn = document.getElementById('tg-close-btn');
+    const closeBtn = this.overlay?.querySelector('#tg-close-btn') || document.getElementById('tg-close-btn');
     if (closeBtn) {
       closeBtn.onclick = () => this.close();
     }
@@ -157,12 +158,20 @@ export class TelegramWebChat {
     if (this.overlay) {
       this.state.opened = true;
       this.overlay.classList.add('active');
-      trackChatOpened('presell_funnel');
+      try {
+        if (typeof trackChatOpened === 'function') {
+          trackChatOpened('presell_funnel');
+        }
+      } catch (err) {
+        console.warn('[Chat] Track error ignorado:', err);
+      }
       const params = new URLSearchParams(location.search);
       if (params.get('status') === 'approved' || params.get('paid') === '1' || params.get('demo_approved') === '1') {
-        this.showPaidSuccess();
+        this.showPaidSuccess().catch(() => {});
       } else if (this.state.step === 'start') {
-        this.startFunnel();
+        this.startFunnel().catch(err => {
+          console.error('[Chat] Erro no startFunnel:', err);
+        });
       }
     }
   }
