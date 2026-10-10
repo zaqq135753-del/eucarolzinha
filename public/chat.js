@@ -71,6 +71,7 @@ export class TelegramWebChat {
     this.selectedMedia = {
       preview1: pickRandomMedia('preview1'),
       preview2: pickRandomMedia('preview2'),
+      video3: { url: '/assets/previa-3.mp4', name: 'video_3' },
       gift: pickRandomMedia('gift')
     };
 
@@ -335,7 +336,7 @@ export class TelegramWebChat {
 
     // Dinâmica Psicológica: Carolzinha manda vídeo, roda 2s, apaga e diz que mandou errado
     await this.showTyping('enviando vídeo...', 2000);
-    const wrongVideoMsg = this.addMessage('', 'in', { video: this.selectedMedia.preview2.url });
+    const wrongVideoMsg = this.addMessage('', 'in', { video: this.selectedMedia.preview1.url });
 
     // Permite reproduzir por 2.2 segundos para atiçar a curiosidade máxima
     await new Promise(r => setTimeout(r, 2200));
@@ -361,8 +362,8 @@ export class TelegramWebChat {
     );
 
     await this.showTyping('enviando vídeo...', 3000);
-    this.addMessage('', 'in', { video: this.selectedMedia.preview1.url });
-    trackPreview1(this.selectedMedia.preview1.name);
+    this.addMessage('', 'in', { video: this.selectedMedia.video3.url });
+    trackPreview1(this.selectedMedia.video3.name);
 
     this.setActions([
       {
