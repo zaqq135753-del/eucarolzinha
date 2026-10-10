@@ -187,7 +187,7 @@ export class TelegramWebChat {
     await this.showTyping('confirmando compensação do Pix...', 1200);
     this.addMessage(
       '🎉 <b>PAGAMENTO CONFIRMADO COM SUCESSO!</b> 🥰🔥\n\n' +
-      'seu acesso ao VIP já tá garantidinho amor! Mas antes de você entrar no Telegram, olha o que eu separei exclusivamente pra você:'
+      'seu acesso ao VIP já tá liberado! Mas antes de você entrar no Telegram, olha o que eu separei exclusivamente pra você:'
     );
     this.showUpsell1App();
   }
@@ -343,10 +343,10 @@ export class TelegramWebChat {
 
   async startFunnel() {
     this.state.step = 'intro';
-    await this.showTyping('digitando...', 1200);
+    await this.showTyping('digitando...', 1000);
 
     this.addMessage(
-      'oii amor... tava aqui no tédio na cama pensando em você e não aguentei, tive que gravar isso agora... 👀🔥'
+      'tava aqui na cama pegando fogo de tédio e não aguentei... tive que gravar isso agorinha 👀🔥'
     );
 
     // Entrada: vídeo 3 toca por 3.5s e apaga
@@ -359,180 +359,180 @@ export class TelegramWebChat {
     // Apaga a mensagem na frente do lead
     this.deleteMessage(wrongVideoMsg, '🚫 Esta mensagem foi apagada por Carolzinha');
 
-    await this.showTyping('digitando rápido...', 900);
+    await this.showTyping('digitando rápido...', 800);
     this.addMessage(
-      'MEU DEUS AMOR APAGA ISSO KKKKKK 🙈🙈 socorro mandei no chat errado que vergonhaaaa\n\n' +
-      'fala pra mim que você não viu pfv kkkkk 👀🔥 quase tive um treco aqui'
+      'CARALHO APAGA ISSO KKKKKK 🙈🙈 socorro mandei no chat errado que vergonhaaaa\n\n' +
+      'fala que você não viu isso pfv 👀🔥 quase morri aqui'
     );
 
     // INTERAÇÃO IMEDIATA: O lead escolhe como responder!
     this.setActions([
       {
-        label: '😈 Eu vi tudinho amor, que delícia... 🔥',
-        onClick: () => this.handleAfterDeletedChoice('😈 Eu vi tudinho amor, que delícia... 🔥')
+        label: '😈 Eu vi tudinho, que gostosa... 🔥',
+        onClick: () => this.handleAfterDeletedChoice('😈 Eu vi tudinho, que gostosa... 🔥')
       },
       {
-        label: '🙈 Não vi nada vida, me manda de novo! 👀',
-        onClick: () => this.handleAfterDeletedChoice('🙈 Não vi nada vida, me manda de novo! 👀')
+        label: '🙈 Não deu pra ver direito, me mostra de novo! 👀',
+        onClick: () => this.handleAfterDeletedChoice('🙈 Não deu pra ver direito, me mostra de novo! 👀')
       },
       {
-        label: '🔥 Quero ir direto pro seu VIP (R$ 9,90) 🤤',
+        label: '🔥 Quero ir direto pro VIP sem censura (R$ 9,90) 🤤',
         secondary: true,
-        onClick: () => this.handleDirectPlans('🔥 Quero ir direto pro seu VIP (R$ 9,90) 🤤')
+        onClick: () => this.handleDirectPlans('🔥 Quero ir direto pro VIP sem censura (R$ 9,90) 🤤')
       }
     ]);
   }
 
   async handleAfterDeletedChoice(userText) {
     this.addMessage(userText, 'out');
-    await this.showTyping('digitando...', 1200);
+    await this.showTyping('digitando...', 1100);
     this.addMessage(
-      'era pra te mandar esse aqui vida... mas promete de coração que não conta pra ninguém o que você viu?? 🙈🤤\n\n' +
+      'era pra te mandar esse aqui... mas promete que não vaza pra ninguém o que você viu?? 🙈🤤\n\n' +
       'olha esse aqui então... coloca o fone de ouvido aí e assiste com calma 👇👅💦'
     );
 
     // Envia o vídeo 1!
-    await this.showTyping('enviando vídeo...', 1200);
+    await this.showTyping('enviando vídeo...', 1100);
     this.addMessage('', 'in', { video: this.videos.video1.url });
-    trackPreview1(this.videos.video1.name);
+    try { trackPreview1(this.videos.video1.name); } catch {}
 
     this.setActions([
       {
-        label: '👀 me mostra mais amor, desce a mão 🔥',
-        onClick: () => this.handleStep1Choice('👀 me mostra mais amor, desce a mão 🔥')
+        label: '👀 Desce essa mão logo, quero ver mais 🔥',
+        onClick: () => this.handleStep1Choice('👀 Desce essa mão logo, quero ver mais 🔥')
       },
       {
-        label: '🔥 quero ir direto pro seu privado vida (R$ 9,90) 😈',
+        label: '🔥 Quero entrar no privado agora (R$ 9,90) 😈',
         secondary: true,
-        onClick: () => this.handleDirectPlans('🔥 quero ir direto pro seu privado vida (R$ 9,90) 😈')
+        onClick: () => this.handleDirectPlans('🔥 Quero entrar no privado agora (R$ 9,90) 😈')
       }
     ]);
   }
 
   async handleStep1Choice(userText) {
-    trackPreview2Click(userText);
+    try { trackPreview2Click(userText); } catch {}
     this.addMessage(userText, 'out');
-    await this.showTyping('digitando...', 1200);
+    await this.showTyping('digitando...', 1100);
 
     this.addMessage(
-      'sabia que você ia pedir pra eu descer a mão haha... safadinho você né? 😂🔥\n\n' +
-      'calma que nessa aqui eu já tava sem calcinha nenhuma e me deu um calor absurdo... olha a mão descendo devagarzinho aqui 👇🍑💦'
+      'sabia que você ia querer ver... safado né? 😂🔥\n\n' +
+      'nessa aqui eu já tava sem calcinha nenhuma me tocando... olha a mão descendo devagarzinho aqui 👇🍑💦'
     );
 
     // Envia a prévia 3!
-    await this.showTyping('enviando vídeo...', 1300);
+    await this.showTyping('enviando vídeo...', 1200);
     this.addMessage('', 'in', { video: this.videos.previa3.url });
-    trackPreview2View(this.videos.previa3.name);
+    try { trackPreview2View(this.videos.previa3.name); } catch {}
 
-    await this.showTyping('digitando...', 1200);
+    await this.showTyping('digitando...', 1100);
 
     this.addMessage(
-      'olha amor, eu gravei um bagulho bem mais íntimo aqui agorinha na cama... bem safado, nem devia te mandar agora pq fiquei com vergonha... 👀🙈\n\n' +
-      'quer que eu te mande de presente agora?'
+      'gravei um bagulho bem mais pesado aqui agorinha na cama... bem safado mesmo, nem devia te soltar isso aqui 👀🙈\n\n' +
+      'quer ver agora?'
     );
 
     this.setActions([
       {
-        label: '🎁 me manda esse presentinho agora amor 🤤',
-        onClick: () => this.handleGiftStep('🎁 me manda esse presentinho agora amor 🤤')
+        label: '🎁 Me manda isso agora, quero ver tudo 🤤',
+        onClick: () => this.handleGiftStep('🎁 Me manda isso agora, quero ver tudo 🤤')
       },
       {
-        label: '🔥 quero ficar com você no vip agora vida 😈',
+        label: '🔥 Quero entrar no VIP completo agora 😈',
         secondary: true,
-        onClick: () => this.handleDirectPlans('🔥 quero ficar com você no vip agora vida 😈')
+        onClick: () => this.handleDirectPlans('🔥 Quero entrar no VIP completo agora 😈')
       }
     ]);
   }
 
   async handleGiftStep(userText) {
-    trackGiftRequest(userText);
+    try { trackGiftRequest(userText); } catch {}
     this.addMessage(userText, 'out');
-    await this.showTyping('gravando um presentinho...', 1300);
+    await this.showTyping('gravando...', 1200);
 
     this.addMessage(
-      'amor, resolvi te soltar esse presentinho então... mas promete que não vai vazar pra ninguém hein? pelo amor de Deus kkkk 🙈🎁\n\n' +
-      'gravei esse vídeo aqui bem íntimo só pra vc ver como eu fico quando tô pegando fogo na cama... 🤤💦\n\n' +
-      'coloca o fone de ouvido aí no talo que o gemidinho tá baixo... assiste até o finalzinho 👇👅'
+      'resolvi te soltar então... mas não vaza isso de jeito nenhum hein? 🙈🎁\n\n' +
+      'olha como eu fico quando tô pegando fogo na cama... 🤤💦\n\n' +
+      'coloca o fone que o gemidinho tá baixo... assiste até o finalzinho 👇👅'
     );
 
     // Envia a prévia 2!
-    await this.showTyping('enviando presente exclusivo...', 1300);
+    await this.showTyping('enviando vídeo exclusivo...', 1200);
     this.addMessage('', 'in', { video: this.videos.previa2.url });
-    trackGift(this.videos.previa2.name);
+    try { trackGift(this.videos.previa2.name); } catch {}
 
-    await this.showTyping('digitando...', 1100);
+    await this.showTyping('digitando...', 1000);
     this.addMessage(
-      'gostou do meu presentinho amor? 🤤💦 mó delícia gravar isso pra você...\n\n' +
-      'imagina eu todinha pra você todo santo dia no meu cantinho particular, gemendo no seu ouvido e gravando tudo que você pedir sem censura nenhuma... 🔞🔥'
+      'gostou? 🤤💦 mó delícia gravar isso...\n\n' +
+      'imagina eu todinha pra você todo santo dia no meu privado, gemendo no seu ouvido e fazendo tudo que você mandar sem censura nenhuma... 🔞🔥'
     );
 
     this.setActions([
       {
-        label: '🔞 me mostra a última prévia antes do vip 🤤',
-        onClick: () => this.handleLastPreviewStep('🔞 me mostra a última prévia antes do vip 🤤')
+        label: '🔞 Me mostra a última prévia mais pesada 🤤',
+        onClick: () => this.handleLastPreviewStep('🔞 Me mostra a última prévia mais pesada 🤤')
       },
       {
-        label: '🔥 quero entrar no seu vip agora por R$ 9,90 🤤',
+        label: '🔥 Quero entrar no VIP agora por R$ 9,90 🤤',
         secondary: true,
-        onClick: () => this.handleDirectPlans('🔥 quero entrar no seu vip agora por R$ 9,90 🤤')
+        onClick: () => this.handleDirectPlans('🔥 Quero entrar no VIP agora por R$ 9,90 🤤')
       }
     ]);
   }
 
   async handleLastPreviewStep(userText) {
     this.addMessage(userText, 'out');
-    await this.showTyping('digitando...', 1100);
+    await this.showTyping('digitando...', 1000);
 
     this.addMessage(
-      'nossa vida, se você já pirou naqueles, segura essa aqui... 🤤🔥\n\n' +
-      'esse é o vídeo mais forte que eu já gravei fora do VIP! Olha como eu fico molhadinha de verdade quando penso em você 👇🔞💦'
+      'se você já pirou nesses, segura essa aqui... 🤤🔥\n\n' +
+      'esse é o mais forte que eu já gravei fora do VIP! Olha como eu fico molhadinha de verdade 👇🔞💦'
     );
 
     // Envia a prévia 1!
-    await this.showTyping('enviando vídeo mais forte...', 1300);
+    await this.showTyping('enviando o mais forte...', 1200);
     this.addMessage('', 'in', { video: this.videos.previa1.url });
 
-    await this.showTyping('digitando...', 1100);
+    await this.showTyping('digitando...', 1000);
     this.addMessage(
-      'agora chega de passar vontade sozinho aqui amor... 🥵💦\n\n' +
-      'lá no meu VIP eu tô sem calcinha te esperando na cama, com gemidinho no seu ouvido e gravando tudo que você pedir sem censura nenhuma!\n\n' +
-      'escolhe seu plano aqui embaixo pra gente curtir no privado agora 👇💋'
+      'agora chega de passar vontade sozinho na mão... 🥵💦\n\n' +
+      'no meu VIP eu tô sem calcinha te esperando, gemendo no seu ouvido e gravando tudo que você pedir sem censura!\n\n' +
+      'escolhe aqui embaixo pra gente curtir agora 👇💋'
     );
 
     this.setActions([
       {
-        label: '🔥 escolher meu plano e entrar agora 🤤',
-        onClick: () => this.handleDirectPlans('🔥 escolher meu plano e entrar agora 🤤')
+        label: '🔥 Escolher plano e entrar agora 🤤',
+        onClick: () => this.handleDirectPlans('🔥 Escolher plano e entrar agora 🤤')
       },
       {
-        label: '👀 o que mais tem lá dentro amor? 😈',
+        label: '👀 O que mais tem lá dentro? 😈',
         secondary: true,
-        onClick: () => this.handleBenefits('👀 o que mais tem lá dentro amor? 😈')
+        onClick: () => this.handleBenefits('👀 O que mais tem lá dentro? 😈')
       }
     ]);
   }
 
   async handleBenefits(userText) {
     this.addMessage(userText, 'out');
-    await this.showTyping('digitando...', 3000);
+    await this.showTyping('digitando...', 1500);
 
     this.addMessage(
-      'então vida, quando você destranca o acesso, você fica direto comigo aqui no meu chat pessoal, sem ninguém te vigiando... 🤫💋\n\n' +
+      'quando você destranca o acesso, você fica direto comigo aqui no meu chat pessoal, sem ninguém te vigiando... 🤫💋\n\n' +
       'lá eu me entrego 100% pra você todo santo dia:\n\n' +
       '🔥 <b>Vídeos sem censura nenhuma:</b> me masturbando todinha, usando brinquedinhos e chupando gostoso 🔞💦\n' +
       '📸 <b>Fotinhas no espelho:</b> bem de pertinho, sem calcinha, molhadinha só pra você 🍑🤤\n' +
       '🎥 <b>Gravações proibidas:</b> que o Instagram baniria em 5 segundos 😈\n' +
       '💬 <b>Conversa íntima no privado:</b> te mando áudio todo dia falando seu nome bem baixinho 🎧👅\n' +
       '✨ <b>Conteúdo novo diário:</b> pra você nunca mais dormir sozinho na vontade!\n\n' +
-      '🔒 <b>100% DISCRETO E NO SIGILO:</b> No seu extrato bancário NÃO aparece nada adulto nem meu nome. Aparece apenas uma taxa discreta de tecnologia.\n\n' +
+      '🔒 <b>100% DISCRETO E NO SIGILO:</b> No seu extrato bancário NÃO aparece nada adulto nem meu nome. Aparece apenas uma taxa neutra de tecnologia.\n\n' +
       '⚡ <b>LIBERAÇÃO INSTANTÂNEA:</b> Pagou no Pix, em 10 segundos já libera a chave do meu quarto pra gente curtir agora!\n\n' +
-      'não vai me deixar na vontade aqui sozinha passando a mão né amor?'
+      'não vai me deixar na vontade aqui sozinha passando a mão né?'
     );
 
     this.setActions([
       {
-        label: '🔥 escolher meu plano e entrar agora 🤤',
-        onClick: () => this.handleDirectPlans('🔥 escolher meu plano e entrar agora 🤤')
+        label: '🔥 Escolher meu plano e entrar agora 🤤',
+        onClick: () => this.handleDirectPlans('🔥 Escolher meu plano e entrar agora 🤤')
       }
     ]);
   }
@@ -587,11 +587,11 @@ export class TelegramWebChat {
     // ⏳ RESGATE ANTI-ABANDONO DA CAROLZINHA (25 SEGUNDOS)
     this.plansAbandonTimeout = setTimeout(async () => {
       if (this.state.step !== 'plans') return;
-      await this.showTyping('digitando...', 2400);
+      await this.showTyping('digitando...', 1200);
       this.addMessage(
-        'amor? você sumiu... ficou na dúvida? 🙈\n\n' +
-        'olha, eu tô aqui na cama me tocando e não quero te deixar na vontade hoje... 🤤💦\n\n' +
-        'é só <b>R$ 9,90 no Pix</b>, menos que um lanche, pra você me ter todinha sem censura no sigilo total! Clica abaixo e vem agora vida 👇'
+        'sumiu? ficou na dúvida? 🙈\n\n' +
+        'eu tô aqui na cama me tocando e não quero te deixar na vontade hoje... 🤤💦\n\n' +
+        'é só <b>R$ 9,90 no Pix</b>, menos que uma cerveja pra me ter pelada sem censura no sigilo total! Clica abaixo e vem cá 👇'
       );
       this.setActions([
         {
@@ -707,7 +707,7 @@ export class TelegramWebChat {
     const realQrImgHtml = this.generateQrSvg();
 
     this.addMessage(
-      'separei seu acesso exclusivo no sigilo total, amor! 🔑🔥\n\n' +
+      'separei seu acesso exclusivo no sigilo total! 🔑🔥\n\n' +
       '🔒 <i>pagamento 100% discreto no Pix (no extrato do seu banco aparece apenas uma taxa neutra de tecnologia, sem nada adulto).</i>\n\n' +
       'copia o código Pix abaixo e paga no seu banco que o sistema identifica e libera seu quarto na hora 👇🤤'
     );
@@ -934,11 +934,11 @@ export class TelegramWebChat {
       } catch {}
     }
 
-    this.addMessage('Já fiz o Pix, aguardando o banco confirmar amor... ⏳', 'out');
-    await this.showTyping('consultando compensação...', 2800);
+    this.addMessage('Já fiz o Pix, aguardando o banco confirmar... ⏳', 'out');
+    await this.showTyping('consultando compensação...', 1800);
 
     this.addMessage(
-      'tô monitorando aqui na hora, amor! 💋\n\n' +
+      'tô monitorando aqui na hora! 💋\n\n' +
       'a API tá conectada direto com o banco... assim que a compensação cair, seu acesso VIP libera aqui automaticamente! ⏳\n\n' +
       '⚠️ <i>Se ainda não pagou ou prefere pagar pelo app com QR code aberto, toca no botão verde abaixo:</i>'
     );
@@ -1006,7 +1006,7 @@ export class TelegramWebChat {
       await this.showTyping('preparando ativação...', 2400);
 
       this.addMessage(
-        'perfeito, amor! 📲🤤\n\n' +
+        'perfeito, gostoso! 📲🤤\n\n' +
         'sua vaga no <b>App Exclusivo Carolzinha Privé</b> tá reservada por apenas <b>+R$ 19,90</b>!\n\n' +
         'para vincular seu login de membro e receber a senha de acesso da biblioteca secreta, conclua a ativação no botão abaixo:'
       );
@@ -1054,7 +1054,7 @@ export class TelegramWebChat {
     await this.showTyping('digitando...', 2500);
 
     this.addMessage(
-      'e tem mais um detalhe especial amor... 👀🎁\n\n' +
+      'e tem mais uma surpresinha pra você... 👀🎁\n\n' +
       'todo mês eu faço um <b>SORTEIO VIP</b> exclusivo entre os membros ativos:'
     );
 
@@ -1143,7 +1143,7 @@ export class TelegramWebChat {
     await this.showTyping('gerando chave final...', 2600);
 
     this.addMessage(
-      'prontinho, amor! tudo preparado com muito carinho 🥰🔥\n\n' +
+      'prontinho! tudo preparado e sem nenhuma censura pra você... 😈🔥\n\n' +
       'agora sim... você tá 100% liberado! clica no botão abaixo pra entrar no nosso cantinho exclusivo no Telegram e curtir tudo sem censura 👇😈'
     );
 

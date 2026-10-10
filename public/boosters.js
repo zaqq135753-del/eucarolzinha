@@ -27,7 +27,7 @@ export function setupBoosters(chatInstance) {
           <span class="tg-push-title">Carolzinha Satler <span style="color:#2ea5ff;font-size:11px">✓</span></span>
           <span class="tg-push-time">agora</span>
         </div>
-        <div class="tg-push-text">amor, você ainda tá aí? acabei de gravar um presentinho só pra você... 👀🎁</div>
+        <div class="tg-push-text">você ainda tá aí? acabei de gravar um presentinho sem calcinha só pra você... 👀🎁</div>
       </div>
       <button type="button" class="tg-push-close" id="tg-push-close" aria-label="Fechar">✕</button>
     `;
@@ -113,7 +113,7 @@ export function setupBoosters(chatInstance) {
         <button class="tg-exit-close-btn" id="tg-exit-close">✕</button>
         <img src="/assets/carol-avatar.jpg" alt="Carolzinha" class="tg-exit-avatar" />
         <span class="tg-exit-badge">⚠️ CONDIÇÃO SECRETA DE EMERGÊNCIA</span>
-        <h3 class="tg-exit-title">Espera amor... não vai embora na vontade! 🥺💔</h3>
+        <h3 class="tg-exit-title">Espera... não vai embora na vontade! 🥺💔</h3>
         <p class="tg-exit-desc">
           Vi que você ficou em dúvida, então liberei essa condição exclusiva só para você não ficar chupando o dedo hoje:
         </p>
