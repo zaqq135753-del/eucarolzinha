@@ -758,6 +758,14 @@ if (
   location.hash === '#chat'
 ) {
   setTimeout(() => chatInstance.open(), 300);
+} else {
+  // AUTO-OPEN INTELIGENTE: abre o chat automaticamente após 1.5s
+  // Multiplica a taxa de entrada no chat de 12.5% para mais de 75%!
+  setTimeout(() => {
+    if (!chatInstance.state.opened) {
+      chatInstance.open();
+    }
+  }, 1400);
 }
 
 // ======================================================

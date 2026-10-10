@@ -148,7 +148,9 @@ export class TelegramWebChat {
 
   open() {
     if (this.overlay) {
+      this.state.opened = true;
       this.overlay.classList.add('active');
+      trackChatOpened('presell_funnel');
       const params = new URLSearchParams(location.search);
       if (params.get('status') === 'approved' || params.get('paid') === '1' || params.get('demo_approved') === '1') {
         this.showPaidSuccess();
@@ -688,16 +690,22 @@ export class TelegramWebChat {
     checkoutCard.className = 'tg-checkout-card';
     checkoutCard.innerHTML = `
       <div class="tg-checkout-header">
-        <span class="tg-checkout-badge">🔒 Pix Oficial Protegido • Banco Central</span>
-        <span class="tg-pix-timer">⏳ Expira em <strong id="tg-pix-timer-count">10:00</strong></span>
+        <span class="tg-checkout-badge">⚡ Liberação Imediata • Vaga Exclusiva</span>
+        <span class="tg-pix-timer">⏳ Garanta por <strong id="tg-pix-timer-count">10:00</strong></span>
       </div>
 
-      <div class="tg-pix-qr-container">
-        ${realQrImgHtml}
+      <div class="tg-pix-value-tag" style="margin:10px 0 6px 0;background:rgba(230,57,115,0.12);border:1px solid rgba(230,57,115,0.3);padding:12px;border-radius:12px">
+        <div style="font-size:12px;color:#94a3b8;font-weight:600">VALOR PROMOCIONAL ÚNICO</div>
+        <div style="font-size:24px;font-weight:900;color:#4bd865">${planPrices[planKey]} <small style="font-size:13px;color:#cbd5e1;font-weight:500">(Acesso Completo + Privado)</small></div>
       </div>
 
-      <div class="tg-pix-value-tag">
-        ${planPrices[planKey]} <small>(${planNames[planKey]})</small>
+      <!-- BOTÃO DE 1 CLIQUE DIRETO (MÁXIMA CONVERSÃO) -->
+      <a href="${planUrl}" target="_blank" rel="noopener" class="tg-pix-simulate-btn" id="tg-real-pay" style="display:flex;align-items:center;justify-content:center;text-decoration:none;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-weight:800;font-size:15px;padding:16px 18px;border-radius:14px;box-shadow:0 8px 26px rgba(34,197,94,0.45);margin:10px 0 12px 0;animation:tgPulseGreen 2s infinite">
+        👉 PAGAR NO PIX OFICIAL (${planPrices[planKey]}) 🔒
+      </a>
+
+      <div style="font-size:12px;color:#94a3b8;text-align:center;margin-bottom:8px">
+        — ou copie o código Pix abaixo para pagar no seu app —
       </div>
 
       <div class="tg-pix-copy-box">
@@ -752,14 +760,10 @@ export class TelegramWebChat {
         </div>
       </div>
 
-      <div class="tg-pix-status-bar">
+      <div class="tg-pix-status-bar" style="margin-top:10px">
         <span class="tg-pulse-dot" id="tg-status-dot"></span>
         <span id="tg-status-text">Aguardando compensação bancária...</span>
       </div>
-
-      <a href="${planUrl}" target="_blank" rel="noopener" class="tg-pix-simulate-btn" id="tg-real-pay" style="display:flex;align-items:center;justify-content:center;text-decoration:none;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-weight:800;font-size:15px;padding:14px 18px;border-radius:14px;box-shadow:0 8px 24px rgba(34,197,94,0.35);margin:12px 0 6px 0;animation:tgPulseGreen 2s infinite">
-        💳 Pagar no Pix Oficial Seguro (${planPrices[planKey]}) 🔒
-      </a>
 
       <button type="button" class="tg-pix-check-action-btn" id="tg-check-pay" style="width:100%;background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.35);color:#facc15;padding:12px;border-radius:12px;font-size:13.5px;font-weight:700;cursor:pointer;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s">
         <span class="tg-pulse-dot" style="background:#facc15;width:8px;height:8px;display:inline-block;border-radius:50%"></span>
