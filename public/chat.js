@@ -169,7 +169,7 @@ export class TelegramWebChat {
     const txId = new URLSearchParams(location.search).get('tx') || `tx_pushin_${Date.now()}`;
     trackPurchase(paidValue, txId);
 
-    await this.showTyping('confirmando pagamento com a Pushin Pay...', 1200);
+    await this.showTyping('confirmando compensação do Pix...', 1200);
     this.addMessage(
       '🎉 <b>PAGAMENTO CONFIRMADO COM SUCESSO!</b> 🥰🔥\n\n' +
       'seu acesso ao VIP já tá garantidinho amor! Mas antes de você entrar no Telegram, olha o que eu separei exclusivamente pra você:'
@@ -705,7 +705,7 @@ export class TelegramWebChat {
     checkoutCard.className = 'tg-checkout-card';
     checkoutCard.innerHTML = `
       <div class="tg-checkout-header">
-        <span class="tg-checkout-badge">🔒 Pix Oficial Protegido (Pushin Pay)</span>
+        <span class="tg-checkout-badge">🔒 Pix Oficial Protegido • Banco Central</span>
         <span class="tg-pix-timer">⏳ Expira em <strong id="tg-pix-timer-count">10:00</strong></span>
       </div>
 
@@ -730,28 +730,40 @@ export class TelegramWebChat {
           <span>🚀 Pagar Rápido: Escolha seu Banco</span>
         </div>
         <div class="tg-bank-shortcuts-grid">
-          <button type="button" class="tg-bank-btn nubank" data-scheme="nubank://" data-store="https://play.google.com/store/apps/details?id=com.nu.production">
-            <span class="tg-bank-icon">🟣</span>
+          <button type="button" class="tg-bank-btn nubank" data-scheme="nubank://" data-store="https://play.google.com/store/apps/details?id=com.nu.production" title="Abrir Nubank">
+            <span class="tg-bank-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="#820ad1"><path d="M14.8 5.5c-2.3 0-4.1 1.6-4.6 3.7h-.2V5.8H5.8v12.4h4.2v-6.3c0-1.7 1.2-3 2.8-3 1.6 0 2.8 1.3 2.8 3v6.3h4.2v-6.9c0-3.2-2.3-5.8-5-5.8z"/></svg>
+            </span>
             <span>Nubank</span>
           </button>
-          <button type="button" class="tg-bank-btn inter" data-scheme="bancointer://" data-store="https://play.google.com/store/apps/details?id=br.com.intermedium">
-            <span class="tg-bank-icon">🟠</span>
+          <button type="button" class="tg-bank-btn inter" data-scheme="bancointer://" data-store="https://play.google.com/store/apps/details?id=br.com.intermedium" title="Abrir Inter">
+            <span class="tg-bank-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="#ff7a00"><circle cx="12" cy="12" r="10" fill="#ff7a00"/><path d="M12 6.5v11M8.5 12h7" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>
+            </span>
             <span>Inter</span>
           </button>
-          <button type="button" class="tg-bank-btn mercadopago" data-scheme="mercadopago://" data-store="https://play.google.com/store/apps/details?id=com.mercadopago.wallet">
-            <span class="tg-bank-icon">🔵</span>
+          <button type="button" class="tg-bank-btn mercadopago" data-scheme="mercadopago://" data-store="https://play.google.com/store/apps/details?id=com.mercadopago.wallet" title="Abrir Mercado Pago">
+            <span class="tg-bank-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="#009ee3"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14.93V18h-2v-1.07c-2.02-.34-3.5-1.92-3.5-3.93 0-1.74 1.15-3.08 2.88-3.57l1.62-.47c.94-.27 1.5-.78 1.5-1.46 0-.83-.67-1.5-1.5-1.5-.88 0-1.55.67-1.55 1.55H8.45c0-1.84 1.36-3.36 3.55-3.53V3h2v1.07c2.02.34 3.5 1.92 3.5 3.93 0 1.74-1.15 3.08-2.88 3.57l-1.62.47c-.94.27-1.5.78-1.5 1.46 0 .83.67 1.5 1.5 1.5.88 0 1.55-.67 1.55-1.55h2c0 1.84-1.36 3.36-3.55 3.53z"/></svg>
+            </span>
             <span>Mercado Pago</span>
           </button>
-          <button type="button" class="tg-bank-btn picpay" data-scheme="picpay://" data-store="https://play.google.com/store/apps/details?id=com.picpay">
-            <span class="tg-bank-icon">🟢</span>
+          <button type="button" class="tg-bank-btn picpay" data-scheme="picpay://" data-store="https://play.google.com/store/apps/details?id=com.picpay" title="Abrir PicPay">
+            <span class="tg-bank-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="#21c25e"><rect x="3" y="3" width="18" height="18" rx="5" fill="#21c25e"/><path d="M9 16V8h4.5c1.93 0 3.5 1.34 3.5 3s-1.57 3-3.5 3H11v2H9z" fill="#fff"/></svg>
+            </span>
             <span>PicPay</span>
           </button>
-          <button type="button" class="tg-bank-btn itau" data-scheme="itau://" data-store="https://play.google.com/store/apps/details?id=com.itau">
-            <span class="tg-bank-icon">🟧</span>
+          <button type="button" class="tg-bank-btn itau" data-scheme="itau://" data-store="https://play.google.com/store/apps/details?id=com.itau" title="Abrir Itaú">
+            <span class="tg-bank-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="#ec7000"><rect x="3" y="3" width="18" height="18" rx="4" fill="#ec7000"/><text x="12" y="16" fill="#fff" font-size="10" font-weight="900" text-anchor="middle" font-family="sans-serif">itau</text></svg>
+            </span>
             <span>Itaú</span>
           </button>
-          <button type="button" class="tg-bank-btn caixa" data-scheme="caixa://" data-store="https://play.google.com/store/apps/details?id=br.gov.caixa.tem">
-            <span class="tg-bank-icon">🟦</span>
+          <button type="button" class="tg-bank-btn caixa" data-scheme="caixa://" data-store="https://play.google.com/store/apps/details?id=br.gov.caixa.tem" title="Abrir Caixa">
+            <span class="tg-bank-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="#005ca9"><rect x="3" y="3" width="18" height="18" rx="4" fill="#005ca9"/><path d="M7 8l5 4-5 4M12 8l5 4-5 4" stroke="#ff7a00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
             <span>Caixa</span>
           </button>
         </div>
@@ -763,7 +775,7 @@ export class TelegramWebChat {
       </div>
 
       <a href="${planUrl}" target="_blank" rel="noopener" class="tg-pix-simulate-btn" id="tg-real-pay" style="display:flex;align-items:center;justify-content:center;text-decoration:none;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-weight:800;font-size:15px;padding:14px 18px;border-radius:14px;box-shadow:0 8px 24px rgba(34,197,94,0.35);margin:12px 0 6px 0;animation:tgPulseGreen 2s infinite">
-        💳 Pagar no Pix Seguro na Pushin Pay (${planPrices[planKey]}) 🔒
+        💳 Pagar no Pix Oficial Seguro (${planPrices[planKey]}) 🔒
       </a>
 
       <button type="button" class="tg-pix-check-action-btn" id="tg-check-pay" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:#cbd5e1;padding:10px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;margin-top:6px;transition:all 0.2s">
@@ -879,7 +891,7 @@ export class TelegramWebChat {
     if (checkoutCard) {
       const statusText = checkoutCard.querySelector('#tg-status-text');
       const dot = checkoutCard.querySelector('#tg-status-dot');
-      if (statusText) statusText.textContent = 'Consultando Banco Central & Pushin Pay...';
+      if (statusText) statusText.textContent = 'Consultando Banco Central & Sistema Pix...';
       if (dot) dot.style.background = '#eab308';
       const checkBtn = checkoutCard.querySelector('#tg-check-pay');
       if (checkBtn) {
@@ -909,12 +921,12 @@ export class TelegramWebChat {
     }
 
     this.addMessage('Já fiz o Pix no meu banco, confere aí amor! ⏳', 'out');
-    await this.showTyping('consultando Pushin Pay...', 2800);
+    await this.showTyping('consultando compensação...', 2800);
 
     this.addMessage(
       'recebi seu aviso aqui, amor! 💋\n\n' +
-      'o sistema da Pushin Pay tá sincronizando com o Banco Central... assim que a compensação do seu Pix cair aqui, sua liberação VIP ocorre automaticamente na hora! ⏳\n\n' +
-      '⚠️ <i>Dica: Se você ainda não concluiu a transferência no seu banco, toque no botão verde abaixo para finalizar com total segurança no checkout oficial da Pushin Pay:</i>'
+      'o sistema tá sincronizando com o Banco Central... assim que a compensação do seu Pix cair aqui, sua liberação VIP ocorre automaticamente na hora! ⏳\n\n' +
+      '⚠️ <i>Dica: Se você ainda não concluiu a transferência no seu banco, toque no botão verde abaixo para finalizar com total segurança no checkout oficial:</i>'
     );
 
     const pendingBox = document.createElement('div');
@@ -922,10 +934,10 @@ export class TelegramWebChat {
     pendingBox.style.cssText = 'background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.3);border-radius:14px;padding:12px;margin:8px 0;text-align:center';
     pendingBox.innerHTML = `
       <div style="font-size:13px;color:#facc15;font-weight:600;margin-bottom:8px">
-        ⏳ Aguardando confirmação bancária na Pushin Pay
+        ⏳ Aguardando confirmação bancária do Pix
       </div>
       <a href="${planUrl}" target="_blank" rel="noopener" style="display:inline-block;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-weight:700;font-size:13.5px;padding:10px 16px;border-radius:10px;text-decoration:none;box-shadow:0 4px 14px rgba(34,197,94,0.3)">
-        👉 Abrir / Concluir Pagamento na Pushin Pay (${planPriceStr}) ↗
+        👉 Abrir / Concluir Pagamento Seguro (${planPriceStr}) ↗
       </a>
     `;
     this.messagesEl.appendChild(pendingBox);
