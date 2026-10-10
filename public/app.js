@@ -740,20 +740,20 @@ if (
   // Quando o lead rola até a seção de prévias/galeria (#previas), dispara o convite do chat.
   let scrollTriggered = false;
   const triggerChatInvite = () => {
-    if (scrollTriggered || chatInstance.isOpen()) return;
+    if (scrollTriggered) return;
     scrollTriggered = true;
+    console.log('[Funnel] Scroll trigger ativado! Exibindo notificação e abrindo chat...');
     const banner = document.getElementById('tg-push-banner');
     if (banner) {
       banner.classList.add('active');
     }
-    // No PC e mobile, se o cara rolou até as prévias e está engajado, abre o chat suavemente após 3s se ele não fechar o banner
+    // Abre o chat para o lead que rolou a página
     setTimeout(() => {
-      if (!chatInstance.isOpen()) {
-        chatInstance.open();
-      }
-    }, 3500);
+      chatInstance.open();
+    }, 1800);
   };
 
+  // 1. Gatilho por IntersectionObserver no elemento de prévias
   const previasSection = document.getElementById('previas');
   if (previasSection && 'IntersectionObserver' in window) {
     new IntersectionObserver((entries, obs) => {
@@ -763,14 +763,12 @@ if (
           obs.disconnect();
         }
       });
-    }, { threshold: 0.15 }).observe(previasSection);
+    }, { threshold: 0.1 }).observe(previasSection);
   }
 
-  // Se o lead rolar mais de 35% da página (PC ou celular)
+  // 2. Gatilho de rolagem simples e robusto: se rolou mais de 250px para baixo (funciona 100% no PC e mobile)
   window.addEventListener('scroll', () => {
-    const scrollPos = window.scrollY + window.innerHeight;
-    const totalHeight = document.documentElement.scrollHeight || 1;
-    if (!scrollTriggered && scrollPos / totalHeight >= 0.35) {
+    if (!scrollTriggered && (window.pageYOffset || document.documentElement.scrollTop || window.scrollY || 0) > 250) {
       triggerChatInvite();
     }
   }, { passive: true });

@@ -189,10 +189,6 @@ export class TelegramWebChat {
     }
   }
 
-  isOpen() {
-    return this.overlay && this.overlay.classList.contains('active');
-  }
-
   scrollToBottom() {
     requestAnimationFrame(() => {
       this.messagesEl.scrollTop = this.messagesEl.scrollHeight;
