@@ -640,6 +640,39 @@ export class TelegramWebChat {
         </button>
       </div>
 
+      <!-- Atalhos Rápidos para Abrir o Banco do Usuário -->
+      <div class="tg-bank-shortcuts">
+        <div class="tg-bank-shortcuts-title">
+          <span>🚀 Pagar Rápido: Escolha seu Banco</span>
+        </div>
+        <div class="tg-bank-shortcuts-grid">
+          <button type="button" class="tg-bank-btn nubank" data-scheme="nubank://" data-store="https://play.google.com/store/apps/details?id=com.nu.production">
+            <span class="tg-bank-icon">🟣</span>
+            <span>Nubank</span>
+          </button>
+          <button type="button" class="tg-bank-btn inter" data-scheme="bancointer://" data-store="https://play.google.com/store/apps/details?id=br.com.intermedium">
+            <span class="tg-bank-icon">🟠</span>
+            <span>Inter</span>
+          </button>
+          <button type="button" class="tg-bank-btn mercadopago" data-scheme="mercadopago://" data-store="https://play.google.com/store/apps/details?id=com.mercadopago.wallet">
+            <span class="tg-bank-icon">🔵</span>
+            <span>Mercado Pago</span>
+          </button>
+          <button type="button" class="tg-bank-btn picpay" data-scheme="picpay://" data-store="https://play.google.com/store/apps/details?id=com.picpay">
+            <span class="tg-bank-icon">🟢</span>
+            <span>PicPay</span>
+          </button>
+          <button type="button" class="tg-bank-btn itau" data-scheme="itau://" data-store="https://play.google.com/store/apps/details?id=com.itau">
+            <span class="tg-bank-icon">🟧</span>
+            <span>Itaú</span>
+          </button>
+          <button type="button" class="tg-bank-btn caixa" data-scheme="caixa://" data-store="https://play.google.com/store/apps/details?id=br.gov.caixa.tem">
+            <span class="tg-bank-icon">🟦</span>
+            <span>Caixa</span>
+          </button>
+        </div>
+      </div>
+
       <div class="tg-pix-status-bar">
         <span class="tg-pulse-dot" id="tg-status-dot"></span>
         <span id="tg-status-text">Aguardando compensação bancária...</span>
@@ -661,7 +694,7 @@ export class TelegramWebChat {
     // Ação de copiar código Pix (Evento 7: PixCodeCopied)
     const copyBtn = checkoutCard.querySelector('#tg-pix-copy-action');
     const inputField = checkoutCard.querySelector('#tg-pix-code-field');
-    const doCopyPix = () => {
+    const doCopyPix = (notify = true) => {
       let copied = false;
       try {
         if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -680,18 +713,49 @@ export class TelegramWebChat {
       } catch (err) {}
 
       trackPixCopied(planPricesNum[planKey] || 14.90);
-      copyBtn.classList.add('copied');
-      copyBtn.innerHTML = '✅ Pix Copiado! Cola no Banco';
-      copyBtn.style.background = '#059669';
-      setTimeout(() => {
-        copyBtn.classList.remove('copied');
-        copyBtn.innerHTML = '📋 Copiar Código Pix';
-        copyBtn.style.background = '';
-      }, 4000);
+      if (notify) {
+        copyBtn.classList.add('copied');
+        copyBtn.innerHTML = '✅ Pix Copiado! Cola no Banco';
+        copyBtn.style.background = '#059669';
+        setTimeout(() => {
+          copyBtn.classList.remove('copied');
+          copyBtn.innerHTML = '📋 Copiar Código Pix';
+          copyBtn.style.background = '';
+        }, 4000);
+      }
+      return copied;
     };
 
-    copyBtn.onclick = doCopyPix;
-    inputField.onclick = doCopyPix;
+    copyBtn.onclick = () => doCopyPix(true);
+    inputField.onclick = () => doCopyPix(true);
+
+    // Configuração dos Botões de Abertura Direta dos Bancos (Deep Links)
+    checkoutCard.querySelectorAll('.tg-bank-btn').forEach(btn => {
+      btn.onclick = (e) => {
+        e.preventDefault();
+        // 1. Garante a cópia do código Pix no mesmo milissegundo
+        doCopyPix(true);
+
+        const scheme = btn.dataset.scheme;
+        const store = btn.dataset.store;
+
+        // Feedback no botão de status
+        const statusText = checkoutCard.querySelector('#tg-status-text');
+        if (statusText) statusText.textContent = 'Pix copiado! Abrindo aplicativo do banco...';
+
+        // 2. Dispara tentativa de abrir o aplicativo do banco
+        const now = Date.now();
+        window.location.href = scheme;
+
+        // Fallback: se o app não estiver instalado após 1.5s, não trava a tela
+        setTimeout(() => {
+          if (Date.now() - now < 2000 && !document.hidden) {
+            // Continua no chat com o código copiado pronto
+            if (statusText) statusText.textContent = 'Código copiado! Cole na opção "Pix Copia e Cola" do seu banco.';
+          }
+        }, 1500);
+      };
+    });
 
     // Ação do botão principal da Pushin Pay
     const realPayBtn = checkoutCard.querySelector('#tg-real-pay');
