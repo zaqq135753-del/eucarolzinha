@@ -70,12 +70,13 @@ export class TelegramWebChat {
       paidPending: false
     };
 
-    // Sorteio aleatório de mídia para o lead da sessão
-    this.selectedMedia = {
-      preview1: pickRandomMedia('preview1'),
-      preview2: pickRandomMedia('preview2'),
+    // Acervo oficial dos 5 vídeos do funil
+    this.videos = {
+      video1: { url: '/assets/video-1.mp4', name: 'video_1' },
       video3: { url: '/assets/video-3.mp4', name: 'video_3' },
-      gift: pickRandomMedia('gift')
+      previa3: { url: '/assets/previa-3.mp4', name: 'previa_3' },
+      previa2: { url: '/assets/previa-2.mp4', name: 'previa_2' },
+      previa1: { url: '/assets/previa-1.mp4', name: 'previa_1' }
     };
 
     this.render();
@@ -337,9 +338,9 @@ export class TelegramWebChat {
       'oii amor... tava aqui morgando no tédio na cama pensando em você e não aguentei, tive que gravar isso agora... 👀🔥'
     );
 
-    // Dinâmica Psicológica: Carolzinha manda vídeo, roda 2s, apaga e diz que mandou errado
+    // Entrada: vídeo 1 toca por 2s e apaga
     await this.showTyping('enviando vídeo...', 2000);
-    const wrongVideoMsg = this.addMessage('', 'in', { video: this.selectedMedia.preview1.url });
+    const wrongVideoMsg = this.addMessage('', 'in', { video: this.videos.video1.url });
 
     // Permite reproduzir por 2.2 segundos para atiçar a curiosidade máxima
     await new Promise(r => setTimeout(r, 2200));
@@ -364,9 +365,10 @@ export class TelegramWebChat {
       'olha esse aqui então... coloca o fone de ouvido aí e assiste com calma 👇👅💦'
     );
 
+    // Envia o vídeo 3!
     await this.showTyping('enviando vídeo...', 3000);
-    this.addMessage('', 'in', { video: this.selectedMedia.video3.url });
-    trackPreview1(this.selectedMedia.video3.name);
+    this.addMessage('', 'in', { video: this.videos.video3.url });
+    trackPreview1(this.videos.video3.name);
 
     this.setActions([
       {
@@ -391,9 +393,10 @@ export class TelegramWebChat {
       'calma que nessa aqui eu já tava sem calcinha nenhuma e me deu um calor absurdo... olha a mão descendo devagarzinho aqui 👇🍑💦'
     );
 
+    // Envia a prévia 3!
     await this.showTyping('enviando vídeo...', 3400);
-    this.addMessage('', 'in', { video: this.selectedMedia.preview2.url });
-    trackPreview2View(this.selectedMedia.preview2.name);
+    this.addMessage('', 'in', { video: this.videos.previa3.url });
+    trackPreview2View(this.videos.previa3.name);
 
     // Pacing lento e humano: Carolzinha instiga o lead com suspense antes do presente
     await this.showTyping('digitando...', 2600);
@@ -427,9 +430,10 @@ export class TelegramWebChat {
       'coloca o fone de ouvido aí no talo que o gemidinho tá baixo... assiste até o finalzinho 👇👅'
     );
 
+    // Envia a prévia 2!
     await this.showTyping('enviando presente exclusivo...', 3500);
-    this.addMessage('', 'in', { video: this.selectedMedia.gift.url });
-    trackGift(this.selectedMedia.gift.name);
+    this.addMessage('', 'in', { video: this.videos.previa2.url });
+    trackGift(this.videos.previa2.name);
 
     await this.showTyping('digitando...', 2800);
     this.addMessage(
@@ -439,8 +443,41 @@ export class TelegramWebChat {
 
     this.setActions([
       {
+        label: '🔞 me mostra a última prévia antes do vip 🤤',
+        onClick: () => this.handleLastPreviewStep('🔞 me mostra a última prévia antes do vip 🤤')
+      },
+      {
         label: '🔥 quero entrar no seu vip agora 🤤',
+        secondary: true,
         onClick: () => this.handleDirectPlans('🔥 quero entrar no seu vip agora 🤤')
+      }
+    ]);
+  }
+
+  async handleLastPreviewStep(userText) {
+    this.addMessage(userText, 'out');
+    await this.showTyping('digitando...', 2800);
+
+    this.addMessage(
+      'nossa vida, se você já pirou naqueles, segura essa aqui... 🤤🔥\n\n' +
+      'esse é o vídeo mais forte que eu já gravei fora do VIP! Olha como eu fico molhadinha de verdade quando penso em você 👇🔞💦'
+    );
+
+    // Envia a prévia 1!
+    await this.showTyping('enviando vídeo mais forte...', 3500);
+    this.addMessage('', 'in', { video: this.videos.previa1.url });
+
+    await this.showTyping('digitando...', 2600);
+    this.addMessage(
+      'agora chega de passar vontade sozinho aqui amor... 🥵💦\n\n' +
+      'lá no meu VIP eu tô sem calcinha te esperando na cama, com gemidinho no seu ouvido e gravando tudo que você pedir sem censura nenhuma!\n\n' +
+      'escolhe seu plano aqui embaixo pra gente curtir no privado agora 👇💋'
+    );
+
+    this.setActions([
+      {
+        label: '🔥 escolher meu plano e entrar agora 🤤',
+        onClick: () => this.handleDirectPlans('🔥 escolher meu plano e entrar agora 🤤')
       },
       {
         label: '👀 o que mais tem lá dentro amor? 😈',
