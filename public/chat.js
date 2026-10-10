@@ -97,9 +97,10 @@ export class TelegramWebChat {
               <div class="tg-user-name">
                 Carolzinha Satler <span class="tg-verified">✓</span>
               </div>
-              <div class="tg-user-status" id="tg-user-status">online</div>
+              <div class="tg-user-status" id="tg-user-status">online agora</div>
             </div>
             <div class="tg-header-actions">
+              <span class="tg-vip-badge">💎 VIP PRIVADO</span>
               <a href="${TELEGRAM_DIRECT_URL}" target="_blank" rel="noopener" class="tg-app-switch" title="Abrir no app do Telegram">
                 Abrir App ↗
               </a>
@@ -107,7 +108,9 @@ export class TelegramWebChat {
           </header>
 
           <!-- Mensagens -->
-          <main class="tg-messages" id="tg-messages"></main>
+          <main class="tg-messages" id="tg-messages">
+            <div class="tg-encryption-notice">🔒 Chat Privado Criptografado • Sigilo Total</div>
+          </main>
 
           <!-- Footer / Ações de Resposta Rápida -->
           <footer class="tg-action-footer" id="tg-action-footer"></footer>
@@ -281,6 +284,21 @@ export class TelegramWebChat {
     }
 
     this.scrollToBottom();
+    return msg;
+  }
+
+  deleteMessage(msgEl, reason = 'Esta mensagem foi apagada') {
+    if (!msgEl) return;
+    const time = this.getCurrentTime();
+    msgEl.classList.add('tg-msg-deleted');
+    msgEl.innerHTML = `
+      <div class="tg-bubble tg-bubble-deleted">
+        <span class="tg-deleted-icon">🚫</span>
+        <em>${reason}</em>
+        <span class="tg-msg-time">${time}</span>
+      </div>
+    `;
+    this.scrollToBottom();
   }
 
   setActions(buttons = []) {
@@ -309,15 +327,40 @@ export class TelegramWebChat {
 
   async startFunnel() {
     this.state.step = 'intro';
-    await this.showTyping('digitando...', 2800);
+    await this.showTyping('digitando...', 2600);
 
     this.addMessage(
-      'oii amor... tava aqui morgando no tédio na cama pensando em você e não aguentei, tive que gravar isso agora... 👀🔥\n\n' +
-      'mó calor hoje, fiquei aqui me tocando e me deu uma vontade absurda kkkk... nem costumo mandar nada assim de cara, mas senti uma vibe tão gostosa com você... 🙈🤤\n\n' +
-      'coloca o fone de ouvido aí rapidinho e me assiste com calma... garanto que você não vai conseguir tirar o olho 👅💦'
+      'oii amor... tava aqui morgando no tédio na cama pensando em você e não aguentei, tive que gravar isso agora... 👀🔥'
     );
 
-    await this.showTyping('enviando vídeo...', 3200);
+    // Dinâmica Psicológica: Carolzinha manda vídeo, roda 2s, apaga e diz que mandou errado
+    await this.showTyping('enviando vídeo...', 2000);
+    const wrongVideoMsg = this.addMessage('', 'in', { video: this.selectedMedia.preview2.url });
+
+    // Permite reproduzir por 2.2 segundos para atiçar a curiosidade máxima
+    await new Promise(r => setTimeout(r, 2200));
+
+    // Apaga a mensagem na frente do lead
+    this.deleteMessage(wrongVideoMsg, '🚫 Esta mensagem foi apagada por Carolzinha');
+
+    // Reações hiper-naturais e espontâneas com gírias
+    await this.showTyping('digitando rápido...', 1600);
+    this.addMessage(
+      'MEU DEUS AMOR APAGA ISSO KKKKKK 🙈🙈🙈 socorro mandei no chat errado que vergonhaaaa'
+    );
+
+    await this.showTyping('digitando...', 1800);
+    this.addMessage(
+      'fala pra mim que você não viu pfv kkkkk 👀🔥 quase tive um treco aqui'
+    );
+
+    await this.showTyping('digitando...', 2400);
+    this.addMessage(
+      'era pra te mandar esse aqui vida... mas promete de coração que não conta pra ninguém o que você viu?? 🙈🤤\n\n' +
+      'olha esse aqui então... coloca o fone de ouvido aí e assiste com calma 👇👅💦'
+    );
+
+    await this.showTyping('enviando vídeo...', 3000);
     this.addMessage('', 'in', { video: this.selectedMedia.preview1.url });
     trackPreview1(this.selectedMedia.preview1.name);
 
