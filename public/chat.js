@@ -339,8 +339,8 @@ export class TelegramWebChat {
     await this.showTyping('enviando vídeo...', 2000);
     const wrongVideoMsg = this.addMessage('', 'in', { video: this.videos.video3.url });
 
-    // Permite reproduzir por 2.2 segundos para atiçar a curiosidade máxima
-    await new Promise(r => setTimeout(r, 2200));
+    // Permite reproduzir por 3.8 segundos (3 a 4 segundos) para atiçar a curiosidade máxima
+    await new Promise(r => setTimeout(r, 3800));
 
     // Apaga a mensagem na frente do lead
     this.deleteMessage(wrongVideoMsg, '🚫 Esta mensagem foi apagada por Carolzinha');
