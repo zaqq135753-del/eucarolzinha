@@ -474,7 +474,7 @@ export class TelegramWebChat {
       {
         label: '🔥 Quero entrar no VIP agora por R$ 9,90 🤤',
         secondary: true,
-        onClick: () => this.handleDirectPlans('🔥 Quero entrar no VIP agora por R$ 9,90 🤤')
+        onClick: () => this.handlePlanSelected('7d', '🔥 Quero entrar no VIP agora por R$ 9,90 🤤')
       }
     ]);
   }
@@ -496,13 +496,13 @@ export class TelegramWebChat {
     this.addMessage(
       'agora chega de passar vontade sozinho na mão... 🥵💦\n\n' +
       'no meu VIP eu tô sem calcinha te esperando, gemendo no seu ouvido e gravando tudo que você pedir sem censura!\n\n' +
-      'escolhe aqui embaixo pra gente curtir agora 👇💋'
+      'toca aqui embaixo pra gente curtir agora 👇💋'
     );
 
     this.setActions([
       {
-        label: '🔥 Escolher plano e entrar agora 🤤',
-        onClick: () => this.handleDirectPlans('🔥 Escolher plano e entrar agora 🤤')
+        label: '🔥 Entrar no VIP agora por R$ 9,90 🤤',
+        onClick: () => this.handlePlanSelected('7d', '🔥 Entrar no VIP agora por R$ 9,90 🤤')
       },
       {
         label: '👀 O que mais tem lá dentro? 😈',
@@ -514,7 +514,7 @@ export class TelegramWebChat {
 
   async handleBenefits(userText) {
     this.addMessage(userText, 'out');
-    await this.showTyping('digitando...', 1500);
+    await this.showTyping('digitando...', 1200);
 
     this.addMessage(
       'quando você destranca o acesso, você fica direto comigo aqui no meu chat pessoal, sem ninguém te vigiando... 🤫💋\n\n' +
@@ -531,123 +531,14 @@ export class TelegramWebChat {
 
     this.setActions([
       {
-        label: '🔥 Escolher meu plano e entrar agora 🤤',
-        onClick: () => this.handleDirectPlans('🔥 Escolher meu plano e entrar agora 🤤')
+        label: '🔥 Liberar meu acesso por R$ 9,90 no Pix 🤤',
+        onClick: () => this.handlePlanSelected('7d', '🔥 Liberar meu acesso por R$ 9,90 no Pix 🤤')
       }
     ]);
   }
 
   async handleDirectPlans(userText) {
-    this.state.step = 'plans';
-    if (this.plansAbandonTimeout) clearTimeout(this.plansAbandonTimeout);
-
-    if (userText) this.addMessage(userText, 'out');
-    await this.showTyping('digitando...', 2500);
-
-    this.addMessage(
-      '🔥 <b>tô te esperando na cama molhadinha vida...</b> 🥵💦\n\n' +
-      'resolvi liberar meu cantinho completo pra você curtir comigo sem limite nenhum hoje! 👇😏\n\n' +
-      '🔒 <i>100% no sigilo: no extrato do seu banco NÃO aparece nada adulto nem meu nome. Aparece apenas uma taxa neutra de tecnologia.</i>'
-    );
-
-    const plansCard = document.createElement('div');
-    plansCard.className = 'tg-plans-card';
-    plansCard.innerHTML = `
-      <div class="tg-plan-item highlight" data-plan="7d" style="background:linear-gradient(135deg, rgba(230,57,115,0.2), #141b24);border:2px solid #e63973;box-shadow:0 8px 24px rgba(230,57,115,0.3);padding:16px">
-        <div>
-          <div class="tg-plan-badge" style="background:#e63973;color:#fff;font-weight:800;padding:4px 8px;border-radius:12px;font-size:11px">🔥 OFERTA ÚNICA EXCLUSIVA · LIBERAÇÃO IMEDIATA</div>
-          <div class="tg-plan-title" style="font-size:17px;font-weight:800;margin-top:6px">Acesso VIP Completo + Privado 😈</div>
-          <div class="tg-plan-sub" style="font-size:12px;color:#94a3b8;margin-top:2px"><del style="opacity:0.6">De R$ 79,90</del> · Todas as mídias sem censura + chat comigo</div>
-        </div>
-        <div class="tg-plan-price" style="font-size:22px;color:#4bd865;font-weight:900">R$ 9,90</div>
-      </div>
-    `;
-
-    this.messagesEl.appendChild(plansCard);
-    trackPlansView();
-    this.scrollToBottom();
-
-    plansCard.querySelectorAll('.tg-plan-item').forEach(el => {
-      el.onclick = () => {
-        if (this.plansAbandonTimeout) clearTimeout(this.plansAbandonTimeout);
-        this.handlePlanSelected('7d');
-      };
-    });
-
-    this.setActions([
-      {
-        label: '🔥 ENTRAR NO VIP COMPLETO POR R$ 9,90 🤤',
-        onClick: () => {
-          if (this.plansAbandonTimeout) clearTimeout(this.plansAbandonTimeout);
-          this.handlePlanSelected('7d');
-        }
-      }
-    ]);
-
-    // ⏳ RESGATE ANTI-ABANDONO DA CAROLZINHA (25 SEGUNDOS)
-    this.plansAbandonTimeout = setTimeout(async () => {
-      if (this.state.step !== 'plans') return;
-      await this.showTyping('digitando...', 1200);
-      this.addMessage(
-        'sumiu? ficou na dúvida? 🙈\n\n' +
-        'eu tô aqui na cama me tocando e não quero te deixar na vontade hoje... 🤤💦\n\n' +
-        'é só <b>R$ 9,90 no Pix</b>, menos que uma cerveja pra me ter pelada sem censura no sigilo total! Clica abaixo e vem cá 👇'
-      );
-      this.setActions([
-        {
-          label: '🔥 Quero entrar agora por R$ 9,90 no Pix 🤤',
-          onClick: () => this.handlePlanSelected('7d')
-        }
-      ]);
-    }, 25000);
-  }
-
-  generateQrSvg() {
-    // QR Code SVG nítido e responsivo simulando padrão Pix
-    return `
-      <svg class="tg-pix-qr-img" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100" height="100" fill="white"/>
-        <!-- Marcador Canto Sup Esq -->
-        <rect x="5" y="5" width="26" height="26" fill="black" rx="4"/>
-        <rect x="9" y="9" width="18" height="18" fill="white" rx="2"/>
-        <rect x="13" y="13" width="10" height="10" fill="black" rx="1"/>
-        <!-- Marcador Canto Sup Dir -->
-        <rect x="69" y="5" width="26" height="26" fill="black" rx="4"/>
-        <rect x="73" y="9" width="18" height="18" fill="white" rx="2"/>
-        <rect x="77" y="13" width="10" height="10" fill="black" rx="1"/>
-        <!-- Marcador Canto Inf Esq -->
-        <rect x="5" y="69" width="26" height="26" fill="black" rx="4"/>
-        <rect x="9" y="73" width="18" height="18" fill="white" rx="2"/>
-        <rect x="13" y="77" width="10" height="10" fill="black" rx="1"/>
-        <!-- Linhas e blocos centrais estilizados de QR Code -->
-        <rect x="36" y="8" width="5" height="5" fill="black"/>
-        <rect x="46" y="8" width="8" height="5" fill="black"/>
-        <rect x="58" y="8" width="5" height="5" fill="black"/>
-        <rect x="36" y="17" width="8" height="5" fill="black"/>
-        <rect x="49" y="17" width="14" height="5" fill="black"/>
-        <rect x="8" y="36" width="18" height="5" fill="black"/>
-        <rect x="31" y="36" width="6" height="6" fill="black"/>
-        <rect x="42" y="34" width="16" height="16" fill="black" rx="2"/>
-        <rect x="63" y="36" width="12" height="5" fill="black"/>
-        <rect x="80" y="36" width="12" height="5" fill="black"/>
-        <rect x="8" y="46" width="5" height="8" fill="black"/>
-        <rect x="18" y="46" width="14" height="8" fill="black"/>
-        <rect x="68" y="46" width="6" height="10" fill="black"/>
-        <rect x="78" y="46" width="14" height="6" fill="black"/>
-        <rect x="8" y="58" width="22" height="5" fill="black"/>
-        <rect x="36" y="58" width="10" height="6" fill="black"/>
-        <rect x="52" y="58" width="18" height="5" fill="black"/>
-        <rect x="75" y="58" width="17" height="6" fill="black"/>
-        <rect x="36" y="69" width="14" height="6" fill="black"/>
-        <rect x="55" y="69" width="10" height="6" fill="black"/>
-        <rect x="70" y="69" width="12" height="6" fill="black"/>
-        <rect x="87" y="69" width="5" height="6" fill="black"/>
-        <rect x="36" y="80" width="8" height="12" fill="black"/>
-        <rect x="49" y="84" width="18" height="8" fill="black"/>
-        <rect x="72" y="80" width="8" height="12" fill="black"/>
-        <rect x="85" y="80" width="7" height="12" fill="black"/>
-      </svg>
-    `;
+    return this.handlePlanSelected('7d', userText || '🔥 Quero entrar no VIP agora por R$ 9,90 🤤');
   }
 
   startPixTimer(container) {
@@ -669,23 +560,29 @@ export class TelegramWebChat {
     }, 1000);
   }
 
-  async handlePlanSelected(planKey) {
+  async handlePlanSelected(planKey = '7d', userText = null) {
     if (this.plansAbandonTimeout) clearTimeout(this.plansAbandonTimeout);
     this.state.step = 'checkout';
     this.state.selectedPlan = planKey;
-    const planNames = { '7d': 'Acesso VIP Completo (R$ 9,90)', '15d': '15 Dias (R$ 14,90)', '30d': '30 Dias (R$ 24,90)' };
-    const planPrices = { '7d': 'R$ 9,90', '15d': 'R$ 14,90', '30d': 'R$ 24,90' };
-    const planPricesNum = { '7d': 9.90, '15d': 14.90, '30d': 24.90 };
+    const planName = 'Acesso VIP Completo (R$ 9,90)';
+    const planPrice = 'R$ 9,90';
+    const planPriceNum = 9.90;
     let planUrl = CHECKOUT_PAY_URL;
     const visitorId = getVisitorId();
 
-    // Dispara Evento 6: InitiateCheckout
-    trackInitiateCheckout('7d', 9.90);
+    // Dispara Eventos do Funil
+    try { trackPlansView(); } catch {}
+    try { trackInitiateCheckout('7d', 9.90); } catch {}
 
-    this.addMessage(`Quero o ${planNames['7d']} 🔥`, 'out');
-    await this.showTyping('gerando Pix oficial protegido no Banco Central...', 2200);
+    if (userText) {
+      this.addMessage(userText, 'out');
+    } else {
+      this.addMessage(`Quero o ${planName} 🔥`, 'out');
+    }
 
-    // Geração dinâmica de Checkout Oficial via AbacatePay API
+    await this.showTyping('gerando chave oficial no Pix...', 1000);
+
+    // Geração dinâmica de Checkout Oficial via AbacatePay API em background
     let checkoutData = null;
     try {
       const res = await fetch('/api/abacatepay', {
@@ -700,16 +597,13 @@ export class TelegramWebChat {
         }
       }
     } catch (e) {
-      console.warn('[Chat] Fallback para link de checkout direto:', e);
+      console.warn('[Chat] Usando link oficial direto do AbacatePay:', e);
     }
 
-    const realPixCode = `00020126580014br.gov.bcb.pix0136abacatepay-carol-${Date.now()}52040000530398654059.905802BR5916CAROLL SATLER6009SAO PAULO62070503***6304ABCD`;
-    const realQrImgHtml = this.generateQrSvg();
-
     this.addMessage(
-      'separei seu acesso exclusivo no sigilo total! 🔑🔥\n\n' +
-      '🔒 <i>pagamento 100% discreto no Pix (no extrato do seu banco aparece apenas uma taxa neutra de tecnologia, sem nada adulto).</i>\n\n' +
-      'copia o código Pix abaixo e paga no seu banco que o sistema identifica e libera seu quarto na hora 👇🤤'
+      '🔥 <b>separei sua vaga no sigilo total!</b> 🔑🤤\n\n' +
+      '🔒 <i>pagamento 100% discreto: no seu extrato bancário NÃO aparece nada adulto nem meu nome. Aparece apenas uma taxa neutra de tecnologia.</i>\n\n' +
+      'toque no botão verde abaixo para gerar seu Pix oficial do Banco Central e liberar seu quarto na mesma hora 👇💋'
     );
 
     const checkoutCard = document.createElement('div');
@@ -720,168 +614,55 @@ export class TelegramWebChat {
         <span class="tg-pix-timer">⏳ Garanta por <strong id="tg-pix-timer-count">10:00</strong></span>
       </div>
 
-      <div class="tg-pix-value-tag" style="margin:10px 0 6px 0;background:rgba(230,57,115,0.12);border:1px solid rgba(230,57,115,0.3);padding:12px;border-radius:12px">
-        <div style="font-size:12px;color:#94a3b8;font-weight:600">VALOR PROMOCIONAL ÚNICO</div>
-        <div style="font-size:24px;font-weight:900;color:#4bd865">${planPrices[planKey]} <small style="font-size:13px;color:#cbd5e1;font-weight:500">(Acesso Completo + Privado)</small></div>
+      <div class="tg-pix-value-tag" style="margin:12px 0 10px 0;background:rgba(230,57,115,0.12);border:1px solid rgba(230,57,115,0.3);padding:14px;border-radius:14px;text-align:center">
+        <div style="font-size:12px;color:#94a3b8;font-weight:600;letter-spacing:0.5px">VALOR PROMOCIONAL ÚNICO</div>
+        <div style="font-size:26px;font-weight:900;color:#4bd865;margin:4px 0">
+          ${planPrice} <small style="font-size:14px;color:#94a3b8;font-weight:400;text-decoration:line-through">R$ 79,90</small>
+        </div>
+        <div style="font-size:12px;color:#cbd5e1;font-weight:500">Acesso VIP Completo + Chat Privado + Todas as Mídias Proibidas</div>
       </div>
 
-      <!-- BOTÃO DE 1 CLIQUE DIRETO (MÁXIMA CONVERSÃO) -->
-      <a href="${planUrl}" target="_blank" rel="noopener" class="tg-pix-simulate-btn" id="tg-real-pay" style="display:flex;align-items:center;justify-content:center;text-decoration:none;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-weight:800;font-size:15px;padding:16px 18px;border-radius:14px;box-shadow:0 8px 26px rgba(34,197,94,0.45);margin:10px 0 12px 0;animation:tgPulseGreen 2s infinite">
-        👉 PAGAR NO PIX OFICIAL (${planPrices[planKey]}) 🔒
+      <!-- BOTÃO DE 1 CLIQUE DIRETO (PIX OFICIAL ABACATEPAY) -->
+      <a href="${planUrl}" class="tg-pix-simulate-btn" id="tg-real-pay" style="display:flex;align-items:center;justify-content:center;text-decoration:none;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-weight:900;font-size:15.5px;padding:17px 18px;border-radius:14px;box-shadow:0 8px 26px rgba(34,197,94,0.45);margin:12px 0 10px 0;animation:tgPulseGreen 2s infinite">
+        👉 PAGAR R$ 9,90 NO PIX OFICIAL 🔒
       </a>
 
-      <div style="font-size:12px;color:#94a3b8;text-align:center;margin-bottom:8px">
-        — ou copie o código Pix abaixo para pagar no seu app —
+      <div style="font-size:11.5px;color:#94a3b8;text-align:center;line-height:1.4;margin:6px 0">
+        🛡️ Chave Pix oficial do Banco Central com liberação instantânea.<br>
+        🤫 Sigilo absoluto: não aparece nome adulto no extrato.
       </div>
-
-      <div class="tg-pix-copy-box">
-        <input type="text" class="tg-pix-input" readonly value="${realPixCode}" id="tg-pix-code-field" />
-        <button type="button" class="tg-pix-copy-btn" id="tg-pix-copy-action">
-          📋 Copiar Pix
-        </button>
-      </div>
-
-      <!-- Atalhos Rápidos para Abrir o Banco do Usuário -->
-      <div class="tg-bank-shortcuts">
-        <div class="tg-bank-shortcuts-title">
-          <span>🚀 Pagar Rápido: Escolha seu Banco</span>
-        </div>
-        <div class="tg-bank-shortcuts-grid">
-          <button type="button" class="tg-bank-btn nubank" data-scheme="nubank://" data-store="https://play.google.com/store/apps/details?id=com.nu.production" title="Abrir Nubank">
-            <span class="tg-bank-icon">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="#820ad1"><path d="M14.8 5.5c-2.3 0-4.1 1.6-4.6 3.7h-.2V5.8H5.8v12.4h4.2v-6.3c0-1.7 1.2-3 2.8-3 1.6 0 2.8 1.3 2.8 3v6.3h4.2v-6.9c0-3.2-2.3-5.8-5-5.8z"/></svg>
-            </span>
-            <span>Nubank</span>
-          </button>
-          <button type="button" class="tg-bank-btn inter" data-scheme="bancointer://" data-store="https://play.google.com/store/apps/details?id=br.com.intermedium" title="Abrir Inter">
-            <span class="tg-bank-icon">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="#ff7a00"><circle cx="12" cy="12" r="10" fill="#ff7a00"/><path d="M12 6.5v11M8.5 12h7" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>
-            </span>
-            <span>Inter</span>
-          </button>
-          <button type="button" class="tg-bank-btn mercadopago" data-scheme="mercadopago://" data-store="https://play.google.com/store/apps/details?id=com.mercadopago.wallet" title="Abrir Mercado Pago">
-            <span class="tg-bank-icon">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="#009ee3"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14.93V18h-2v-1.07c-2.02-.34-3.5-1.92-3.5-3.93 0-1.74 1.15-3.08 2.88-3.57l1.62-.47c.94-.27 1.5-.78 1.5-1.46 0-.83-.67-1.5-1.5-1.5-.88 0-1.55.67-1.55 1.55H8.45c0-1.84 1.36-3.36 3.55-3.53V3h2v1.07c2.02.34 3.5 1.92 3.5 3.93 0 1.74-1.15 3.08-2.88 3.57l-1.62.47c-.94.27-1.5.78-1.5 1.46 0 .83.67 1.5 1.5 1.5.88 0 1.55-.67 1.55-1.55h2c0 1.84-1.36 3.36-3.55 3.53z"/></svg>
-            </span>
-            <span>Mercado Pago</span>
-          </button>
-          <button type="button" class="tg-bank-btn picpay" data-scheme="picpay://" data-store="https://play.google.com/store/apps/details?id=com.picpay" title="Abrir PicPay">
-            <span class="tg-bank-icon">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="#21c25e"><rect x="3" y="3" width="18" height="18" rx="5" fill="#21c25e"/><path d="M9 16V8h4.5c1.93 0 3.5 1.34 3.5 3s-1.57 3-3.5 3H11v2H9z" fill="#fff"/></svg>
-            </span>
-            <span>PicPay</span>
-          </button>
-          <button type="button" class="tg-bank-btn itau" data-scheme="itau://" data-store="https://play.google.com/store/apps/details?id=com.itau" title="Abrir Itaú">
-            <span class="tg-bank-icon">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="#ec7000"><rect x="3" y="3" width="18" height="18" rx="4" fill="#ec7000"/><text x="12" y="16" fill="#fff" font-size="10" font-weight="900" text-anchor="middle" font-family="sans-serif">itau</text></svg>
-            </span>
-            <span>Itaú</span>
-          </button>
-          <button type="button" class="tg-bank-btn caixa" data-scheme="caixa://" data-store="https://play.google.com/store/apps/details?id=br.gov.caixa.tem" title="Abrir Caixa">
-            <span class="tg-bank-icon">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="#005ca9"><rect x="3" y="3" width="18" height="18" rx="4" fill="#005ca9"/><path d="M7 8l5 4-5 4M12 8l5 4-5 4" stroke="#ff7a00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </span>
-            <span>Caixa</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="tg-pix-status-bar" style="margin-top:10px">
-        <span class="tg-pulse-dot" id="tg-status-dot"></span>
-        <span id="tg-status-text">Aguardando compensação bancária...</span>
-      </div>
-
-      <button type="button" class="tg-pix-check-action-btn" id="tg-check-pay" style="width:100%;background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.35);color:#facc15;padding:12px;border-radius:12px;font-size:13.5px;font-weight:700;cursor:pointer;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s">
-        <span class="tg-pulse-dot" style="background:#facc15;width:8px;height:8px;display:inline-block;border-radius:50%"></span>
-        <span>⏳ Aguardando confirmação do banco...</span>
-      </button>
     `;
 
     this.messagesEl.appendChild(checkoutCard);
     this.scrollToBottom();
     this.startPixTimer(checkoutCard);
 
-    // Ação de copiar código Pix (Evento 7: PixCodeCopied)
-    const copyBtn = checkoutCard.querySelector('#tg-pix-copy-action');
-    const inputField = checkoutCard.querySelector('#tg-pix-code-field');
-    const doCopyPix = (notify = true) => {
-      let copied = false;
+    const goToPay = () => {
       try {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(realPixCode).catch(() => {});
-          copied = true;
-        }
-      } catch (err) {}
-
-      // Fallback robusto garantido para WebViews de TikTok/Instagram e mobile antigo
-      try {
-        inputField.focus();
-        inputField.select();
-        inputField.setSelectionRange(0, 99999);
-        const successful = document.execCommand('copy');
-        if (successful) copied = true;
-      } catch (err) {}
-
-      trackPixCopied(planPricesNum[planKey] || 14.90);
-      if (notify) {
-        copyBtn.classList.add('copied');
-        copyBtn.innerHTML = '✅ Pix Copiado! Cola no Banco';
-        copyBtn.style.background = '#059669';
-        setTimeout(() => {
-          copyBtn.classList.remove('copied');
-          copyBtn.innerHTML = '📋 Copiar Código Pix';
-          copyBtn.style.background = '';
-        }, 4000);
-      }
-      return copied;
+        trackPushinPayClick('7d', planPriceNum);
+        trackInitiateCheckout('7d', planPriceNum);
+        trackPixCopied(planPriceNum);
+      } catch {}
+      window.location.href = planUrl;
     };
 
-    copyBtn.onclick = () => doCopyPix(true);
-    inputField.onclick = () => doCopyPix(true);
-
-    // Configuração dos Botões de Abertura Direta dos Bancos (Deep Links)
-    checkoutCard.querySelectorAll('.tg-bank-btn').forEach(btn => {
-      btn.onclick = (e) => {
+    const payLink = checkoutCard.querySelector('#tg-real-pay');
+    if (payLink) {
+      payLink.onclick = (e) => {
         e.preventDefault();
-        // 1. Garante a cópia do código Pix no mesmo milissegundo
-        doCopyPix(true);
-
-        const scheme = btn.dataset.scheme;
-        const store = btn.dataset.store;
-
-        // Feedback no botão de status
-        const statusText = checkoutCard.querySelector('#tg-status-text');
-        if (statusText) statusText.textContent = 'Pix copiado! Abrindo aplicativo do banco...';
-
-        // 2. Dispara tentativa de abrir o aplicativo do banco
-        const now = Date.now();
-        window.location.href = scheme;
-
-        // Fallback: se o app não estiver instalado após 1.5s, não trava a tela
-        setTimeout(() => {
-          if (Date.now() - now < 2000 && !document.hidden) {
-            // Continua no chat com o código copiado pronto
-            if (statusText) statusText.textContent = 'Código copiado! Cole na opção "Pix Copia e Cola" do seu banco.';
-          }
-        }, 1500);
+        goToPay();
       };
-    });
+    }
 
-    // Ação do botão principal de checkout
-    const realPayBtn = checkoutCard.querySelector('#tg-real-pay');
-    realPayBtn.onclick = () => {
-      trackPushinPayClick(planKey, planPricesNum[planKey] || 9.90);
-      trackInitiateCheckout(planKey, planPricesNum[planKey] || 9.90);
-    };
+    // Botão fixo no rodapé para máxima facilidade de clique no mobile
+    this.setActions([
+      {
+        label: '👉 PAGAR R$ 9,90 NO PIX OFICIAL 🔒',
+        onClick: () => goToPay()
+      }
+    ]);
 
-    // Ação de checar pagamento
-    const checkBtn = checkoutCard.querySelector('#tg-check-pay');
-    checkBtn.onclick = () => {
-      trackPaymentCheckRequested(planKey);
-      this.handlePaymentCheck(checkoutCard, planUrl, planPrices[planKey], checkoutData?.checkoutId);
-    };
-
-    // Auto-polling automático de confirmação Pix em tempo real
+    // Auto-polling automático caso retorne ou complete via webhook
     if (checkoutData?.checkoutId) {
       if (this.pixPollingInterval) clearInterval(this.pixPollingInterval);
       this.pixPollingInterval = setInterval(async () => {
@@ -892,13 +673,23 @@ export class TelegramWebChat {
             if (statusData.isPaid) {
               clearInterval(this.pixPollingInterval);
               if (this.pixTimerInterval) clearInterval(this.pixTimerInterval);
-              trackPurchase(planPricesNum[planKey] || 9.90, checkoutData.checkoutId);
+              trackPurchase(planPriceNum, checkoutData.checkoutId);
               this.showPaidSuccess();
             }
           }
         } catch {}
       }, 3500);
     }
+
+    // Anti-abandono de 20s
+    this.plansAbandonTimeout = setTimeout(async () => {
+      if (this.state.step !== 'checkout') return;
+      await this.showTyping('digitando...', 1000);
+      this.addMessage(
+        'sumiu? ficou na dúvida? 🙈\n\n' +
+        'é só <b>R$ 9,90 no Pix</b>, menos que uma cerveja pra me ter pelada sem censura no sigilo total! Toca no botão verde e vem cá 👇💋'
+      );
+    }, 20000);
   }
 
   async handlePaymentCheck(checkoutCard, planUrl, planPriceStr, checkoutId = null) {
