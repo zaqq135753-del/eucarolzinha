@@ -761,8 +761,9 @@ export class TelegramWebChat {
         💳 Pagar no Pix Oficial Seguro (${planPrices[planKey]}) 🔒
       </a>
 
-      <button type="button" class="tg-pix-check-action-btn" id="tg-check-pay" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:#cbd5e1;padding:10px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;margin-top:6px;transition:all 0.2s">
-        🔄 Já fiz o Pix no meu banco (Conferir status)
+      <button type="button" class="tg-pix-check-action-btn" id="tg-check-pay" style="width:100%;background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.35);color:#facc15;padding:12px;border-radius:12px;font-size:13.5px;font-weight:700;cursor:pointer;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s">
+        <span class="tg-pulse-dot" style="background:#facc15;width:8px;height:8px;display:inline-block;border-radius:50%"></span>
+        <span>⏳ Aguardando confirmação do banco...</span>
       </button>
     `;
 
@@ -874,18 +875,18 @@ export class TelegramWebChat {
     if (checkoutCard) {
       const statusText = checkoutCard.querySelector('#tg-status-text');
       const dot = checkoutCard.querySelector('#tg-status-dot');
-      if (statusText) statusText.textContent = 'Consultando Banco Central & Sistema Pix...';
+      if (statusText) statusText.textContent = 'Sincronizando com o banco e verificando Pix...';
       if (dot) dot.style.background = '#eab308';
       const checkBtn = checkoutCard.querySelector('#tg-check-pay');
       if (checkBtn) {
         checkBtn.disabled = true;
-        checkBtn.style.opacity = '0.6';
-        checkBtn.textContent = '⏳ Verificando no sistema...';
+        checkBtn.style.opacity = '0.7';
+        checkBtn.innerHTML = '<span class="tg-pulse-dot" style="background:#facc15;width:8px;height:8px;display:inline-block;border-radius:50%"></span> <span>⏳ Sincronizando com seu banco...</span>';
         setTimeout(() => {
           checkBtn.disabled = false;
           checkBtn.style.opacity = '1';
-          checkBtn.textContent = '🔄 Conferir novamente';
-        }, 8000);
+          checkBtn.innerHTML = '<span class="tg-pulse-dot" style="background:#facc15;width:8px;height:8px;display:inline-block;border-radius:50%"></span> <span>⏳ Aguardando confirmação do banco...</span>';
+        }, 5000);
       }
     }
 
@@ -903,13 +904,13 @@ export class TelegramWebChat {
       } catch {}
     }
 
-    this.addMessage('Já fiz o Pix no meu banco, confere aí amor! ⏳', 'out');
+    this.addMessage('Já fiz o Pix, aguardando o banco confirmar amor... ⏳', 'out');
     await this.showTyping('consultando compensação...', 2800);
 
     this.addMessage(
-      'recebi seu aviso aqui, amor! 💋\n\n' +
-      'o sistema tá sincronizando com o Banco Central... assim que a compensação do seu Pix cair aqui, sua liberação VIP ocorre automaticamente na hora! ⏳\n\n' +
-      '⚠️ <i>Dica: Se você ainda não concluiu a transferência no seu banco, toque no botão verde abaixo para finalizar com total segurança no checkout oficial:</i>'
+      'tô monitorando aqui na hora, amor! 💋\n\n' +
+      'a API tá conectada direto com o banco... assim que a compensação cair, seu acesso VIP libera aqui automaticamente! ⏳\n\n' +
+      '⚠️ <i>Se ainda não pagou ou prefere pagar pelo app com QR code aberto, toca no botão verde abaixo:</i>'
     );
 
     const pendingBox = document.createElement('div');
