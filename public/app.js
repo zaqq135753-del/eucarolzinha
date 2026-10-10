@@ -192,100 +192,45 @@ setupIntro(
 // VÍDEO EXTRA / PRÉVIA
 // ======================================================
 
-const extra =
-  document.getElementById(
-    'extra-video'
-  );
+// ======================================================
+// VÍDEOS EM LOOP CONTÍNUO (INTRO E PRÉVIAS)
+// ======================================================
 
-const extraButton =
-  document.getElementById(
-    'extra-play'
-  );
-
-
+const extra = document.getElementById('extra-video');
 if (extra) {
   extra.muted = true;
+  extra.defaultMuted = true;
   extra.loop = true;
+  extra.playsInline = true;
   extra.play().catch(() => {});
+  extra.addEventListener('pause', () => {
+    extra.play().catch(() => {});
+  });
+  extra.addEventListener('ended', () => {
+    extra.currentTime = 0;
+    extra.play().catch(() => {});
+  });
 }
 
-
-  extra.addEventListener(
-    'ended',
-    () => {
-
-      extraButton.hidden =
-        false;
-
-      extraButton.textContent =
-        '↻ Ver novamente';
-
-      emit(
-        'preview_video_completed'
-      );
-
+// Força todos os vídeos da página a rodarem em loop contínuo sem travar
+function enforceVideoLoops() {
+  document.querySelectorAll('video').forEach(v => {
+    v.muted = true;
+    v.defaultMuted = true;
+    v.loop = true;
+    v.playsInline = true;
+    v.setAttribute('playsinline', '');
+    v.setAttribute('webkit-playsinline', '');
+    if (v.paused) {
+      v.play().catch(() => {});
     }
-  );
-
-
-  extra.addEventListener(
-    'pause',
-    () => {
-
-      if (!extra.ended) {
-
-        extraButton.hidden =
-          false;
-
-        extraButton.textContent =
-          '▶ Continuar prévia';
-
-      }
-
-    }
-  );
-
-
-  extra.addEventListener(
-    'error',
-    () => {
-
-      extraButton.hidden =
-        false;
-
-      extraButton.textContent =
-        '▶ Tentar novamente';
-
-    }
-  );
-
-
-  if (
-    'IntersectionObserver'
-    in window
-  ) {
-
-    new IntersectionObserver(
-      entries => {
-
-        if (
-          entries.some(
-            e =>
-              !e.isIntersecting
-          )
-        ) {
-          extra.pause();
-        }
-
-      },
-      {
-        threshold: 0.2
-      }
-    ).observe(extra);
-
-  }
-
+  });
 }
+enforceVideoLoops();
+setInterval(enforceVideoLoops, 2500);
+
+
+
 
 
 // ======================================================
@@ -723,9 +668,30 @@ floatingChat.innerHTML = `
   </div>
 `;
 document.body.appendChild(floatingChat);
-floatingChat.onclick = () => chatInstance.open();
+// ======================================================
+// GATILHO INFALÍVEL DE ABERTURA DO CHAT (SCROLL, WHEEL, TOUCH & TIMER)
+// ======================================================
 
-// Se a URL contiver parâmetros explícitos de chat ou pagamento aprovado, abre direto
+let chatTriggered = false;
+function openChatFunnel(source = 'interaction') {
+  if (chatTriggered) return;
+  chatTriggered = true;
+  console.log(`[Funnel] Disparando chat nativo via ${source}`);
+  
+  // Oculta push banner suspenso se existir
+  const banner = document.getElementById('tg-push-banner');
+  if (banner) {
+    banner.classList.remove('active');
+  }
+
+  // Abre o modal do chat
+  chatInstance.open();
+}
+
+// Botão Flutuante sempre chama openChatFunnel
+floatingChat.onclick = () => openChatFunnel('floating_btn');
+
+// 1. Se veio com intenção direta de chat ou pagamento na URL, abre na hora
 const searchParams = new URLSearchParams(location.search);
 if (
   searchParams.get('chat') === '1' ||
@@ -733,57 +699,68 @@ if (
   searchParams.get('paid') === '1' ||
   location.hash === '#chat'
 ) {
-  setTimeout(() => chatInstance.open(), 300);
+  setTimeout(() => openChatFunnel('url_param'), 300);
 } else {
-  // GATILHO POR ROLAGEM INTELIGENTE:
-  // Permite o lead rolar a página com calma, conhecer a Carol e ver o vídeo do topo.
-  // Quando o lead rola até a seção de prévias/galeria (#previas), dispara o convite do chat.
-  let scrollTriggered = false;
-  const triggerChatInvite = () => {
-    if (scrollTriggered) return;
-    scrollTriggered = true;
-    console.log('[Funnel] Scroll trigger ativado! Exibindo notificação e abrindo chat...');
-    const banner = document.getElementById('tg-push-banner');
-    if (banner) {
-      banner.classList.add('active');
-    }
-    // Abre o chat para o lead que rolou a página
+  // 2. GATILHO AUTOMÁTICO DE SEGURANÇA (4.5s):
+  // O lead tem 4.5 segundos para ver o vídeo de topo e conhecer a Carol.
+  // Se não rolar nem clicar, o chat sobe sozinho automaticamente para fechar a venda!
+  const autoTimer = setTimeout(() => {
+    openChatFunnel('auto_timeout_4.5s');
+  }, 4500);
+
+  // Função disparada no primeiro sinal de rolagem
+  const onUserScrollAction = (source) => {
+    clearTimeout(autoTimer);
+    // Micro-delay suave (300ms) para o lead ver a rolagem e o chat subir naturalmente
     setTimeout(() => {
-      chatInstance.open();
-    }, 1800);
+      openChatFunnel(source);
+    }, 300);
   };
 
-  // 1. Gatilho por IntersectionObserver no elemento de prévias
-  const previasSection = document.getElementById('previas');
-  if (previasSection && 'IntersectionObserver' in window) {
-    new IntersectionObserver((entries, obs) => {
+  // 3. PC / DESKTOP: Rodinha do mouse (wheel)
+  window.addEventListener('wheel', () => {
+    onUserScrollAction('pc_wheel');
+  }, { passive: true, once: true });
+
+  // 4. MOBILE: Arraste do dedo na tela (touchmove)
+  window.addEventListener('touchmove', () => {
+    onUserScrollAction('mobile_touch');
+  }, { passive: true, once: true });
+
+  // 5. Scroll universal (window e document)
+  const handleScrollCheck = () => {
+    const scrollPos = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || window.scrollY || 0;
+    if (scrollPos > 35) {
+      onUserScrollAction('scroll_detected');
+    }
+  };
+  window.addEventListener('scroll', handleScrollCheck, { capture: true, passive: true });
+  document.addEventListener('scroll', handleScrollCheck, { capture: true, passive: true });
+
+  // 6. IntersectionObserver nas seções seguintes
+  const targetSections = document.querySelectorAll('#previas, .short-gallery, #acessos, .portal-section');
+  if (targetSections.length && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          triggerChatInvite();
-          obs.disconnect();
+          onUserScrollAction('intersection_section');
+          observer.disconnect();
         }
       });
-    }, { threshold: 0.1 }).observe(previasSection);
+    }, { threshold: 0.05 });
+    targetSections.forEach(s => observer.observe(s));
   }
-
-  // 2. Gatilho de rolagem simples e robusto: se rolou mais de 250px para baixo (funciona 100% no PC e mobile)
-  window.addEventListener('scroll', () => {
-    if (!scrollTriggered && (window.pageYOffset || document.documentElement.scrollTop || window.scrollY || 0) > 250) {
-      triggerChatInvite();
-    }
-  }, { passive: true });
 }
 
 // ======================================================
-// LINKS GERAIS QUE LEVAM AO BOT (INTERCEPTAÇÃO PARA CHAT NATIVO)
+// LINKS E BOTÕES DE AÇÃO (INTERCEPTAÇÃO PARA CHAT NATIVO)
 // ======================================================
 
 document
   .querySelectorAll(
-    `a[href*="t.me/eucarolzinha_bot"]`
+    `a[href*="t.me"], .contact, .gallery-next, .starter-choice`
   )
   .forEach(link => {
-
     link.addEventListener(
       'click',
       (e) => {
@@ -793,14 +770,13 @@ document
         emit(
           'telegram_redirect_intercepted',
           {
-            href: link.href
+            href: link.href || 'button_action'
           }
         );
 
-        chatInstance.open();
+        openChatFunnel('cta_button_click');
       }
     );
-
   });
 
 
