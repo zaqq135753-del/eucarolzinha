@@ -331,41 +331,56 @@ export class TelegramWebChat {
 
   async startFunnel() {
     this.state.step = 'intro';
-    await this.showTyping('digitando...', 2600);
+    await this.showTyping('digitando...', 1200);
 
     this.addMessage(
-      'oii amor... tava aqui morgando no tédio na cama pensando em você e não aguentei, tive que gravar isso agora... 👀🔥'
+      'oii amor... tava aqui no tédio na cama pensando em você e não aguentei, tive que gravar isso agora... 👀🔥'
     );
 
-    // Entrada: vídeo 3 toca por 2s e apaga
-    await this.showTyping('enviando vídeo...', 2000);
+    // Entrada: vídeo 3 toca por 3.5s e apaga
+    await this.showTyping('enviando vídeo...', 1000);
     const wrongVideoMsg = this.addMessage('', 'in', { video: this.videos.video3.url });
 
-    // Permite reproduzir por 3.8 segundos (3 a 4 segundos) para atiçar a curiosidade máxima
-    await new Promise(r => setTimeout(r, 3800));
+    // Permite reproduzir por 3.5 segundos para atiçar a curiosidade
+    await new Promise(r => setTimeout(r, 3500));
 
     // Apaga a mensagem na frente do lead
     this.deleteMessage(wrongVideoMsg, '🚫 Esta mensagem foi apagada por Carolzinha');
 
-    // Reações hiper-naturais e espontâneas com gírias
-    await this.showTyping('digitando rápido...', 1600);
+    await this.showTyping('digitando rápido...', 900);
     this.addMessage(
-      'MEU DEUS AMOR APAGA ISSO KKKKKK 🙈🙈🙈 socorro mandei no chat errado que vergonhaaaa'
-    );
-
-    await this.showTyping('digitando...', 1800);
-    this.addMessage(
+      'MEU DEUS AMOR APAGA ISSO KKKKKK 🙈🙈 socorro mandei no chat errado que vergonhaaaa\n\n' +
       'fala pra mim que você não viu pfv kkkkk 👀🔥 quase tive um treco aqui'
     );
 
-    await this.showTyping('digitando...', 2400);
+    // INTERAÇÃO IMEDIATA: O lead escolhe como responder!
+    this.setActions([
+      {
+        label: '😈 Eu vi tudinho amor, que delícia... 🔥',
+        onClick: () => this.handleAfterDeletedChoice('😈 Eu vi tudinho amor, que delícia... 🔥')
+      },
+      {
+        label: '🙈 Não vi nada vida, me manda de novo! 👀',
+        onClick: () => this.handleAfterDeletedChoice('🙈 Não vi nada vida, me manda de novo! 👀')
+      },
+      {
+        label: '🔥 Quero ir direto pro seu VIP (R$ 9,90) 🤤',
+        secondary: true,
+        onClick: () => this.handleDirectPlans('🔥 Quero ir direto pro seu VIP (R$ 9,90) 🤤')
+      }
+    ]);
+  }
+
+  async handleAfterDeletedChoice(userText) {
+    this.addMessage(userText, 'out');
+    await this.showTyping('digitando...', 1200);
     this.addMessage(
       'era pra te mandar esse aqui vida... mas promete de coração que não conta pra ninguém o que você viu?? 🙈🤤\n\n' +
       'olha esse aqui então... coloca o fone de ouvido aí e assiste com calma 👇👅💦'
     );
 
     // Envia o vídeo 1!
-    await this.showTyping('enviando vídeo...', 3000);
+    await this.showTyping('enviando vídeo...', 1200);
     this.addMessage('', 'in', { video: this.videos.video1.url });
     trackPreview1(this.videos.video1.name);
 
@@ -375,9 +390,9 @@ export class TelegramWebChat {
         onClick: () => this.handleStep1Choice('👀 me mostra mais amor, desce a mão 🔥')
       },
       {
-        label: '🔥 quero ir direto pro seu privado vida 😈',
+        label: '🔥 quero ir direto pro seu privado vida (R$ 9,90) 😈',
         secondary: true,
-        onClick: () => this.handleDirectPlans('🔥 quero ir direto pro seu privado vida 😈')
+        onClick: () => this.handleDirectPlans('🔥 quero ir direto pro seu privado vida (R$ 9,90) 😈')
       }
     ]);
   }
@@ -385,7 +400,7 @@ export class TelegramWebChat {
   async handleStep1Choice(userText) {
     trackPreview2Click(userText);
     this.addMessage(userText, 'out');
-    await this.showTyping('digitando...', 2800);
+    await this.showTyping('digitando...', 1200);
 
     this.addMessage(
       'sabia que você ia pedir pra eu descer a mão haha... safadinho você né? 😂🔥\n\n' +
@@ -393,12 +408,11 @@ export class TelegramWebChat {
     );
 
     // Envia a prévia 3!
-    await this.showTyping('enviando vídeo...', 3400);
+    await this.showTyping('enviando vídeo...', 1300);
     this.addMessage('', 'in', { video: this.videos.previa3.url });
     trackPreview2View(this.videos.previa3.name);
 
-    // Pacing lento e humano: Carolzinha instiga o lead com suspense antes do presente
-    await this.showTyping('digitando...', 2600);
+    await this.showTyping('digitando...', 1200);
 
     this.addMessage(
       'olha amor, eu gravei um bagulho bem mais íntimo aqui agorinha na cama... bem safado, nem devia te mandar agora pq fiquei com vergonha... 👀🙈\n\n' +
@@ -421,7 +435,7 @@ export class TelegramWebChat {
   async handleGiftStep(userText) {
     trackGiftRequest(userText);
     this.addMessage(userText, 'out');
-    await this.showTyping('gravando um presentinho...', 3000);
+    await this.showTyping('gravando um presentinho...', 1300);
 
     this.addMessage(
       'amor, resolvi te soltar esse presentinho então... mas promete que não vai vazar pra ninguém hein? pelo amor de Deus kkkk 🙈🎁\n\n' +
@@ -430,11 +444,11 @@ export class TelegramWebChat {
     );
 
     // Envia a prévia 2!
-    await this.showTyping('enviando presente exclusivo...', 3500);
+    await this.showTyping('enviando presente exclusivo...', 1300);
     this.addMessage('', 'in', { video: this.videos.previa2.url });
     trackGift(this.videos.previa2.name);
 
-    await this.showTyping('digitando...', 2800);
+    await this.showTyping('digitando...', 1100);
     this.addMessage(
       'gostou do meu presentinho amor? 🤤💦 mó delícia gravar isso pra você...\n\n' +
       'imagina eu todinha pra você todo santo dia no meu cantinho particular, gemendo no seu ouvido e gravando tudo que você pedir sem censura nenhuma... 🔞🔥'
@@ -446,16 +460,16 @@ export class TelegramWebChat {
         onClick: () => this.handleLastPreviewStep('🔞 me mostra a última prévia antes do vip 🤤')
       },
       {
-        label: '🔥 quero entrar no seu vip agora 🤤',
+        label: '🔥 quero entrar no seu vip agora por R$ 9,90 🤤',
         secondary: true,
-        onClick: () => this.handleDirectPlans('🔥 quero entrar no seu vip agora 🤤')
+        onClick: () => this.handleDirectPlans('🔥 quero entrar no seu vip agora por R$ 9,90 🤤')
       }
     ]);
   }
 
   async handleLastPreviewStep(userText) {
     this.addMessage(userText, 'out');
-    await this.showTyping('digitando...', 2800);
+    await this.showTyping('digitando...', 1100);
 
     this.addMessage(
       'nossa vida, se você já pirou naqueles, segura essa aqui... 🤤🔥\n\n' +
@@ -463,10 +477,10 @@ export class TelegramWebChat {
     );
 
     // Envia a prévia 1!
-    await this.showTyping('enviando vídeo mais forte...', 3500);
+    await this.showTyping('enviando vídeo mais forte...', 1300);
     this.addMessage('', 'in', { video: this.videos.previa1.url });
 
-    await this.showTyping('digitando...', 2600);
+    await this.showTyping('digitando...', 1100);
     this.addMessage(
       'agora chega de passar vontade sozinho aqui amor... 🥵💦\n\n' +
       'lá no meu VIP eu tô sem calcinha te esperando na cama, com gemidinho no seu ouvido e gravando tudo que você pedir sem censura nenhuma!\n\n' +
