@@ -521,38 +521,20 @@ export class TelegramWebChat {
 
     this.addMessage(
       '🔥 <b>tô te esperando na cama molhadinha vida...</b> 🥵💦\n\n' +
-      'não vai me deixar na vontade aqui sozinha né? escolhe quanto tempo você quer ficar comigo no meu cantinho 👇😏\n\n' +
+      'resolvi liberar meu cantinho completo pra você curtir comigo sem limite nenhum hoje! 👇😏\n\n' +
       '🔒 <i>100% no sigilo: no extrato do seu banco NÃO aparece nada adulto nem meu nome. Aparece apenas uma taxa neutra de tecnologia.</i>'
     );
 
     const plansCard = document.createElement('div');
     plansCard.className = 'tg-plans-card';
     plansCard.innerHTML = `
-      <div class="tg-plan-item highlight" data-plan="15d">
+      <div class="tg-plan-item highlight" data-plan="7d" style="background:linear-gradient(135deg, rgba(230,57,115,0.2), #141b24);border:2px solid #e63973;box-shadow:0 8px 24px rgba(230,57,115,0.3);padding:16px">
         <div>
-          <div class="tg-plan-badge">⭐ MAIS ESCOLHIDO (MEU FAVORITO)</div>
-          <div class="tg-plan-title">15 Dias de Acesso 🔥</div>
-          <div class="tg-plan-sub"><del style="opacity:0.6">De R$ 49,90</del> · Menos de R$ 1 por dia!</div>
+          <div class="tg-plan-badge" style="background:#e63973;color:#fff;font-weight:800;padding:4px 8px;border-radius:12px;font-size:11px">🔥 OFERTA ÚNICA EXCLUSIVA · LIBERAÇÃO IMEDIATA</div>
+          <div class="tg-plan-title" style="font-size:17px;font-weight:800;margin-top:6px">Acesso VIP Completo + Privado 😈</div>
+          <div class="tg-plan-sub" style="font-size:12px;color:#94a3b8;margin-top:2px"><del style="opacity:0.6">De R$ 79,90</del> · Todas as mídias sem censura + chat comigo</div>
         </div>
-        <div class="tg-plan-price">R$ 14,90</div>
-      </div>
-
-      <div class="tg-plan-item" data-plan="7d">
-        <div>
-          <div class="tg-plan-badge">👀 PROVA RÁPIDA</div>
-          <div class="tg-plan-title">7 Dias de Acesso 😈</div>
-          <div class="tg-plan-sub"><del style="opacity:0.6">De R$ 29,90</del> · Uma provinha de uma semana</div>
-        </div>
-        <div class="tg-plan-price">R$ 8,90</div>
-      </div>
-
-      <div class="tg-plan-item" data-plan="30d">
-        <div>
-          <div class="tg-plan-badge">👑 VIP TOTAL</div>
-          <div class="tg-plan-title">30 Dias de Acesso 🍑</div>
-          <div class="tg-plan-sub"><del style="opacity:0.6">De R$ 89,90</del> · Intimidade máxima no privado</div>
-        </div>
-        <div class="tg-plan-price">R$ 24,90</div>
+        <div class="tg-plan-price" style="font-size:22px;color:#4bd865;font-weight:900">R$ 9,90</div>
       </div>
     `;
 
@@ -563,30 +545,33 @@ export class TelegramWebChat {
     plansCard.querySelectorAll('.tg-plan-item').forEach(el => {
       el.onclick = () => {
         if (this.plansAbandonTimeout) clearTimeout(this.plansAbandonTimeout);
-        const plan = el.dataset.plan;
-        this.handlePlanSelected(plan);
+        this.handlePlanSelected('7d');
       };
     });
 
+    this.setActions([
+      {
+        label: '🔥 ENTRAR NO VIP COMPLETO POR R$ 9,90 🤤',
+        onClick: () => {
+          if (this.plansAbandonTimeout) clearTimeout(this.plansAbandonTimeout);
+          this.handlePlanSelected('7d');
+        }
+      }
+    ]);
+
     // ⏳ RESGATE ANTI-ABANDONO DA CAROLZINHA (25 SEGUNDOS)
-    // Se o lead visualizar a tabela e não clicar em 25s, a Carolzinha resgata o lead:
     this.plansAbandonTimeout = setTimeout(async () => {
       if (this.state.step !== 'plans') return;
       await this.showTyping('digitando...', 2400);
       this.addMessage(
-        'amor? você sumiu... ficou com vergonha do valor? 🙈\n\n' +
-        'olha, eu tava aqui pensando... não quero te deixar na vontade hoje e nem ficar passando a mão sozinha na cama... 🤤💦\n\n' +
-        'liberei o acesso de <b>7 dias por só R$ 8,90</b> no sigilo total pra você entrar agora comigo! não vai me deixar esperando né vida? clica abaixo 👇'
+        'amor? você sumiu... ficou na dúvida? 🙈\n\n' +
+        'olha, eu tô aqui na cama me tocando e não quero te deixar na vontade hoje... 🤤💦\n\n' +
+        'é só <b>R$ 9,90 no Pix</b>, menos que um lanche, pra você me ter todinha sem censura no sigilo total! Clica abaixo e vem agora vida 👇'
       );
       this.setActions([
         {
-          label: '🔥 Quero entrar por R$ 8,90 no sigilo 🤤',
+          label: '🔥 Quero entrar agora por R$ 9,90 no Pix 🤤',
           onClick: () => this.handlePlanSelected('7d')
-        },
-        {
-          label: '⭐ Quero 15 dias por R$ 14,90 (Recomendado) 🔥',
-          secondary: true,
-          onClick: () => this.handlePlanSelected('15d')
         }
       ]);
     }, 25000);
@@ -663,16 +648,16 @@ export class TelegramWebChat {
     if (this.plansAbandonTimeout) clearTimeout(this.plansAbandonTimeout);
     this.state.step = 'checkout';
     this.state.selectedPlan = planKey;
-    const planNames = { '7d': '7 Dias (R$ 8,90)', '15d': '15 Dias (R$ 14,90)', '30d': '30 Dias (R$ 24,90)' };
-    const planPrices = { '7d': 'R$ 8,90', '15d': 'R$ 14,90', '30d': 'R$ 24,90' };
-    const planPricesNum = { '7d': 8.90, '15d': 14.90, '30d': 24.90 };
-    const planUrl = PUSHINPAY_LINKS[planKey];
+    const planNames = { '7d': 'Acesso VIP Completo (R$ 9,90)', '15d': '15 Dias (R$ 14,90)', '30d': '30 Dias (R$ 24,90)' };
+    const planPrices = { '7d': 'R$ 9,90', '15d': 'R$ 14,90', '30d': 'R$ 24,90' };
+    const planPricesNum = { '7d': 9.90, '15d': 14.90, '30d': 24.90 };
+    const planUrl = PUSHINPAY_LINKS['7d'];
     const visitorId = getVisitorId();
 
     // Dispara Evento 6: InitiateCheckout
-    trackInitiateCheckout(planKey, planPricesNum[planKey] || 14.90);
+    trackInitiateCheckout('7d', 9.90);
 
-    this.addMessage(`Quero o plano de ${planNames[planKey]} 🔥`, 'out');
+    this.addMessage(`Quero o ${planNames['7d']} 🔥`, 'out');
     await this.showTyping('gerando Pix oficial protegido no Banco Central...', 2200);
 
     // Geração dinâmica de Pix REAL via Pushin Pay API
@@ -681,7 +666,7 @@ export class TelegramWebChat {
       const res = await fetch(`${BACKEND_URL}/api/pix/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: planKey, visitorId })
+        body: JSON.stringify({ plan: '7d', visitorId })
       });
       if (res.ok) {
         pixData = await res.json();
@@ -690,7 +675,7 @@ export class TelegramWebChat {
       console.warn('[Chat] Fallback para Pix local:', e);
     }
 
-    const realPixCode = pixData?.qrCode || `00020126580014br.gov.bcb.pix0136${planKey}-carolzinha-${Date.now()}5204000053039865405${planKey === '7d' ? '8.90' : planKey === '15d' ? '14.90' : '24.90'}5802BR5916CAROLZINHA PRIVE6009SAO PAULO62070503***6304ABCD`;
+    const realPixCode = pixData?.qrCode || `00020126580014br.gov.bcb.pix01367d-carolzinha-${Date.now()}52040000530398654059.905802BR5916CAROLZINHA PRIVE6009SAO PAULO62070503***6304ABCD`;
     const realQrImgHtml = pixData?.qrCodeBase64
       ? `<img src="${pixData.qrCodeBase64}" class="tg-pix-qr-img" alt="QR Code Pix" style="max-width:210px;border-radius:12px;background:#fff;padding:8px;margin:0 auto;display:block" />`
       : this.generateQrSvg();
