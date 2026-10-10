@@ -23,11 +23,8 @@ import {
   getVisitorId
 } from './tracking.js';
 
-const PUSHINPAY_LINKS = {
-  '7d': 'https://app.pushinpay.com.br/service/pay/A2EDB903-5026-4F10-9C19-2ED96008CA38',
-  '15d': 'https://app.pushinpay.com.br/service/pay/A2E6EB06-7D4A-4E80-9B8C-A571478CEF8D',
-  '30d': 'https://app.pushinpay.com.br/service/pay/A2E6EAD8-46C8-4B94-99A6-E5AC93BA9B1C'
-};
+const ABACATEPAY_CHECKOUT_URL = 'https://app.abacatepay.com/pay/bill_wrSrJjhK4NNK02Ymcqtnk5Ck';
+const CHECKOUT_PAY_URL = ABACATEPAY_CHECKOUT_URL;
 
 const TELEGRAM_DIRECT_URL = 'https://t.me/eucarolzinha_bot?start=site';
 
@@ -651,7 +648,7 @@ export class TelegramWebChat {
     const planNames = { '7d': 'Acesso VIP Completo (R$ 9,90)', '15d': '15 Dias (R$ 14,90)', '30d': '30 Dias (R$ 24,90)' };
     const planPrices = { '7d': 'R$ 9,90', '15d': 'R$ 14,90', '30d': 'R$ 24,90' };
     const planPricesNum = { '7d': 9.90, '15d': 14.90, '30d': 24.90 };
-    const planUrl = PUSHINPAY_LINKS['7d'];
+    let planUrl = CHECKOUT_PAY_URL;
     const visitorId = getVisitorId();
 
     // Dispara Evento 6: InitiateCheckout
@@ -660,25 +657,26 @@ export class TelegramWebChat {
     this.addMessage(`Quero o ${planNames['7d']} 🔥`, 'out');
     await this.showTyping('gerando Pix oficial protegido no Banco Central...', 2200);
 
-    // Geração dinâmica de Pix REAL via Pushin Pay API
-    let pixData = null;
+    // Geração dinâmica de Checkout Oficial via AbacatePay API
+    let checkoutData = null;
     try {
-      const res = await fetch(`${BACKEND_URL}/api/pix/create`, {
+      const res = await fetch('/api/abacatepay', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: '7d', visitorId })
+        body: JSON.stringify({ visitorId, returnUrl: window.location.href })
       });
       if (res.ok) {
-        pixData = await res.json();
+        checkoutData = await res.json();
+        if (checkoutData?.checkoutUrl) {
+          planUrl = checkoutData.checkoutUrl;
+        }
       }
     } catch (e) {
-      console.warn('[Chat] Fallback para Pix local:', e);
+      console.warn('[Chat] Fallback para link de checkout direto:', e);
     }
 
-    const realPixCode = pixData?.qrCode || `00020126580014br.gov.bcb.pix01367d-carolzinha-${Date.now()}52040000530398654059.905802BR5916CAROLZINHA PRIVE6009SAO PAULO62070503***6304ABCD`;
-    const realQrImgHtml = pixData?.qrCodeBase64
-      ? `<img src="${pixData.qrCodeBase64}" class="tg-pix-qr-img" alt="QR Code Pix" style="max-width:210px;border-radius:12px;background:#fff;padding:8px;margin:0 auto;display:block" />`
-      : this.generateQrSvg();
+    const realPixCode = `00020126580014br.gov.bcb.pix0136abacatepay-carol-${Date.now()}52040000530398654059.905802BR5916CAROLL SATLER6009SAO PAULO62070503***6304ABCD`;
+    const realQrImgHtml = this.generateQrSvg();
 
     this.addMessage(
       'separei seu acesso exclusivo no sigilo total, amor! 🔑🔥\n\n' +
@@ -838,32 +836,32 @@ export class TelegramWebChat {
       };
     });
 
-    // Ação do botão principal da Pushin Pay
+    // Ação do botão principal de checkout
     const realPayBtn = checkoutCard.querySelector('#tg-real-pay');
     realPayBtn.onclick = () => {
-      trackPushinPayClick(planKey, planPricesNum[planKey] || 14.90);
-      trackInitiateCheckout(planKey, planPricesNum[planKey] || 14.90);
+      trackPushinPayClick(planKey, planPricesNum[planKey] || 9.90);
+      trackInitiateCheckout(planKey, planPricesNum[planKey] || 9.90);
     };
 
     // Ação de checar pagamento
     const checkBtn = checkoutCard.querySelector('#tg-check-pay');
     checkBtn.onclick = () => {
       trackPaymentCheckRequested(planKey);
-      this.handlePaymentCheck(checkoutCard, planUrl, planPrices[planKey], pixData?.transactionId);
+      this.handlePaymentCheck(checkoutCard, planUrl, planPrices[planKey], checkoutData?.checkoutId);
     };
 
     // Auto-polling automático de confirmação Pix em tempo real
-    if (pixData?.transactionId) {
+    if (checkoutData?.checkoutId) {
       if (this.pixPollingInterval) clearInterval(this.pixPollingInterval);
       this.pixPollingInterval = setInterval(async () => {
         try {
-          const checkRes = await fetch(`${BACKEND_URL}/api/pix/status/${pixData.transactionId}`);
+          const checkRes = await fetch(`/api/abacatepay?id=${checkoutData.checkoutId}`);
           if (checkRes.ok) {
             const statusData = await checkRes.json();
             if (statusData.isPaid) {
               clearInterval(this.pixPollingInterval);
               if (this.pixTimerInterval) clearInterval(this.pixTimerInterval);
-              trackPurchase(planPricesNum[planKey] || 14.90, pixData.transactionId);
+              trackPurchase(planPricesNum[planKey] || 9.90, checkoutData.checkoutId);
               this.showPaidSuccess();
             }
           }
@@ -872,7 +870,7 @@ export class TelegramWebChat {
     }
   }
 
-  async handlePaymentCheck(checkoutCard, planUrl, planPriceStr, transactionId = null) {
+  async handlePaymentCheck(checkoutCard, planUrl, planPriceStr, checkoutId = null) {
     if (checkoutCard) {
       const statusText = checkoutCard.querySelector('#tg-status-text');
       const dot = checkoutCard.querySelector('#tg-status-dot');
@@ -891,13 +889,13 @@ export class TelegramWebChat {
       }
     }
 
-    if (transactionId) {
+    if (checkoutId) {
       try {
-        const checkRes = await fetch(`${BACKEND_URL}/api/pix/status/${transactionId}`);
+        const checkRes = await fetch(`/api/abacatepay?id=${checkoutId}`);
         if (checkRes.ok) {
           const statusData = await checkRes.json();
           if (statusData.isPaid) {
-            trackPurchase(14.90, transactionId);
+            trackPurchase(9.90, checkoutId);
             this.showPaidSuccess();
             return;
           }
