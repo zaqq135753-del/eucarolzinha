@@ -35,6 +35,7 @@ const TELEGRAM_DIRECT_URL = 'https://t.me/eucarolzinha_bot?start=site';
 const MEDIA_POOLS = {
   preview1: [
     { url: '/assets/previa-1.mp4', name: 'previa_cama_1' },
+    { url: '/assets/video-1.mp4', name: 'video_1' },
     { url: '/assets/darkredtartbarnowl.mp4', name: 'previa_quarto_dark' },
     { url: '/assets/story-1.mp4', name: 'previa_story_1' }
   ],
@@ -44,8 +45,10 @@ const MEDIA_POOLS = {
     { url: '/assets/story-2.mp4', name: 'previa_story_2' }
   ],
   gift: [
-    { url: '/assets/previa-3.mp4', name: 'presente_sem_censura_3' },
     { url: '/assets/video-2.mp4', name: 'presente_video_2' },
+    { url: '/assets/video-4.mp4', name: 'presente_video_4' },
+    { url: '/assets/video-9.mp4', name: 'presente_video_9' },
+    { url: '/assets/previa-3.mp4', name: 'presente_sem_censura_3' },
     { url: '/assets/belovedprestigioussandbarshark.mp4', name: 'presente_sandbar' },
     { url: '/assets/story-3.mp4', name: 'presente_story_3' }
   ]
@@ -71,7 +74,7 @@ export class TelegramWebChat {
     this.selectedMedia = {
       preview1: pickRandomMedia('preview1'),
       preview2: pickRandomMedia('preview2'),
-      video3: { url: '/assets/previa-3.mp4', name: 'video_3' },
+      video3: { url: '/assets/video-3.mp4', name: 'video_3' },
       gift: pickRandomMedia('gift')
     };
 
