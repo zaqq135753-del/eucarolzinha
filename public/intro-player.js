@@ -9,9 +9,9 @@ export function setupIntro(video,button,{reveal,manual=false,doc=document,timeou
   let promise;try{promise=video.play()}catch(e){pending=false;offerPlay('play_error');return}
   Promise.resolve(promise).then(()=>{pending=false;button.hidden=true}).catch(()=>{pending=false;offerPlay('autoplay_blocked')});
  };
- const finish=()=>{complete=true;clearTimeout(timer);timer=null;button.hidden=true;video.pause();reveal(3,'video_finished')};
- video.addEventListener('timeupdate',()=>{const t=video.currentTime;if(t>=2.8)reveal(3,'video');else if(t>=2.1)reveal(2,'video');else if(t>=1.5)reveal(1,'video');if(t>=5)finish()});
- video.addEventListener('ended',finish);
+ const finish=()=>{complete=true;clearTimeout(timer);timer=null;button.hidden=true;reveal(3,'video_finished')};
+ video.addEventListener('timeupdate',()=>{const t=video.currentTime;if(t>=2.8)reveal(3,'video');else if(t>=2.1)reveal(2,'video');else if(t>=1.5)reveal(1,'video');if(t>=5&&!complete)finish()});
+ video.addEventListener('ended',()=>{attempt()});
  video.addEventListener('playing',()=>{clearTimeout(timer);timer=null;button.hidden=true});
  video.addEventListener('error',()=>offerPlay('video_error'));
  video.addEventListener('pause',()=>{if(!complete&&!doc.hidden)offerPlay('playback_paused')});

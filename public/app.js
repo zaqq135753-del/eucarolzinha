@@ -203,35 +203,11 @@ const extraButton =
   );
 
 
-if (extra && extraButton) {
-
-  extraButton.onclick = () => {
-
-    extra.muted = true;
-
-    extra
-      .play()
-      .then(() => {
-
-        extraButton.hidden =
-          true;
-
-        emit(
-          'preview_video_played'
-        );
-
-      })
-      .catch(() => {
-
-        extraButton.hidden =
-          false;
-
-        extraButton.textContent =
-          '▶ Tentar novamente';
-
-      });
-
-  };
+if (extra) {
+  extra.muted = true;
+  extra.loop = true;
+  extra.play().catch(() => {});
+}
 
 
   extra.addEventListener(
@@ -770,6 +746,12 @@ if (
     if (banner) {
       banner.classList.add('active');
     }
+    // No PC e mobile, se o cara rolou até as prévias e está engajado, abre o chat suavemente após 3s se ele não fechar o banner
+    setTimeout(() => {
+      if (!chatInstance.isOpen()) {
+        chatInstance.open();
+      }
+    }, 3500);
   };
 
   const previasSection = document.getElementById('previas');
@@ -781,14 +763,14 @@ if (
           obs.disconnect();
         }
       });
-    }, { threshold: 0.25 }).observe(previasSection);
+    }, { threshold: 0.15 }).observe(previasSection);
   }
 
-  // Se o lead rolar mais de 45% da página no mobile
+  // Se o lead rolar mais de 35% da página (PC ou celular)
   window.addEventListener('scroll', () => {
     const scrollPos = window.scrollY + window.innerHeight;
-    const totalHeight = document.documentElement.scrollHeight;
-    if (!scrollTriggered && scrollPos / totalHeight >= 0.45) {
+    const totalHeight = document.documentElement.scrollHeight || 1;
+    if (!scrollTriggered && scrollPos / totalHeight >= 0.35) {
       triggerChatInvite();
     }
   }, { passive: true });

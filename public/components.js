@@ -28,10 +28,12 @@ export function Hero() {
   <div class="portrait">
     <video
       id="intro-video"
+      autoplay
+      loop
       muted
       playsinline
       webkit-playsinline
-      preload="metadata"
+      preload="auto"
       poster="${esc(c.heroImage)}"
       aria-label="Vídeo de apresentação da Carolina Satler, sem áudio"
     >
@@ -169,58 +171,31 @@ export function Hero() {
   >
 
     <figure>
-
-      <video controls muted playsinline preload="metadata" aria-label="Primeira prévia"><source src="/assets/video-2.mp4" type="video/mp4"></video>
-
+      <video autoplay loop muted playsinline webkit-playsinline preload="auto" aria-label="Primeira prévia">
+        <source src="/assets/video-2.mp4" type="video/mp4">
+      </video>
       <figcaption>
         Uma das prévias
       </figcaption>
-
     </figure>
 
-
     <figure class="short-video-frame">
-
-      <video
-        id="extra-video"
-        muted
-        playsinline
-        preload="none"
-
-        aria-label="Segunda prévia de apresentação"
-      >
-
-        <source
-          src="/assets/belovedprestigioussandbarshark.mp4"
-          type="video/mp4"
-        >
-
+      <video id="extra-video" autoplay loop muted playsinline webkit-playsinline preload="auto" aria-label="Segunda prévia de apresentação">
+        <source src="/assets/belovedprestigioussandbarshark.mp4" type="video/mp4">
       </video>
-
-      <button
-        id="extra-play"
-        aria-label="Reproduzir segunda prévia"
-      >
-        ▶ Ver prévia
-      </button>
-
       <figcaption>
         Mais uma prévia
       </figcaption>
-
     </figure>
 
-
     <figure>
-
-      <video controls muted playsinline preload="metadata" aria-label="Terceira prévia"><source src="/assets/trickyturbulentbrahmancow.mp4" type="video/mp4"></video>
-
+      <video autoplay loop muted playsinline webkit-playsinline preload="auto" aria-label="Terceira prévia">
+        <source src="/assets/trickyturbulentbrahmancow.mp4" type="video/mp4">
+      </video>
       <figcaption>
         Só mais um pouco 👀
       </figcaption>
-
     </figure>
-
   </div>
 
 
