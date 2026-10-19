@@ -15,15 +15,22 @@ import {
 } from './tracking.js';
 
 import { track } from './analytics.js';
-import { TelegramWebChat } from './chat.js';
-import { setupBoosters } from './boosters.js';
-
 
 // ======================================================
-// DESTINO PRINCIPAL
+// DESTINO PRINCIPAL (COM PRESERVAÇÃO DE PARÂMETROS)
 // ======================================================
 
-const BOT_URL = `${TELEGRAM_BOT_URL}?start=site`;
+function getTelegramUrl() {
+  try {
+    const params = new URLSearchParams(location.search);
+    const src = params.get('utm_source') || params.get('ref') || 'site';
+    return `${TELEGRAM_BOT_URL}?start=${encodeURIComponent(src)}`;
+  } catch {
+    return `${TELEGRAM_BOT_URL}?start=site`;
+  }
+}
+
+const BOT_URL = getTelegramUrl();
 
 
 // ======================================================
@@ -61,21 +68,13 @@ document.title =
   `${siteConfig.creatorName} — Convite Privé`;
 
 // ======================================================
-// INSTANCIAÇÃO DO CHAT NATIVO EMBUTIDO NO TOPO
+// BOTÃO FLUTUANTE DE ACESSO DIRETO AO TELEGRAM
 // ======================================================
 
-const chatInstance = new TelegramWebChat({
-  target: document.body,
-  isModal: true
-});
-window.chatInstance = chatInstance;
-
-// Ativa os gatilhos de conversão (Push fake, prova social, exit intent)
-setupBoosters(chatInstance);
-
-// Botão Flutuante de Acesso Direto ao Chat
-const floatingChat = document.createElement('button');
-floatingChat.type = 'button';
+const floatingChat = document.createElement('a');
+floatingChat.href = BOT_URL;
+floatingChat.target = '_blank';
+floatingChat.rel = 'noopener';
 floatingChat.className = 'tg-floating-trigger';
 floatingChat.innerHTML = `
   <div class="tg-floating-avatar-wrap">
@@ -84,94 +83,14 @@ floatingChat.innerHTML = `
   </div>
   <div class="tg-floating-label">
     <strong>Carolzinha Satler</strong>
-    <small>online no privado • abrir chat 🔥</small>
+    <small>online no Telegram • me chama 🔥</small>
   </div>
 `;
+floatingChat.addEventListener('click', () => {
+  trackChatOpened('floating_btn');
+  emit('telegram_chat_opened', { source: 'floating_btn', destination: 'telegram_bot' });
+});
 document.body.appendChild(floatingChat);
-
-// ======================================================
-// GATILHO INFALÍVEL DE ABERTURA DO CHAT (SCROLL, WHEEL, TOUCH & TIMER)
-// ======================================================
-
-let chatTriggered = false;
-function openChatFunnel(source = 'interaction') {
-  if (chatTriggered) return;
-  chatTriggered = true;
-  console.log(`[Funnel] Disparando chat nativo via ${source}`);
-  
-  // Oculta push banner suspenso se existir
-  const banner = document.getElementById('tg-push-banner');
-  if (banner) {
-    banner.classList.remove('active');
-  }
-
-  // Abre o modal do chat
-  chatInstance.open();
-}
-window.openChatFunnel = openChatFunnel;
-
-// Botão Flutuante sempre chama openChatFunnel
-floatingChat.onclick = () => openChatFunnel('floating_btn');
-
-// 1. Se veio com intenção direta de chat ou pagamento na URL, abre na hora
-const searchParams = new URLSearchParams(location.search);
-if (
-  searchParams.get('chat') === '1' ||
-  searchParams.get('status') === 'approved' ||
-  searchParams.get('paid') === '1' ||
-  location.hash === '#chat'
-) {
-  setTimeout(() => openChatFunnel('url_param'), 200);
-} else {
-  // 2. GATILHO AUTOMÁTICO DE SEGURANÇA (4s):
-  // O lead tem 4 segundos para ver o vídeo de topo e conhecer a Carol.
-  // Se não rolar nem clicar, o chat sobe sozinho automaticamente para fechar a venda!
-  const autoTimer = setTimeout(() => {
-    openChatFunnel('auto_timeout_4s');
-  }, 4000);
-
-  // Função disparada no primeiro sinal de rolagem
-  const onUserScrollAction = (source) => {
-    clearTimeout(autoTimer);
-    setTimeout(() => {
-      openChatFunnel(source);
-    }, 200);
-  };
-
-  // 3. PC / DESKTOP: Rodinha do mouse (wheel)
-  window.addEventListener('wheel', () => {
-    onUserScrollAction('pc_wheel');
-  }, { passive: true, once: true });
-
-  // 4. MOBILE: Arraste do dedo na tela (touchmove)
-  window.addEventListener('touchmove', () => {
-    onUserScrollAction('mobile_touch');
-  }, { passive: true, once: true });
-
-  // 5. Scroll universal (window e document)
-  const handleScrollCheck = () => {
-    const scrollPos = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || window.scrollY || 0;
-    if (scrollPos > 25) {
-      onUserScrollAction('scroll_detected');
-    }
-  };
-  window.addEventListener('scroll', handleScrollCheck, { capture: true, passive: true });
-  document.addEventListener('scroll', handleScrollCheck, { capture: true, passive: true });
-
-  // 6. IntersectionObserver nas seções seguintes
-  const targetSections = document.querySelectorAll('#previas, .short-gallery, #acessos, .portal-section');
-  if (targetSections.length && 'IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          onUserScrollAction('intersection_section');
-          observer.disconnect();
-        }
-      });
-    }, { threshold: 0.05 });
-    targetSections.forEach(s => observer.observe(s));
-  }
-}
 
 
 // ======================================================
@@ -713,73 +632,22 @@ const primaryDialog =
 
 document
   .querySelectorAll(
-    '[data-main-bot]'
+    '[data-main-bot], a[href*="t.me"], .contact, .gallery-next, .starter-choice'
   )
   .forEach(link => {
+    link.href = BOT_URL;
+    link.target = '_blank';
+    link.rel = 'noopener';
 
-    link.href =
-      BOT_URL;
-
-    link.target =
-      '_top';
-
-    link.rel =
-      'noopener';
-
-
-    link.addEventListener(
-      'click',
-      (e) => {
-        e.preventDefault();
-        clicked = true;
-
-        emit(
-          'telegram_chat_opened',
-          {
-            source: 'main_cta',
-            destination: 'native_webchat'
-          }
-        );
-
-        // Dispara Evento 2: Lead ou ChatOpened { source: 'main_cta' }
-        trackChatOpened('main_cta');
-
-        if (window.chatInstance) {
-          window.chatInstance.open();
-        }
-      }
-    );
-
-  });
-
-
-
-
-// ======================================================
-// LINKS E BOTÕES DE AÇÃO (INTERCEPTAÇÃO PARA CHAT NATIVO)
-// ======================================================
-
-document
-  .querySelectorAll(
-    `a[href*="t.me"], .contact, .gallery-next, .starter-choice`
-  )
-  .forEach(link => {
-    link.addEventListener(
-      'click',
-      (e) => {
-        e.preventDefault();
-        clicked = true;
-
-        emit(
-          'telegram_redirect_intercepted',
-          {
-            href: link.href || 'button_action'
-          }
-        );
-
-        openChatFunnel('cta_button_click');
-      }
-    );
+    link.addEventListener('click', () => {
+      clicked = true;
+      emit('telegram_chat_opened', {
+        source: 'cta_click',
+        destination: 'telegram_bot',
+        href: link.href
+      });
+      trackChatOpened('main_cta');
+    });
   });
 
 

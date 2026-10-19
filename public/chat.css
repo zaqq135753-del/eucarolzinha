@@ -877,6 +877,7 @@
   color: #fff;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   font-family: inherit;
+  text-decoration: none;
 }
 
 .tg-floating-trigger:hover {
