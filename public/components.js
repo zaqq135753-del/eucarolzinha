@@ -35,7 +35,7 @@ export function Hero() {
       webkit-playsinline
       preload="auto"
       poster="${esc(c.heroImage)}"
-      aria-label="Vídeo de apresentação da Carolina Satler, sem áudio"
+      aria-label="Vídeo de apresentação da Mia Valente, sem áudio"
     >
       <source
         src="${esc(c.heroVideo)}"
@@ -58,7 +58,7 @@ export function Hero() {
   <header class="stage stage-1">
 
     <span class="wordmark">
-      Carolzinha
+      Mia Valente
       <small>privé</small>
     </span>
 
@@ -90,7 +90,7 @@ export function Hero() {
         </em>
 
         <span class="sr-only">
-          Sem censura. No seu tempo. Do seu jeito.
+          Conheça as condições da oferta no Telegram.
         </span>
       </h1>
 
@@ -205,7 +205,7 @@ export function Hero() {
     target="_top"
     rel="noopener"
   >
-    Quero continuar com a Carol ↗
+    Ver oferta da Mia ↗
   </a>
 
 </section>
@@ -232,7 +232,7 @@ export function Hero() {
     <p>
       Se você chegou até aqui,
       provavelmente já ficou curioso.
-      No privado eu te mostro o restante. 😈✨
+      Fotos, vídeos e acesso ao contato de WhatsApp por R$ 9,90. Veja as condições no bot.
     </p>
 
   </div>
@@ -251,7 +251,7 @@ export function Hero() {
     </span>
 
     <span class="eyebrow">
-      CAROLZINHA / PRIVÉ
+      MIA VALENTE / PRIVÉ
     </span>
 
     <h3>
@@ -261,9 +261,7 @@ export function Hero() {
     </h3>
 
     <p>
-      Entra no meu bot,
-      vê as prévias e escolhe por lá
-      como quer liberar seu acesso.
+      A oferta inclui fotos, vídeos e acesso ao contato de WhatsApp por R$ 9,90. Confira o que está incluído e finalize pelo bot.
     </p>
 
     <a
@@ -273,7 +271,7 @@ export function Hero() {
       target="_top"
       rel="noopener"
     >
-      Conversar comigo agora
+      Ver oferta de R$ 9,90
 
       <span
         class="arrow"
@@ -306,7 +304,7 @@ export function Hero() {
 <footer class="short-footer">
 
   <span>
-    Carolzinha Privé · 18+
+    Mia Valente Privé · 18+
   </span>
 
   <a href="/entrar">
