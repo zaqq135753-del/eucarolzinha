@@ -1,5 +1,5 @@
 // ======================================================
-// CAROLZINHA PRIVÉ — CONFIGURAÇÃO CENTRAL
+// MIA VALENTE PRIVÉ — CONFIGURAÇÃO CENTRAL
 // ======================================================
 
 // Destino principal do funil
@@ -38,18 +38,18 @@ export const contactConfig = {
 // ======================================================
 
 export const siteConfig = {
-  creatorName: 'Carolina Satler',
+  creatorName: 'Mia Valente',
 
-  headline: 'Vem me conhecer.',
-  headlineEmphasis: 'Sem censura.',
+  headline: 'Conheça meu espaço privado.',
+  headlineEmphasis: 'Mia Valente Privé.',
 
   description:
-    'Gostou do que viu? Isso é só um aperitivo... o melhor de mim eu deixei separado no meu acesso privado. 🔥😈',
+    'Conheça a oferta de fotos, vídeos e acesso ao contato de WhatsApp por R$ 9,90. Confira as condições no Telegram.',
 
-  cta: 'Quero ver mais 👀',
+  cta: 'Ver oferta de R$ 9,90',
 
   disclosure:
-    'Conteúdo exclusivo +18 · Acesso privado pelo Telegram.',
+    'Somente maiores de 18 anos. Pagamento e entrega pelo Telegram. Contato sujeito às condições informadas.',
 
   heroImage: '',
   heroVideo: '/assets/darkredtartbarnowl.mp4'
